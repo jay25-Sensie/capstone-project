@@ -1,0 +1,44 @@
+body{
+    background-image:url(..//img/background.jpeg);
+    background-position: center;
+    background-repeat: none;
+    background-size: cover;
+    padding: 0;
+    margin: 0;
+    position: relative;
+
+}
+a{
+    text-decoration: none;
+    color:white;
+}
+a :hover{
+    color: rgb(121, 181, 234);
+}
+#nav{
+    width: 100%;
+    padding: 3%;
+}
+#logo{
+    position: relative;
+    margin-right: 0;
+    margin-left: 4%;  
+    width: 40%;  
+}
+ul{
+    list-style: none;
+    margin: 0;
+    display: inline;
+
+}
+li{
+    color: black;
+    float: left;
+    margin-right: 5%;
+    cursor: pointer;
+    font-size: 24px;
+
+}
+h1{
+    float: right;
+}
