@@ -14,7 +14,6 @@ function check_login($con)
             return $user_data;
         }
     }
-    //redirect to login
-    header("location: Admin_Staff_login.php");
     die;
 }
+

@@ -11,7 +11,7 @@ function sanitize_input($con, $data) {
 }
 
 // Initialize variables
-$pid = $name = $lastname = $address = $age = $phone_number = $gender = $status = '';
+$pid = $name = $lastname = $address = $age = $birthday = $phone_number = $gender = $status = '';
 
 // Handle search query
 $search_query = '';
@@ -70,10 +70,6 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
         .table-secondary {
             background-color: rgba(0, 0, 0, 0.1);
         }
-        .content-wrapper{
-          padding-left: 2%;
-          padding-right: 2%;
-        }
     </style>
 
   <!-- Google Font: Source Sans Pro -->
@@ -102,7 +98,7 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
   <!-- Preloader -->
   <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src=".//img/logo.png" alt="AdminLTELogo" height="200" width="200">
+    <img class="animation__shake" src=".//img/logo.png" alt="image Logo" height="200" width="200">
     <h2>Loading...</h2>
   </div>
 
@@ -133,53 +129,20 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
                         <button class="btn btn-navbar" type="submit">
                             <i class="fas fa-search"></i>
                         </button>
-                        <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                            <i class="fas fa-times"></i>
-                        </button>
                     </div>
                 </div>
                 </form>
             </div>
         </li>
-
-
-      
-      <!-- Notifications Dropdown Menu -->
-      <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
-          <i class="far fa-bell"></i>
-          <span class="badge badge-warning navbar-badge">15</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <span class="dropdown-item dropdown-header">15 Notifications</span>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-envelope mr-2"></i> 4 new messages
-            <span class="float-right text-muted text-sm">3 mins</span>
+        <li class="nav-item">
+          <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+            <i class="fas fa-expand-arrows-alt"></i>
           </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-users mr-2"></i> 8 friend requests
-            <span class="float-right text-muted text-sm">12 hours</span>
+        </li>
+        <li class="nav-item">
+          <a href="logout.php" class="nav-link">
+            <i class="nav-icon fas fa-sign-out-alt">log out</i>
           </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-file mr-2"></i> 3 new reports
-            <span class="float-right text-muted text-sm">2 days</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-          <i class="fas fa-expand-arrows-alt"></i>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
-          <i class="fas fa-th-large"></i>
-        </a>
       </li>
     </ul>
   </nav>
@@ -188,9 +151,9 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
+    <a href="#" class="brand-link">
       <img src=".//img/logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-4" style="opacity: 1">
-      <span class="brand-text font-weight-light">WBHR_MS</span>
+      <span class="brand-text font-weight-light">IMSClinic_HRMS</span>
     </a>
 
     <!-- Sidebar -->
@@ -200,41 +163,39 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-          <li class="nav-item menu-open">
-            <a href="index3.html" class="nav-link active">
+          <!-- Dashboard menu item -->
+          <li class="nav-item">
+            <a href="Dashboard_Doctor.php" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+
+          <li class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-folder"></i>
               <p>
-                Dashboard
+                Menu
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="patientRecords_Doctor.php" class="nav-link active">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="nav-icon fas fa-user"></i>
                   <p>Patient Records</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="Doctor_Prescription.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="nav-icon fas fa-prescription"></i>
                   <p>Prescription</p>
                 </a>
               </li>
-          
               <li class="nav-item">
-                <a href="index3.html" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Reports</p>
-                </a>
-              </li>
-              
-              <li class="nav-item">
-                <a href="viewCalendar_Doctor.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Calendar</p>
+                <a href="genReports_Doctor.php" class="nav-link">
+                  <i class="nav-icon fas fa-print"></i>
+                  <p>Generate Reports</p>
                 </a>
               </li>
             </ul>
@@ -258,10 +219,11 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
               <thead>
                   <tr>
                       <th>PID</th>
-                      <th>Name</th>
-                      <th>Lastname</th>
+                      <th>First Name</th>
+                      <th>Last Name</th>
                       <th>Address</th>
                       <th>Age</th>
+                      <th>Birthday</th>
                       <th>Phone Number</th>
                       <th>Gender</th>
                       <th>Status</th>
@@ -277,6 +239,7 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
                               <td><?php echo htmlspecialchars($patient['lastname']); ?></td>
                               <td><?php echo htmlspecialchars($patient['address']); ?></td>
                               <td><?php echo htmlspecialchars($patient['age']); ?></td>
+                              <td><?php echo htmlspecialchars($patient['birthday']); ?></td>
                               <td><?php echo htmlspecialchars($patient['phone_number']); ?></td>
                               <td><?php echo htmlspecialchars($patient['gender']); ?></td>
                               <td><?php echo htmlspecialchars($patient['status']); ?></td>
@@ -329,14 +292,6 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
           </table>
       </div>
   </div>
-      
-
-
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-      <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- /.control-sidebar -->
   </div>
 </div>
 <!-- ./wrapper -->
@@ -371,10 +326,6 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
 <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="dist/js/demo.js"></script>
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="dist/js/pages/dashboard.js"></script>
 <!-- Optional: Include Bootstrap JS and jQuery for enhanced functionality -->
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>

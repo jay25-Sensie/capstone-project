@@ -34,6 +34,25 @@ session_start();
     $result = mysqli_query($con, $query);
     $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
+
+    function isClosed($date, $selected_dates) {
+      return in_array($date, $selected_dates); // Check if $date exists in $selected_dates array
+    }
+    
+    $selected_dates = isset($_SESSION['selected_dates']) ? $_SESSION['selected_dates'] : [];
+    
+    // Generating a simple calendar
+    $current_month = date('n'); // to get current month
+    $current_year = date('Y'); // current year
+    
+    // Number of days in the current month
+    $num_days_in_month = date('t', mktime(0, 0, 0, $current_month, 1, $current_year));
+    
+    // Starting day of the week for the first day of the month
+    $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year));
+    
+    
+
 ?>
 
 <!DOCTYPE html>
@@ -63,13 +82,31 @@ session_start();
   <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
   <!-- summernote -->
   <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
+  <style>
+    .calendar {
+            margin-top: 20px;
+        }
+        .calendar th,
+        .calendar td {
+            text-align: center;
+            width: 200px;
+            height: 40px;
+        }
+        .calendar th {
+            background-color: #007bff;
+            color: #fff;
+        }
+        .closed {
+            background-color: #f8d7da; 
+        }
+  </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
 
   <!-- Preloader -->
   <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src=".//img/logo.png" alt="AdminLTELogo" height="200" width="200">
+    <img class="animation__shake" src=".//img/logo.png" alt="image Logo" height="200" width="200">
     <h2>Loading...</h2>
   </div>
 
@@ -100,53 +137,20 @@ session_start();
                     <button class="btn btn-navbar" type="submit">
                         <i class="fas fa-search"></i>
                     </button>
-                    <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                        <i class="fas fa-times"></i>
-                    </button>
                 </div>
              </div>
           </form>
         </div>
-      </li>
-
-     
-      
-      <!-- Notifications Dropdown Menu -->
-      <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
-          <i class="far fa-bell"></i>
-          <span class="badge badge-warning navbar-badge">15</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <span class="dropdown-item dropdown-header">15 Notifications</span>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-envelope mr-2"></i> 4 new messages
-            <span class="float-right text-muted text-sm">3 mins</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-users mr-2"></i> 8 friend requests
-            <span class="float-right text-muted text-sm">12 hours</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-file mr-2"></i> 3 new reports
-            <span class="float-right text-muted text-sm">2 days</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-        </div>
-      </li>
+      </li>      
       <li class="nav-item">
         <a class="nav-link" data-widget="fullscreen" href="#" role="button">
           <i class="fas fa-expand-arrows-alt"></i>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
-          <i class="fas fa-th-large"></i>
-        </a>
+        <a href="logout.php" class="nav-link">
+        <i class="nav-icon fas fa-sign-out-alt">log out</i>
+         </a>
       </li>
     </ul>
   </nav>
@@ -155,9 +159,9 @@ session_start();
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
-      <img src=".//img/logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-4" style="opacity: 1">
-      <span class="brand-text font-weight-light">WBHR_MS</span>
+    <a href="#" class="brand-link">
+      <img src=".//img/logo.png" alt="image Logo" class="brand-image img-circle elevation-4" style="opacity: 1">
+      <span class="brand-text font-weight-light">IMSClinic_HRMS</span>
     </a>
 
     <!-- Sidebar -->
@@ -168,39 +172,39 @@ session_start();
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-          <li class="nav-item menu-open">
-            <a href="index3.html" class="nav-link active">
+          <!-- Dashboard menu item -->
+          <li class="nav-item">
+            <a href="Dashboard_Doctor.php" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+
+          <li class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-folder"></i>
               <p>
-                Dashboard
+                Menu
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="patientRecords_Doctor.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="nav-icon fas fa-user"></i>
                   <p>Patient Records</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="Doctor_Prescription.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="nav-icon fas fa-prescription"></i>
                   <p>Prescription</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="genReports.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Reports</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="viewCalendar_Doctor.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Calendar</p>
+                <a href="genReports_Doctor.php" class="nav-link">
+                  <i class="nav-icon fas fa-print"></i>
+                  <p>Generate Reports</p>
                 </a>
               </li>
             </ul>
@@ -213,11 +217,79 @@ session_start();
   </aside>
 
 
-  <!-- Control Sidebar -->
-  <aside class="control-sidebar control-sidebar-dark">
-    <!-- Control sidebar content goes here -->
-  </aside>
-  <!-- /.control-sidebar -->
+  <div class="content-wrapper">
+    <div class="container" style="padding-left: 7%;"  >
+          <h2 class="mt-4">Calendar View</h2>
+          <div class="calendar">
+              <table class="table table-bordered" style="width: 90%;">
+                  <thead>
+                      <tr>
+                          <th scope="col">Mon</th>
+                          <th scope="col">Tue</th>
+                          <th scope="col">Wed</th>
+                          <th scope="col">Thu</th>
+                          <th scope="col">Fri</th>
+                          <th scope="col">Sat</th>
+                          <th scope="col">Sun</th>
+                      </tr>
+                  </thead>
+                  <tbody>
+                      <tr>
+                          <?php
+                          $day_count = 1;
+                          $current_date = 1;
+
+                          // Loop through each day of the week
+                          for ($i = 1; $i <= 7; $i++) {
+                              echo "<td>";
+
+                              // Checking if valid day to display
+                              if ($day_count >= $start_day_of_week && $current_date <= $num_days_in_month) {
+                                  $date = sprintf('%04d-%02d-%02d', $current_year, $current_month, $current_date);
+                                  echo $current_date;
+
+                                  // Checking if the date is in the selected closed days array
+                                  if (isClosed($date, $selected_dates)) {
+                                      echo '<br><span class="badge badge-danger">Closed</span>';
+                                  }
+
+                                  $current_date++;
+                              }
+
+                              echo "</td>";
+                              $day_count++;
+                          }
+
+                          echo "</tr>";
+
+                          while ($current_date <= $num_days_in_month) {
+                              echo "<tr>";
+
+                              for ($i = 0; $i < 7; $i++) {
+                                  echo "<td>";
+
+                                  if ($current_date <= $num_days_in_month) {
+                                      $date = sprintf('%04d-%02d-%02d', $current_year, $current_month, $current_date);
+                                      echo $current_date;
+
+                                      if (isClosed($date, $selected_dates)) {
+                                          echo '<br><span class="badge badge-danger">Closed</span>';
+                                      }
+
+                                      $current_date++;
+                                  }
+
+                                  echo "</td>";
+                              }
+
+                              echo "</tr>";
+                          }
+                          ?>
+                      </tbody>
+                  </table>
+              </div>
+          </div>
+
 </div>
 <!-- ./wrapper -->
 
@@ -251,9 +323,5 @@ session_start();
 <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="dist/js/demo.js"></script>
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="dist/js/pages/dashboard.js"></script>
 </body>
 </html>

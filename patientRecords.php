@@ -97,8 +97,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <style>
         
         .content-wrapper{
-          padding-left: 2%;
-          padding-right: 2%;
+          padding-left: 1%;
+          padding-right: 1%;
         }
         .table-secondary {
             background-color: rgba(0, 0, 0, 0.1);
@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   <!-- Preloader -->
   <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src=".//img/logo.png" alt="AdminLTELogo" height="200" width="200">
+    <img class="animation__shake" src=".//img/logo.png" alt="image Logo" height="200" width="200">
     <h2>Loading...</h2>
   </div>
 
@@ -167,53 +167,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <button class="btn btn-navbar" type="submit">
                             <i class="fas fa-search"></i>
                         </button>
-                        <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                            <i class="fas fa-times"></i>
-                        </button>
                     </div>
                 </div>
                 </form>
             </div>
+        </li>  
+        <li class="nav-item">
+          <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+            <i class="fas fa-expand-arrows-alt"></i>
+          </a>
         </li>
-
-      <!-- Messages Dropdown Menu -->
-      
-      <!-- Notifications Dropdown Menu -->
-      <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
-          <i class="far fa-bell"></i>
-          <span class="badge badge-warning navbar-badge">15</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <span class="dropdown-item dropdown-header">15 Notifications</span>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-envelope mr-2"></i> 4 new messages
-            <span class="float-right text-muted text-sm">3 mins</span>
+        <li class="nav-item">
+          <a href="logout.php" class="nav-link">
+            <i class="nav-icon fas fa-sign-out-alt">log out</i>
           </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-users mr-2"></i> 8 friend requests
-            <span class="float-right text-muted text-sm">12 hours</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-file mr-2"></i> 3 new reports
-            <span class="float-right text-muted text-sm">2 days</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-          <i class="fas fa-expand-arrows-alt"></i>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
-          <i class="fas fa-th-large"></i>
-        </a>
       </li>
     </ul>
   </nav>
@@ -222,67 +189,70 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
-      <img src=".//img/logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-4" style="opacity: 1">
-      <span class="brand-text font-weight-light">WBHR_MS</span>
+    <a href="#" class="brand-link">
+      <img src=".//img/logo.png" alt="image Logo" class="brand-image img-circle elevation-4" style="opacity: 1">
+      <span class="brand-text font-weight-light">IMSClinic_HRMS</span>
     </a>
 
     <!-- Sidebar -->
     <div class="sidebar">
-     
-
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-          <li class="nav-item menu-open">
-            <a href="viewCalendar.php" class="nav-link active">
+          <!-- Dashboard menu item -->
+          <li class="nav-item">
+            <a href="Dashboard_Admin.php" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+
+          <li class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-folder"></i>
               <p>
-                Dashboard
+                Menu
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="patientRecords.php" class="nav-link active">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="nav-icon fas fa-user"></i>
                   <p>Patient Records</p>
                 </a>
               </li>
+
               <li class="nav-item">
                 <a href="Admin_Prescription.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="nav-icon fas fa-prescription"></i>
                   <p>Prescription</p>
                 </a>
               </li>
+
               <li class="nav-item">
                 <a href="medical_Records.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Medical Records</p>
+                  <i class="nav-icon fas fa-file-medical"></i>
+                  <p>Add Medical Records</p>
                 </a>
               </li>
+
               <li class="nav-item">
                 <a href="genReports.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Reports</p>
+                  <i class="nav-icon fas fa-print"></i>
+                  <p>Generate Reports</p>
                 </a>
               </li>
+
               <li class="nav-item">
                 <a href="setCalendar.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="nav-icon fas fa-calendar-alt"></i>
                   <p>Set Calendar</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="viewCalendar.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>view Calendar</p>
-                </a>
-              </li>
             </ul>
-          </li>                 
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -302,105 +272,156 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
 
       <!-- Patient Records Table -->
-      <div class="table-responsive">
-          <table class="table table-bordered table-striped">
-              <thead>
-                  <tr>
-                      <th>PID</th>
-                      <th>Name</th>
-                      <th>Lastname</th>
-                      <th>Address</th>
-                      <th>Age</th>
-                      <th>Birthday</th>
-                      <th>Phone Number</th>
-                      <th>Gender</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                  </tr>
-              </thead>
-              <tbody>
-                <?php if (!empty($patients)): ?>
-                  <?php foreach ($patients as $patient): ?>
-                      <tr class="<?php echo ($patient['status'] === 'Not Active') ? 'table-secondary' : ''; ?>">
-                          <td><?php echo htmlspecialchars($patient['pid']); ?></td>
-                          <td><?php echo htmlspecialchars($patient['name']); ?></td>
-                          <td><?php echo htmlspecialchars($patient['lastname']); ?></td>
-                          <td><?php echo htmlspecialchars($patient['address']); ?></td>
-                          <td><?php echo htmlspecialchars($patient['age']); ?></td>
-                          <td><?php echo htmlspecialchars($patient['birthday']); ?></td>
-                          <td><?php echo htmlspecialchars($patient['phone_number']); ?></td>
-                          <td><?php echo htmlspecialchars($patient['gender']); ?></td>
-                          <td><?php echo htmlspecialchars($patient['status']); ?></td>
-                          <td class="action-buttons">
-                              <a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editPatientModal<?php echo $patient['pid']; ?>">Edit</a>
-                              <a href="viewPatient_Admin.php?pid=<?php echo $patient['pid']; ?>" class="btn btn-sm btn-info">View More</a>
-                          </td>
-                      </tr>
-
-                      <!-- Edit Patient -->
-                      <div class="modal fade" id="editPatientModal<?php echo $patient['pid']; ?>" tabindex="-1" role="dialog" aria-labelledby="editPatientModalLabel" aria-hidden="true">
-                          <div class="modal-dialog" role="document">
-                              <div class="modal-content">
-                                  <form action="patientRecords.php" method="post">
-                                      <div class="modal-header">
-                                          <h5 class="modal-title" id="editPatientModalLabel">Edit Patient</h5>
-                                          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                              <span aria-hidden="true">&times;</span>
-                                          </button>
-                                      </div>
-                                      <div class="modal-body">
-                                          <input type="hidden" name="pid" value="<?php echo $patient['pid']; ?>">
-                                          <div class="form-group">
-                                              <label for="edit-name">Name</label>
-                                              <input type="text" class="form-control" id="edit-name" name="name" value="<?php echo $patient['name']; ?>" required>
-                                          </div>
-                                          <div class="form-group">
-                                              <label for="edit-lastname">Lastname</label>
-                                              <input type="text" class="form-control" id="edit-lastname" name="lastname" value="<?php echo $patient['lastname']; ?>" required>
-                                          </div>
-                                          <div class="form-group">
-                                              <label for="edit-address">Address</label>
-                                              <input type="text" class="form-control" id="edit-address" name="address" value="<?php echo $patient['address']; ?>">
-                                          </div>
-                                          <div class="form-group">
-                                              <label for="edit-age">Age</label>
-                                              <input type="number" class="form-control" id="edit-age" name="age" value="<?php echo $patient['age']; ?>">
-                                          </div>
-                                          <div class="form-group">
-                                              <label for="edit-birthday">Birthday</label>
-                                              <input type="date" class="form-control" id="edit-birthday" name="birthday" placeholder="yyyy-mm-dd" value="<?php echo $patient['birthday']; ?>">
-                                          </div>
-                                          <div class="form-group">
-                                              <label for="edit-phone-number">Phone Number</label>
-                                              <input type="text" class="form-control" id="edit-phone-number" name="phone_number" value="<?php echo $patient['phone_number']; ?>">
-                                          </div>
-                                          <div class="form-group">
-                                              <label for="edit-gender">Gender</label>
-                                              <select class="form-control" id="edit-gender" name="gender">
-                                                  <option value="Male" <?php echo ($patient['gender'] === 'Male') ? 'selected' : ''; ?>>Male</option>
-                                                  <option value="Female" <?php echo ($patient['gender'] === 'Female') ? 'selected' : ''; ?>>Female</option>
-                                                  <option value="Other" <?php echo ($patient['gender'] === 'Other') ? 'selected' : ''; ?>>Other</option>
-                                              </select>
-                                          </div>
-                                      </div>
-                                      <div class="modal-footer">
-                                          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                          <button type="submit" name="update_patient" class="btn btn-primary">Save changes</button>
-                                      </div>
-                                  </form>
-                              </div>
-                          </div>
-                      </div>
-                  <?php endforeach; ?>
-                <?php else: ?>
-                    <tr>
-                        <td colspan="9" class="text-center">No patients found</td>
+      <!-- Patient Records Table -->
+<div class="table-responsive">
+    <table class="table table-bordered table-striped">
+        <thead>
+            <tr>
+                <th>PID</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Address</th>
+                <th>Age</th>
+                <th>Birthday</th>
+                <th>Phone Number</th>
+                <th>Gender</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php if (!empty($patients)): ?>
+                <?php foreach ($patients as $patient): ?>
+                    <tr class="<?php echo ($patient['status'] === 'Not Active') ? 'table-secondary' : ''; ?>">
+                        <td><?php echo htmlspecialchars($patient['pid']); ?></td>
+                        <td><?php echo htmlspecialchars($patient['name']); ?></td>
+                        <td><?php echo htmlspecialchars($patient['lastname']); ?></td>
+                        <td><?php echo htmlspecialchars($patient['address']); ?></td>
+                        <td><?php echo htmlspecialchars($patient['age']); ?></td>
+                        <td><?php echo htmlspecialchars($patient['birthday']); ?></td>
+                        <td><?php echo htmlspecialchars($patient['phone_number']); ?></td>
+                        <td><?php echo htmlspecialchars($patient['gender']); ?></td>
+                        <td><?php echo htmlspecialchars($patient['status']); ?></td>
+                        <td class="action-buttons">
+                            <a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editPatientModal<?php echo $patient['pid']; ?>">Edit</a>
+                            <a href="viewPatient_Admin.php?pid=<?php echo $patient['pid']; ?>" class="btn btn-sm btn-info">View More</a>
+                            <a href="#" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#vitalSignModal<?php echo $patient['pid']; ?>">Vital Sign</a>
+                        </td>
                     </tr>
-                <?php endif; ?>
-              </tbody>
-          </table>
-      </div>
-  </div>
+
+                    <!-- Edit Patient Modal -->
+                    <div class="modal fade" id="editPatientModal<?php echo $patient['pid']; ?>" tabindex="-1" role="dialog" aria-labelledby="editPatientModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                              <form action="patientRecords.php" method="post">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="editPatientModalLabel">Edit Patient</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body">
+                                            <input type="hidden" name="pid" value="<?php echo $patient['pid']; ?>">
+                                            <div class="form-group">
+                                                <label for="edit-name">first Name</label>
+                                                <input type="text" class="form-control" id="edit-name" name="name" value="<?php echo $patient['name']; ?>" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="edit-lastname">Last Name</label>
+                                                <input type="text" class="form-control" id="edit-lastname" name="lastname" value="<?php echo $patient['lastname']; ?>" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="edit-address">Address</label>
+                                                <input type="text" class="form-control" id="edit-address" name="address" value="<?php echo $patient['address']; ?>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="edit-age">Age</label>
+                                                <input type="number" class="form-control" id="edit-age" name="age" value="<?php echo $patient['age']; ?>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="edit-birthday">Birthday</label>
+                                                <input type="date" class="form-control" id="edit-birthday" name="birthday" placeholder="yyyy-mm-dd" value="<?php echo $patient['birthday']; ?>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="edit-phone-number">Phone Number</label>
+                                                <input type="text" class="form-control" id="edit-phone-number" name="phone_number" value="<?php echo $patient['phone_number']; ?>">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="edit-gender">Gender</label>
+                                                <select class="form-control" id="edit-gender" name="gender">
+                                                    <option value="Male" <?php echo ($patient['gender'] === 'Male') ? 'selected' : ''; ?>>Male</option>
+                                                    <option value="Female" <?php echo ($patient['gender'] === 'Female') ? 'selected' : ''; ?>>Female</option>
+                                                    <option value="Other" <?php echo ($patient['gender'] === 'Other') ? 'selected' : ''; ?>>Other</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                            <button type="submit" name="update_patient" class="btn btn-primary">Save changes</button>
+                                        </div>
+                                    </form>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Vital Sign Modal for this patient -->
+                    <div class="modal fade" id="vitalSignModal<?php echo $patient['pid']; ?>" tabindex="-1" role="dialog" aria-labelledby="vitalSignModalLabel<?php echo $patient['pid']; ?>" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="vitalSignModalLabel<?php echo $patient['pid']; ?>">Vital Signs for <?php echo htmlspecialchars($patient['name']); ?></h5>
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                </div>
+                                <div class="modal-body">
+                                    <!-- Vital Sign Form -->
+                                    <form action="vitalSign.php" method="post">
+                                        <input type="hidden" name="pid" value="<?php echo $patient['pid']; ?>">
+                                        <div class="form-group">
+                                            <label for="date">Date</label>
+                                            <input type="date" class="form-control" id="date" name="date" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="bp">Blood Pressure (BP)</label>
+                                            <input type="text" class="form-control" id="bp" name="bp" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="cr">Heart Rate (CR)</label>
+                                            <input type="text" class="form-control" id="cr" name="cr" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="rr">Respiratory Rate (RR)</label>
+                                            <input type="text" class="form-control" id="rr" name="rr" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="t">Temperature (T)</label>
+                                            <input type="text" class="form-control" id="t" name="t" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="wt">Weight (WT)</label>
+                                            <input type="text" class="form-control" id="wt" name="wt" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="ht">Height (HT)</label>
+                                            <input type="text" class="form-control" id="ht" name="ht" required>
+                                        </div>
+                                        <button type="submit" class="btn btn-primary">Save Vital Signs</button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="10" class="text-center">No patients found</td>
+                </tr>
+            <?php endif; ?>
+        </tbody>
+    </table>
+</div>
+
 
   <!-- Add Patient -->
   <div class="modal fade" id="addPatientModal" tabindex="-1" role="dialog" aria-labelledby="addPatientModalLabel" aria-hidden="true">
@@ -415,11 +436,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   </div>
                   <div class="modal-body">
                       <div class="form-group">
-                          <label for="name">Name</label>
+                          <label for="name">First Name</label>
                           <input type="text" class="form-control" id="name" name="name" required>
                       </div>
                       <div class="form-group">
-                          <label for="lastname">Lastname</label>
+                          <label for="lastname">Last Name</label>
                           <input type="text" class="form-control" id="lastname" name="lastname" required>
                       </div>
                       <div class="form-group">
@@ -455,13 +476,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           </div>
       </div>
   </div>
-
-
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-      <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- /.control-sidebar -->
   </div>
 </div>
   
@@ -497,48 +511,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="dist/js/demo.js"></script>
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="dist/js/pages/dashboard.js"></script>
-<!-- Optional: Include Bootstrap JS and jQuery for enhanced functionality -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
+
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-   
+  

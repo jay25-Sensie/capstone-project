@@ -72,7 +72,7 @@ if ($result) {
 
   <!-- Preloader -->
   <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src=".//img/logo.png" alt="AdminLTELogo" height="200" width="200">
+    <img class="animation__shake" src=".//img/logo.png" alt="image Logo" height="200" width="200">
     <h2>Loading...</h2>
   </div>
 
@@ -89,64 +89,16 @@ if ($result) {
     </ul>
 
     <!-- Right navbar links -->
-    <ul class="navbar-nav ml-auto">
-      <!-- Navbar Search -->
-      <li class="nav-item">
-
-            <div class="navbar-search-block">
-                <form class="form-inline" action="patientRecords.php" method="get">
-                    <div class="input-group input-group-sm">
-                    <input class="form-control form-control-navbar" type="search" name="search" placeholder="Search by PID or Name" aria-label="Search">
-                    <div class="input-group-append">
-                        <button class="btn btn-navbar" type="submit">
-                            <i class="fas fa-search"></i>
-                        </button>
-                        <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                            <i class="fas fa-times"></i>
-                        </button>
-                    </div>
-                </div>
-                </form>
-            </div>
-        </li>
-
-      
-      <!-- Notifications Dropdown Menu -->
-      <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
-          <i class="far fa-bell"></i>
-          <span class="badge badge-warning navbar-badge">15</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <span class="dropdown-item dropdown-header">15 Notifications</span>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-envelope mr-2"></i> 4 new messages
-            <span class="float-right text-muted text-sm">3 mins</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-users mr-2"></i> 8 friend requests
-            <span class="float-right text-muted text-sm">12 hours</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-file mr-2"></i> 3 new reports
-            <span class="float-right text-muted text-sm">2 days</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-        </div>
-      </li>
+    <ul class="navbar-nav ml-auto">      
       <li class="nav-item">
         <a class="nav-link" data-widget="fullscreen" href="#" role="button">
           <i class="fas fa-expand-arrows-alt"></i>
         </a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
-          <i class="fas fa-th-large"></i>
-        </a>
+        <a href="logout.php" class="nav-link">
+        <i class="nav-icon fas fa-sign-out-alt">log out</i>
+         </a>
       </li>
     </ul>
   </nav>
@@ -155,9 +107,9 @@ if ($result) {
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
-      <img src=".//img/logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-4" style="opacity: 1">
-      <span class="brand-text font-weight-light">WBHR_MS</span>
+    <a href="#" class="brand-link">
+      <img src=".//img/logo.png" alt="image Logo" class="brand-image img-circle elevation-4" style="opacity: 1">
+      <span class="brand-text font-weight-light">IMSClinic_HRMS</span>
     </a>
 
     <!-- Sidebar -->
@@ -168,33 +120,33 @@ if ($result) {
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-          <li class="nav-item menu-open">
+          <!-- Dashboard menu item -->
+          <li class="nav-item">
             <a href="Dashboard_Patient.php" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+
+          <li class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-folder"></i>
               <p>
-                Dashboard
+                Menu
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="patientrecordData.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="nav-icon fas fa-user"></i>
                   <p>Personal Record</p>
                 </a>
               </li>
               <li class="nav-item">
                 <a href="patient_Prescription.php" class="nav-link active">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="xnav-icon fas fa-prescription"></i>
                   <p>Prescription</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="viewCalendar_patient.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Calendar</p>
                 </a>
               </li>
             </ul>
@@ -236,12 +188,6 @@ if ($result) {
           </table>
       </div>
   </div>
-
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-      <!-- Control sidebar content goes here -->
-    </aside>
-    <!-- /.control-sidebar -->
   </div>
 </div>
 <!-- ./wrapper -->
@@ -276,9 +222,5 @@ if ($result) {
 <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.js"></script>
-<!-- AdminLTE for demo purposes -->
-<script src="dist/js/demo.js"></script>
-<!-- AdminLTE dashboard demo (This is only for demo purposes) -->
-<script src="dist/js/pages/dashboard.js"></script>
 </body>
 </html>

@@ -1,52 +1,58 @@
 <?php
 session_start();
 
-    include("connection.php");
-    include("function.php");
+include("connection.php");
+include("function.php");
 
-    $user_data = check_login($con);
+$user_data = check_login($con);
 
-   
-    $uploadDir = 'uploads/';
+$uploadDir = 'uploads/';
 
 // Check if the directory exists
 if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0777, true); // Create directory with proper permissions
 }
 
+// Define the maximum file size (5MB)
+$maxFileSize = 5 * 1024 * 1024; // 5MB in bytes
+
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if (isset($_POST['upload'])) {
         $pid = $_POST['pid'];
-        $file = $_FILES['file']['name'];
-        $targetFile = $uploadDir . basename($file);
-
+        $file = $_FILES['file'];
+        $fileName = $file['name'];
+        $fileTmpName = $file['tmp_name'];
+        $fileSize = $file['size'];
+        $targetFile = $uploadDir . basename($fileName);
+        
         // Check if the PID exists in the database
         $pidCheckSql = "SELECT COUNT(*) as count FROM patient_records WHERE pid='$pid'";
         $result = mysqli_query($con, $pidCheckSql);
         $row = mysqli_fetch_assoc($result);
 
         if ($row['count'] > 0) {
-            // PID exists, proceed with file upload
-            if (move_uploaded_file($_FILES['file']['tmp_name'], $targetFile)) {
-                $sql = "INSERT INTO medical_records (pid, file_path) VALUES ('$pid', '$targetFile')";
-                if (mysqli_query($con, $sql)) {
-                    echo "<div class='alert alert-success' style='padding-left:20%; text-align: center;'>File uploaded successfully.</div>";
-                } else {
-                    echo "<div class='alert alert-danger' style='padding-left:20%; text-align: center;'>Error uploading file to database.</div>";
-                }
+            // Check if the file size is within the limit
+            if ($fileSize > $maxFileSize) {
+                echo "<div class='alert alert-danger' style='padding-left:20%; text-align: center;'>File size exceeds the 5MB limit.</div>";
             } else {
-                echo "<div class='alert alert-danger' style='padding-left:20%; text-align: center;'>Error moving file. Check directory permissions.</div>";
+                // Proceed with file upload
+                if (move_uploaded_file($fileTmpName, $targetFile)) {
+                    $sql = "INSERT INTO medical_records (pid, file_path) VALUES ('$pid', '$targetFile')";
+                    if (mysqli_query($con, $sql)) {
+                        echo "<div class='alert alert-success' style='padding-left:20%; text-align: center;'>File uploaded successfully.</div>";
+                    } else {
+                        echo "<div class='alert alert-danger' style='padding-left:20%; text-align: center;'>Error uploading file to database.</div>";
+                    }
+                } else {
+                    echo "<div class='alert alert-danger' style='padding-left:20%; text-align: center;'>Error moving file. Check directory permissions.</div>";
+                }
             }
         } else {
-            // PID does not exist
-            echo "<div class='alert alert-danger' style='padding-left:20%; text-align: center;'>The provided PID does not exist in the records.</div>";
+            echo "<div class='alert alert-danger' style='padding-left:20%; text-align: center;'>No PID Found.</div>";
         }
     }
 }
-    
-
-   
 ?>
 
 <!DOCTYPE html>
@@ -87,7 +93,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
   <!-- Preloader -->
   <div class="preloader flex-column justify-content-center align-items-center">
-    <img class="animation__shake" src=".//img/logo.png" alt="AdminLTELogo" height="200" width="200">
+    <img class="animation__shake" src=".//img/logo.png" alt="image sLogo" height="200" width="200">
     <h2>Loading...</h2>
   </div>
 
@@ -111,59 +117,27 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <i class="fas fa-search"></i>
             </a>
             <div class="navbar-search-block">
-                <form class="form-inline" action="patientRecords.php" method="get">
+                <form class="form-inline" action="patientRecords.php" method="post">
                     <div class="input-group input-group-sm">
                     <input class="form-control form-control-navbar" type="search" name="search" placeholder="Search by PID or Name" aria-label="Search">
                     <div class="input-group-append">
                         <button class="btn btn-navbar" type="submit">
                             <i class="fas fa-search"></i>
                         </button>
-                        <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                            <i class="fas fa-times"></i>
-                        </button>
                     </div>
                 </div>
                 </form>
             </div>
         </li>
-
-      
-      <!-- Notifications Dropdown Menu -->
-      <li class="nav-item dropdown">
-        <a class="nav-link" data-toggle="dropdown" href="#">
-          <i class="far fa-bell"></i>
-          <span class="badge badge-warning navbar-badge">15</span>
-        </a>
-        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-          <span class="dropdown-item dropdown-header">15 Notifications</span>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-envelope mr-2"></i> 4 new messages
-            <span class="float-right text-muted text-sm">3 mins</span>
+        <li class="nav-item">
+          <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+            <i class="fas fa-expand-arrows-alt"></i>
           </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-users mr-2"></i> 8 friend requests
-            <span class="float-right text-muted text-sm">12 hours</span>
+        </li>
+        <li class="nav-item">
+          <a href="logout.php" class="nav-link">
+            <i class="nav-icon fas fa-sign-out-alt">log out</i>
           </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item">
-            <i class="fas fa-file mr-2"></i> 3 new reports
-            <span class="float-right text-muted text-sm">2 days</span>
-          </a>
-          <div class="dropdown-divider"></div>
-          <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
-        </div>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-          <i class="fas fa-expand-arrows-alt"></i>
-        </a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link" data-widget="control-sidebar" data-controlsidebar-slide="true" href="#" role="button">
-          <i class="fas fa-th-large"></i>
-        </a>
       </li>
     </ul>
   </nav>
@@ -172,9 +146,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="index3.html" class="brand-link">
-      <img src=".//img/logo.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-4" style="opacity: 1">
-      <span class="brand-text font-weight-light">WBHR_MS</span>
+    <a href="#" class="brand-link">
+      <img src=".//img/logo.png" alt="image Logo" class="brand-image img-circle elevation-4" style="opacity: 1">
+      <span class="brand-text font-weight-light">IMSClinic_HRMS</span>
     </a>
 
     <!-- Sidebar -->
@@ -185,55 +159,61 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-          <!-- Add icons to the links using the .nav-icon class
-               with font-awesome or any other icon font library -->
-          <li class="nav-item menu-open">
-            <a href="viewCalendar.php" class="nav-link active">
+          <!-- Dashboard menu item -->
+          <li class="nav-item">
+            <a href="Dashboard_Admin.php" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
+              <p>Dashboard</p>
+            </a>
+          </li>
+
+          <!-- Start of nested menu items -->
+          <li class="nav-item has-treeview menu-open">
+            <a href="#" class="nav-link ">
+              <i class="nav-icon fas fa-folder"></i>
               <p>
-                Dashboard
+                Menu
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
+
             <ul class="nav nav-treeview">
               <li class="nav-item">
                 <a href="patientRecords.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="nav-icon fas fa-user"></i>
                   <p>Patient Records</p>
                 </a>
               </li>
+
               <li class="nav-item">
                 <a href="Admin_Prescription.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="nav-icon fas fa-prescription"></i>
                   <p>Prescription</p>
                 </a>
               </li>
+
               <li class="nav-item">
                 <a href="medical_Records.php" class="nav-link active">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Medical Records</p>
+                  <i class="nav-icon fas fa-file-medical"></i>
+                  <p>Add Medical Records</p>
                 </a>
               </li>
+
               <li class="nav-item">
                 <a href="genReports.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Reports</p>
+                  <i class="nav-icon fas fa-print"></i>
+                  <p>Generate Reports</p>
                 </a>
               </li>
+
               <li class="nav-item">
                 <a href="setCalendar.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
+                  <i class="nav-icon fas fa-calendar-alt"></i>
                   <p>Set Calendar</p>
                 </a>
               </li>
-              <li class="nav-item">
-                <a href="viewCalendar.php" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Calendar</p>
-                </a>
-              </li>
             </ul>
-          </li>                 
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->
@@ -273,15 +253,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
         </div>
     </div>
-    <!-- Display patient records -->
-    
-
-
-
-    <!-- Control Sidebar -->
-    <aside class="control-sidebar control-sidebar-dark">
-      <!-- Control sidebar content goes here -->
-    </aside>
     <!-- /.control-sidebar -->
   </div>
 </div>

@@ -14,7 +14,7 @@
             <li><a href="index_home.php"><h5>Home</h5></a></li>
             <li><a href="Patient_login.php"><h5>Patients Login</h5></a></li>
             <li><a href="Doctor_login.php"><h5>Doctors Login</h5></a></li>
-            <li><a href="Admin_Staff_login.php"><h5>Admins Login</h5></a></li>
+            <li><a href="Admin_Staff_login.php"><h5>Admin Staff Login</h5></a></li>
            
         </ul>     
     </div>
