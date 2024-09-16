@@ -167,12 +167,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </a>
           </li>
 
-          <!-- Start of nested menu items -->
           <li class="nav-item has-treeview menu-open">
             <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-folder"></i>
               <p>
-                Menu
+                Services
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>

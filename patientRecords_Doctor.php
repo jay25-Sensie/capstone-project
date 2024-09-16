@@ -175,7 +175,7 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
             <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-folder"></i>
               <p>
-                Menu
+                Services
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>

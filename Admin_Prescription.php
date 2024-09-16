@@ -12,58 +12,7 @@ $result = $con->query($query);
 $prescriptions = $result->fetch_all(MYSQLI_ASSOC);
 
 
-/*
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['number']) && isset($_POST['message'])) {
-    $phone = $_POST['number'];
-    $message = $_POST['message'];
 
-    // Movider API credentials (replace with your actual credentials)
-    $apiKey = "1KDFRBMfpbf8184RghTlffnbGT5";  // Replace with your actual API key
-    $apiSecret = "tzp99FCPR89o9rMJ••••••••••••••••••••••••";  // Replace with your actual API secret
-    $smsUrl = "https://api.movider.co/v1/sms";
-
-    // Data for the SMS
-    $data = [
-        'to'         => $phone,
-        'text'       => $message,
-        'api_key'    => $apiKey,
-        'api_secret' => $apiSecret
-    ];
-
-    // Initialize cURL
-    $ch = curl_init($smsUrl);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));  // Use http_build_query for application/x-www-form-urlencoded
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Content-Type: application/x-www-form-urlencoded'
-    ]);
-
-    // Execute the request
-    $response = curl_exec($ch);
-    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    $error = curl_error($ch);
-    curl_close($ch);
-
-  
-    echo '<script type="text/javascript">';
-    if ($error) {
-        echo 'alert("Failed to send SMS due to cURL error: ' . addslashes($error) . '");';
-    } else {
-        if ($http_code == 200) {
-            $response_data = json_decode($response, true);
-            if (isset($response_data['phone_number_list']) && count($response_data['phone_number_list']) > 0) {
-                echo 'alert("SMS sent successfully!");';
-            } else {
-                echo 'alert("Failed to send SMS. Response: ' . addslashes($response) . '");';
-            }
-        } else {
-            echo 'alert("Failed to send SMS. HTTP Code: ' . $http_code . ' | Response: ' . addslashes($response) . '");';
-        }
-    }
-    echo '</script>';
-}
-*/
 ?>
 
 
@@ -186,12 +135,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['number']) && isset($_P
             </a>
           </li>
 
-          <!-- Start of nested menu items -->
           <li class="nav-item has-treeview menu-open">
             <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-folder"></i>
               <p>
-                Menu
+                Services
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>

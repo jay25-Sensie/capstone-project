@@ -157,7 +157,7 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
             <a href="#" class="nav-link ">
               <i class="nav-icon fas fa-folder"></i>
               <p>
-                Menu
+                Services
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
