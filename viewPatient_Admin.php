@@ -88,6 +88,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     h2, h3{
       font-weight: bold;
     }
+    .nav-treeview .nav-item {
+        padding-left: 3%;
+    }
   </style>
 
 </head>
@@ -232,7 +235,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             <tr><th>Last Name</th><td><?php echo htmlspecialchars($patient['lastname']); ?></td></tr>
             <tr><th>Address</th><td><?php echo htmlspecialchars($patient['address']); ?></td></tr>
             <tr><th>Age</th><td><?php echo htmlspecialchars($patient['age']); ?></td></tr>
-            <tr><th>Birthday</th><td><?php echo htmlspecialchars($patient['birthday']); ?></td></tr>
+            <tr><th>Birthdate</th><td><?php echo htmlspecialchars($patient['birthday']); ?></td></tr>
             <tr><th>Phone Number</th><td><?php echo htmlspecialchars($patient['phone_number']); ?></td></tr>
             <tr><th>Gender</th><td><?php echo htmlspecialchars($patient['gender']); ?></td></tr>
             <tr><th>Status</th><td><?php echo htmlspecialchars($patient['status']); ?></td></tr>
@@ -348,7 +351,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                           <?php while ($record = mysqli_fetch_assoc($medicalResult)): ?>
                               <tr>
                                   <td>
-                                      <a href="<?php echo htmlspecialchars($record['file_path']); ?>" target="_blank">
+                                      <a href="<?php echo htmlspecialchars($record['file_path']); ?>" target="_self">
                                           <?php echo basename(htmlspecialchars($record['file_path'])); ?>
                                       </a>
                                   </td>

@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             if (password_verify($password, $user_data['password'])) {
                 $_SESSION['userID'] = $user_data['userID'];
                 
-                // Check the role and redirect accordingly
+                // Checking the role
                 if ($user_data['role'] == 'admin') {
                     header("Location: Dashboard_Admin.php");
                     exit();

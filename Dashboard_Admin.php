@@ -14,8 +14,8 @@ function isClosed($date, $selected_dates) {
 $selected_dates = isset($_SESSION['selected_dates']) ? $_SESSION['selected_dates'] : [];
 
 // Generating a simple calendar
-$current_month = date('n'); // to get current month
-$current_year = date('Y'); // current year
+$current_month = date('n');
+$current_year = date('Y'); 
 
 // Number of days in the current month
 $num_days_in_month = date('t', mktime(0, 0, 0, $current_month, 1, $current_year));
@@ -57,21 +57,24 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
 
   <style>
     .calendar {
-            margin-top: 20px;
-        }
-        .calendar th,
-        .calendar td {
-            text-align: center;
-            width: 200px;
-            height: 40px;
-        }
-        .calendar th {
-            background-color: #007bff;
-            color: #fff;
-        }
-        .closed {
-            background-color: #f8d7da; 
-        }
+        margin-top: 20px;
+    }
+    .calendar th,
+    .calendar td {
+        text-align: center;
+        width: 200px;
+        height: 40px;
+    }
+    .calendar th {
+        background-color: #007bff;
+        color: #fff;
+    }
+    .closed {
+        background-color: #f8d7da; 
+    }
+    .nav-treeview .nav-item {
+        padding-left: 3%;
+    }
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -139,8 +142,6 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
     <!-- Sidebar -->
     
     <div class="sidebar">
-     
-
       <!-- Sidebar Menu -->
       <nav class="mt-2">
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">

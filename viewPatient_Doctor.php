@@ -117,6 +117,9 @@ $vital_signs = mysqli_fetch_all($result, MYSQLI_ASSOC);
     h2, h3{
       font-weight: bold;
     }
+    .nav-treeview .nav-item {
+        padding-left: 3%;
+    }
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -242,7 +245,7 @@ $vital_signs = mysqli_fetch_all($result, MYSQLI_ASSOC);
             <tr><th>Last Name</th><td><?php echo htmlspecialchars($patient['lastname']); ?></td></tr>
             <tr><th>Address</th><td><?php echo htmlspecialchars($patient['address']); ?></td></tr>
             <tr><th>Age</th><td><?php echo htmlspecialchars($patient['age']); ?></td></tr>
-            <tr><th>Birthday</th><td><?php echo htmlspecialchars($patient['birthday']); ?></td></tr>
+            <tr><th>Birthdate</th><td><?php echo htmlspecialchars($patient['birthday']); ?></td></tr>
             <tr><th>Phone Number</th><td><?php echo htmlspecialchars($patient['phone_number']); ?></td></tr>
             <tr><th>Gender</th><td><?php echo htmlspecialchars($patient['gender']); ?></td></tr>
             <tr><th>Status</th><td><?php echo htmlspecialchars($patient['status']); ?></td></tr>
@@ -289,7 +292,7 @@ $vital_signs = mysqli_fetch_all($result, MYSQLI_ASSOC);
                   </tr>
                   <tr>
                       <th><label for="date">Date:</label></th>
-                      <td><input type="date" name="date" class="form-control" required></td>
+                      <td><input type="date" name="date" class="form-control" value="<?php echo date('Y-m-d'); ?>" required></td>
                   </tr>
                   <tr>
                       <th><label for="subjective">Subjective:</label></th>
@@ -309,12 +312,11 @@ $vital_signs = mysqli_fetch_all($result, MYSQLI_ASSOC);
                   </tr>
                   <tr>
                       <th colspan="2">
-                          <!-- Button to show/hide laboratory field -->
-                          <button type="button" class="btn btn-secondary" onclick="toggleLaboratory()">Add Laboratory</button>
+                          <button type="button" class="btn btn-secondary" onclick="toggleLaboratory()">Recommendation</button>
                       </th>
                   </tr>
                   <tr id="laboratoryField" style="display:none;">
-                      <th><label for="laboratory">Laboratory:</label></th>
+                      <th><label for="laboratory">Add Laboratory:</label></th>
                       <td><input type="text" name="laboratory" class="form-control"></td>
                   </tr>
               </table>

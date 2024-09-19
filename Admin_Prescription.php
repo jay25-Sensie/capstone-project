@@ -55,6 +55,9 @@ $prescriptions = $result->fetch_all(MYSQLI_ASSOC);
           padding-right: 5%;
           padding-top: 3%;
     }
+    .nav-treeview .nav-item {
+        padding-left: 3%;
+    }
   </style>
   
 </head>

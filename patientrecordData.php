@@ -85,7 +85,10 @@ if (!$medicalResult || !$prescriptionResult) {
             padding-right: 3%;
         }
         h2, h3{
-      font-weight: bold;
+            font-weight: bold;
+        }
+        .nav-treeview .nav-item {
+            padding-left: 3%;
         }
         
     </style>
@@ -194,7 +197,7 @@ if (!$medicalResult || !$prescriptionResult) {
                 <tr><th>Last Name</th><td><?php echo htmlspecialchars($patient['lastname']); ?></td></tr>
                 <tr><th>Address</th><td><?php echo htmlspecialchars($patient['address']); ?></td></tr>
                 <tr><th>Age</th><td><?php echo htmlspecialchars($patient['age']); ?></td></tr>
-                <tr><th>Birthday</th><td><?php echo htmlspecialchars($patient['birthday']); ?></td></tr>
+                <tr><th>Birthdate</th><td><?php echo htmlspecialchars($patient['birthday']); ?></td></tr>
                 <tr><th>Phone Number</th><td><?php echo htmlspecialchars($patient['phone_number']); ?></td></tr>
                 <tr><th>Gender</th><td><?php echo htmlspecialchars($patient['gender']); ?></td></tr>
                 <tr><th>Status</th><td><?php echo htmlspecialchars($patient['status']); ?></td></tr>

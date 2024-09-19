@@ -99,6 +99,9 @@ session_start();
         .closed {
             background-color: #f8d7da; 
         }
+        .nav-treeview .nav-item {
+            padding-left: 3%;
+        }
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">

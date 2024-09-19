@@ -70,6 +70,10 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
         .table-secondary {
             background-color: rgba(0, 0, 0, 0.1);
         }
+        .nav-treeview .nav-item {
+            padding-left: 3%;
+        }
+        
     </style>
 
   <!-- Google Font: Source Sans Pro -->
@@ -158,7 +162,6 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
     <!-- Sidebar -->
     <div class="sidebar">
-     
 
       <!-- Sidebar Menu -->
       <nav class="mt-2">
@@ -223,7 +226,7 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
                       <th>Last Name</th>
                       <th>Address</th>
                       <th>Age</th>
-                      <th>Birthday</th>
+                      <th>Birthdate</th>
                       <th>Phone Number</th>
                       <th>Gender</th>
                       <th>Status</th>

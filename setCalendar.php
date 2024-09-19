@@ -51,6 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
             padding-right: 5%;
             padding-top: 3%;
       }
+      .nav-treeview .nav-item {
+            padding-left: 3%;
+      }
     </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">

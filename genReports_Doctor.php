@@ -77,13 +77,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
         padding-right: 3%;
     }
     h2, h3{
-      font-weight: bold;
+        font-weight: bold;
     }
     @media print {
         #printButton {
             display: none;
         }
     }
+    .nav-treeview .nav-item {
+        padding-left: 3%;
+    }
+        
   </style>
 
 
@@ -233,7 +237,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
                             <tr><th>Name</th><td><?php echo htmlspecialchars($patient['name']); ?> <?php echo htmlspecialchars($patient['lastname']); ?></td></tr>
                             <tr><th>Address</th><td><?php echo htmlspecialchars($patient['address']); ?></td></tr>
                             <tr><th>Age</th><td><?php echo htmlspecialchars($patient['age']); ?></td></tr>
-                            <tr><th>Birthday</th><td><?php echo htmlspecialchars($patient['birthday']); ?></td></tr>
+                            <tr><th>Birthdate</th><td><?php echo htmlspecialchars($patient['birthday']); ?></td></tr>
                             <tr><th>Phone Number</th><td><?php echo htmlspecialchars($patient['phone_number']); ?></td></tr>
                             <tr><th>Gender</th><td><?php echo htmlspecialchars($patient['gender']); ?></td></tr>
                             <tr><th>Status</th><td><?php echo htmlspecialchars($patient['status']); ?></td></tr>
@@ -342,7 +346,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
                                 <?php if (!empty($medicalRecords)): ?>
                                     <?php foreach ($medicalRecords as $record): ?>
                                         <tr>
-                                            <td><a href="<?php echo htmlspecialchars($record['file_path']); ?>" target="_blank"><?php echo htmlspecialchars($record['file_path']); ?></a></td>
+                                            <td><a href="<?php echo htmlspecialchars($record['file_path']); ?>" target="_self"><?php echo htmlspecialchars($record['file_path']); ?></a></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 <?php else: ?>
@@ -350,12 +354,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
                                 <?php endif; ?>
                             </tbody>
                         </table>
-
-                        <!-- Print Button -->
                         <button id="printButton" onclick="window.print()" class="btn btn-primary">Print Report</button>
-
                     <?php else: ?>
-                        <!-- Alert Message -->
                         <div class="alert alert-warning mt-4" id="alert">No patient found with the provided PID.</div>
                     <?php endif; ?>
                 </div>

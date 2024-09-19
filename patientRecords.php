@@ -5,35 +5,51 @@ ini_set('display_errors', 1);
 session_start();
 include("connection.php");
 
-// sanitizing input data
+// Function to sanitize input data
 function sanitize_input($con, $data) {
     return mysqli_real_escape_string($con, htmlspecialchars(strip_tags($data)));
 }
 
-// select patients from the database with optional search filtering
-$search_query = '';
-if (isset($_GET['search'])) {
-    $search = sanitize_input($con, $_GET['search']);
-    if (ctype_digit($search)) {
-        $search_query = "WHERE pid = $search";
-    } else {
-        $search_query = "WHERE name LIKE '%$search%'";
+// Function to check if a patient already exists
+function check_patient_exists($con, $name, $lastname, $phone_number, $pid = null) {
+    $query = "SELECT * FROM patient_records WHERE name = '$name' AND lastname = '$lastname' AND phone_number = '$phone_number' ";
+    if ($pid) {
+        $query .= " AND pid != $pid";
     }
+    $result = mysqli_query($con, $query);
+    return mysqli_num_rows($result) > 0;
 }
-$query = "SELECT * FROM patient_records $search_query";
-$result = mysqli_query($con, $query);
-$patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 // Add/Update patient, Update status
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['add_patient']) || isset($_POST['update_patient'])) {
-        $name = sanitize_input($con, $_POST['name']);
-        $lastname = sanitize_input($con, $_POST['lastname']);
-        $address = sanitize_input($con, $_POST['address']);
-        $age = intval($_POST['age']);
-        $birthday = sanitize_input($con, $_POST['birthday']);
-        $phone_number = sanitize_input($con, $_POST['phone_number']);
-        $gender = sanitize_input($con, $_POST['gender']);
+    $name = sanitize_input($con, $_POST['name']);
+    $lastname = sanitize_input($con, $_POST['lastname']);
+    $address = sanitize_input($con, $_POST['address']);
+    $birthday = sanitize_input($con, $_POST['birthday']);
+    $phone_number = sanitize_input($con, $_POST['phone_number']);
+    $gender = sanitize_input($con, $_POST['gender']);
+    $pid = isset($_POST['pid']) ? intval($_POST['pid']) : null;
+
+    // Initialize validation flag
+    $validation_passed = true;
+
+    // Validate phone number
+    if (!ctype_digit($phone_number) || strlen($phone_number) != 11) {
+        echo "<script>alert('Phone number must contain exactly 11 digits and no letters!');</script>";
+        $validation_passed = false;
+    }
+
+    // Validate name and lastname uniqueness
+    if (check_patient_exists($con, $name, $lastname, $phone_number, $pid)) {
+        echo "<script>alert('Patient already exists!');</script>";
+        $validation_passed = false;
+    }
+
+    if ($validation_passed) {
+        // Calculate age automatically from birthday
+        $birthdate = new DateTime($birthday);
+        $today = new DateTime();
+        $age = $today->diff($birthdate)->y;
 
         if (isset($_POST['add_patient'])) {
             // Insert into patients table
@@ -54,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo "Error: " . mysqli_error($con);
             }
         } elseif (isset($_POST['update_patient'])) {
-            $pid = intval($_POST['pid']);
             $query = "UPDATE patient_records SET 
                       name = '$name', lastname = '$lastname', address = '$address', 
                       age = $age, birthday = '$birthday', phone_number = '$phone_number', gender = '$gender' 
@@ -66,21 +81,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo "Error: " . mysqli_error($con);
             }
         }
-    }
 
-    if (isset($_POST['update_status'])) {
-        $pid = intval($_POST['pid']);
-        $status = sanitize_input($con, $_POST['status']);
-        $query = "UPDATE patient_records SET status = '$status' WHERE pid = $pid";
-        if (mysqli_query($con, $query)) {
-            header("Location: patientRecords.php");
-            exit();
-        } else {
-            echo "Error: " . mysqli_error($con);
+        if (isset($_POST['update_status'])) {
+            $status = sanitize_input($con, $_POST['status']);
+            $query = "UPDATE patient_records SET status = '$status' WHERE pid = $pid";
+            if (mysqli_query($con, $query)) {
+                header("Location: patientRecords.php");
+                exit();
+            } else {
+                echo "Error: " . mysqli_error($con);
+            }
         }
+    } else {
+        // If validation failed, stay on the form page
+        echo "<script>window.history.back();</script>";
+        exit();
     }
 }
+
+// Fetch all patient records
+$query = "SELECT * FROM patient_records";
+$result = mysqli_query($con, $query);
+
+if (!$result) {
+    die("Database query failed: " . mysqli_error($con));
+}
+
+$patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
 ?>
+
+
 
 
 
@@ -97,15 +127,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <style>
         
         .content-wrapper{
-          padding-left: 1%;
-          padding-right: 1%;
+            padding-left: 1%;
+            padding-right: 1%;
         }
         .table-secondary {
             background-color: rgba(0, 0, 0, 0.1);
             color: white;
         }
         tr,th{
-          text-align: center;
+            text-align: center;
+        }
+        .nav-treeview .nav-item {
+            padding-left: 3%;
+        }
+        .btn-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 1rem;
         }
 
     </style>
@@ -261,222 +299,221 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   </aside>
 
 
-<div class="content-wrapper">
-  <div class="container mt-4">
-      <h2 class="mb-4">Patient Records</h2>
+  <div class="content-wrapper">
+        <div class="container mt-4">
+            <h2 class="mb-4">Patient Records</h2>
 
-      <div class="mb-3">
-          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPatientModal">
-              Add Patient
-          </button>
-      </div>
+            <div class="mb-3">
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addPatientModal">
+                    Add Patient
+                </button>
+            </div>
 
-      <!-- Patient Records Table -->
-<div class="table-responsive">
-    <table class="table table-bordered table-striped">
-        <thead>
-            <tr>
-                <th>PID</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Address</th>
-                <th>Age</th>
-                <th>Birthday</th>
-                <th>Phone Number</th>
-                <th>Gender</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if (!empty($patients)): ?>
-                <?php foreach ($patients as $patient): ?>
-                    <tr class="<?php echo ($patient['status'] === 'Not Active') ? 'table-secondary' : ''; ?>">
-                        <td><?php echo htmlspecialchars($patient['pid']); ?></td>
-                        <td><?php echo htmlspecialchars($patient['name']); ?></td>
-                        <td><?php echo htmlspecialchars($patient['lastname']); ?></td>
-                        <td><?php echo htmlspecialchars($patient['address']); ?></td>
-                        <td><?php echo htmlspecialchars($patient['age']); ?></td>
-                        <td><?php echo htmlspecialchars($patient['birthday']); ?></td>
-                        <td><?php echo htmlspecialchars($patient['phone_number']); ?></td>
-                        <td><?php echo htmlspecialchars($patient['gender']); ?></td>
-                        <td><?php echo htmlspecialchars($patient['status']); ?></td>
-                        <td class="action-buttons">
-                            <a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editPatientModal<?php echo $patient['pid']; ?>">Edit</a>
-                            <a href="viewPatient_Admin.php?pid=<?php echo $patient['pid']; ?>" class="btn btn-sm btn-info">View More</a>
-                            <a href="#" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#vitalSignModal<?php echo $patient['pid']; ?>">Vital Sign</a>
-                        </td>
-                    </tr>
+            <!-- Patient Records Table -->
+            <div class="table-responsive">
+                <table class="table table-bordered table-striped">
+                    <thead>
+                        <tr>
+                            <th>PID</th>
+                            <th>First Name</th>
+                            <th>Last Name</th>
+                            <th>Address</th>
+                            <th>Birthdate</th>
+                            <th>Age</th>
+                            <th>Phone Number</th>
+                            <th>Gender</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if (!empty($patients)): ?>
+                            <?php foreach ($patients as $patient): ?>
+                                <tr class="<?php echo ($patient['status'] === 'Not Active') ? 'table-secondary' : ''; ?>">
+                                    <td><?php echo htmlspecialchars($patient['pid']); ?></td>
+                                    <td><?php echo htmlspecialchars($patient['name']); ?></td>
+                                    <td><?php echo htmlspecialchars($patient['lastname']); ?></td>
+                                    <td><?php echo htmlspecialchars($patient['address']); ?></td>
+                                    <td><?php echo htmlspecialchars($patient['birthday']); ?></td>
+                                    <td><?php echo htmlspecialchars($patient['age']); ?></td>
+                                    <td><?php echo htmlspecialchars($patient['phone_number']); ?></td>
+                                    <td><?php echo htmlspecialchars($patient['gender']); ?></td>
+                                    <td><?php echo htmlspecialchars($patient['status']); ?></td>
+                                    <td class="action-buttons">
+                                        <a href="#" class="btn btn-sm btn-primary" data-toggle="modal" data-target="#editPatientModal<?php echo $patient['pid']; ?>">Edit</a>
+                                        <a href="viewPatient_Admin.php?pid=<?php echo $patient['pid']; ?>" class="btn btn-sm btn-info">View More</a>
+                                        <a href="#" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#vitalSignModal<?php echo $patient['pid']; ?>">Vital Sign</a>
+                                    </td>
+                                </tr>
 
-                    <!-- Edit Patient Modal -->
-                    <div class="modal fade" id="editPatientModal<?php echo $patient['pid']; ?>" tabindex="-1" role="dialog" aria-labelledby="editPatientModalLabel" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                              <form action="patientRecords.php" method="post">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="editPatientModalLabel">Edit Patient</h5>
-                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                <span aria-hidden="true">&times;</span>
-                                            </button>
+                                <!-- Edit Patient Modal -->
+                                <div class="modal fade" id="editPatientModal<?php echo $patient['pid']; ?>" tabindex="-1" role="dialog" aria-labelledby="editPatientModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <form action="patientRecords.php" method="post">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="editPatientModalLabel">Edit Patient</h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="pid" value="<?php echo $patient['pid']; ?>">
+                                                    <div class="form-group">
+                                                        <label for="edit-name">First Name</label>
+                                                        <input type="text" class="form-control" id="edit-name" name="name" value="<?php echo $patient['name']; ?>" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="edit-lastname">Last Name</label>
+                                                        <input type="text" class="form-control" id="edit-lastname" name="lastname" value="<?php echo $patient['lastname']; ?>" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="edit-address">Address</label>
+                                                        <input type="text" class="form-control" id="edit-address" name="address" value="<?php echo $patient['address']; ?>" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="edit-birthday">Birthdate</label>
+                                                        <input type="date" class="form-control" id="edit-birthday" name="birthday" value="<?php echo $patient['birthday']; ?>" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="edit-age">Age</label>
+                                                        <input type="number" class="form-control" id="edit-age" name="age" value="<?php echo $patient['age']; ?>" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="edit-phone-number">Phone Number</label>
+                                                        <input type="text" class="form-control" id="edit-phone-number" name="phone_number" value="<?php echo $patient['phone_number']; ?>" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="edit-gender">Gender</label>
+                                                        <select class="form-control" id="edit-gender" name="gender" required>
+                                                            <option value="Male" <?php echo ($patient['gender'] === 'Male') ? 'selected' : ''; ?>>Male</option>
+                                                            <option value="Female" <?php echo ($patient['gender'] === 'Female') ? 'selected' : ''; ?>>Female</option>
+                                                        </select>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary" name="update_patient">Save changes</button>
+                                                </div>
+                                            </form>
                                         </div>
-                                        <div class="modal-body">
-                                            <input type="hidden" name="pid" value="<?php echo $patient['pid']; ?>">
-                                            <div class="form-group">
-                                                <label for="edit-name">first Name</label>
-                                                <input type="text" class="form-control" id="edit-name" name="name" value="<?php echo $patient['name']; ?>" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="edit-lastname">Last Name</label>
-                                                <input type="text" class="form-control" id="edit-lastname" name="lastname" value="<?php echo $patient['lastname']; ?>" required>
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="edit-address">Address</label>
-                                                <input type="text" class="form-control" id="edit-address" name="address" value="<?php echo $patient['address']; ?>">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="edit-age">Age</label>
-                                                <input type="number" class="form-control" id="edit-age" name="age" value="<?php echo $patient['age']; ?>">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="edit-birthday">Birthday</label>
-                                                <input type="date" class="form-control" id="edit-birthday" name="birthday" placeholder="yyyy-mm-dd" value="<?php echo $patient['birthday']; ?>">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="edit-phone-number">Phone Number</label>
-                                                <input type="text" class="form-control" id="edit-phone-number" name="phone_number" value="<?php echo $patient['phone_number']; ?>">
-                                            </div>
-                                            <div class="form-group">
-                                                <label for="edit-gender">Gender</label>
-                                                <select class="form-control" id="edit-gender" name="gender">
-                                                    <option value="Male" <?php echo ($patient['gender'] === 'Male') ? 'selected' : ''; ?>>Male</option>
-                                                    <option value="Female" <?php echo ($patient['gender'] === 'Female') ? 'selected' : ''; ?>>Female</option>
-                                                    <option value="Other" <?php echo ($patient['gender'] === 'Other') ? 'selected' : ''; ?>>Other</option>
-                                                </select>
-                                            </div>
+                                    </div>
+                                </div>
+
+                                <!-- Vital Sign Modal -->
+                                <div class="modal fade" id="vitalSignModal<?php echo $patient['pid']; ?>" tabindex="-1" role="dialog" aria-labelledby="vitalSignModalLabel" aria-hidden="true">
+                                    <div class="modal-dialog" role="document">
+                                        <div class="modal-content">
+                                            <form action="vitalSign.php" method="post">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="vitalSignModalLabel">Add Vital Signs for <?php echo htmlspecialchars($patient['name']); ?></h5>
+                                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                        <span aria-hidden="true">&times;</span>
+                                                    </button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <input type="hidden" name="pid" value="<?php echo $patient['pid']; ?>">
+                                                    <div class="form-group">
+                                                        <label for="vital-date">Date</label>
+                                                        <input type="date" class="form-control" id="vital-date" name="date" value="<?php echo date('Y-m-d'); ?>" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="vital-bp">Blood Pressure</label>
+                                                        <input type="text" class="form-control" id="vital-bp" name="bp" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="vital-cr">Heart Rate</label>
+                                                        <input type="text" class="form-control" id="vital-cr" name="cr" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="vital-rr">Respiratory Rate</label>
+                                                        <input type="text" class="form-control" id="vital-rr" name="rr" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="vital-t">Temperature</label>
+                                                        <input type="text" class="form-control" id="vital-t" name="t" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="vital-wt">Weight (kg)</label>
+                                                        <input type="text" class="form-control" id="vital-wt" name="wt" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="vital-ht">Height (cm)</label>
+                                                        <input type="text" class="form-control" id="vital-ht" name="ht" required>
+                                                    </div>
+                                                </div>
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                    <button type="submit" class="btn btn-primary">Save Vital Signs</button>
+                                                </div>
+                                            </form>
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                            <button type="submit" name="update_patient" class="btn btn-primary">Save changes</button>
-                                        </div>
-                                    </form>
-                            </div>
+                                    </div>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <tr>
+                                <td colspan="10">No patient records found.</td>
+                            </tr>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Patient Modal -->
+    <div class="modal fade" id="addPatientModal" tabindex="-1" role="dialog" aria-labelledby="addPatientModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="patientRecords.php" method="post">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="addPatientModalLabel">Add New Patient</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name">First Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="lastname">Last Name</label>
+                            <input type="text" class="form-control" id="lastname" name="lastname" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address</label>
+                            <input type="text" class="form-control" id="address" name="address" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="birthday">Birthdate</label>
+                            <input type="date" class="form-control" id="birthday" name="birthday" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="age">Age</label>
+                            <input type="number" class="form-control" id="age" name="age">
+                        </div>
+                        <div class="form-group">
+                            <label for="phone_number">Phone Number</label>
+                            <input type="text" class="form-control" id="phone_number" name="phone_number" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="gender">Gender</label>
+                            <select class="form-control" id="gender" name="gender" required>
+                                <option value="Male">Male</option>
+                                <option value="Female">Female</option>
+                            </select>
                         </div>
                     </div>
-
-                    <!-- Vital Sign Modal for this patient -->
-                    <div class="modal fade" id="vitalSignModal<?php echo $patient['pid']; ?>" tabindex="-1" role="dialog" aria-labelledby="vitalSignModalLabel<?php echo $patient['pid']; ?>" aria-hidden="true">
-                        <div class="modal-dialog" role="document">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="vitalSignModalLabel<?php echo $patient['pid']; ?>">Vital Signs for <?php echo htmlspecialchars($patient['name']); ?></h5>
-                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                        <span aria-hidden="true">&times;</span>
-                                    </button>
-                                </div>
-                                <div class="modal-body">
-                                    <!-- Vital Sign Form -->
-                                    <form action="vitalSign.php" method="post">
-                                        <input type="hidden" name="pid" value="<?php echo $patient['pid']; ?>">
-                                        <div class="form-group">
-                                            <label for="date">Date</label>
-                                            <input type="date" class="form-control" id="date" name="date" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="bp">Blood Pressure (BP)</label>
-                                            <input type="text" class="form-control" id="bp" name="bp" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="cr">Heart Rate (CR)</label>
-                                            <input type="text" class="form-control" id="cr" name="cr" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="rr">Respiratory Rate (RR)</label>
-                                            <input type="text" class="form-control" id="rr" name="rr" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="t">Temperature (T)</label>
-                                            <input type="text" class="form-control" id="t" name="t" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="wt">Weight (WT)</label>
-                                            <input type="text" class="form-control" id="wt" name="wt" required>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="ht">Height (HT)</label>
-                                            <input type="text" class="form-control" id="ht" name="ht" required>
-                                        </div>
-                                        <button type="submit" class="btn btn-primary">Save Vital Signs</button>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary" name="add_patient">Add Patient</button>
                     </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="10" class="text-center">No patients found</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-</div>
-
-
-  <!-- Add Patient -->
-  <div class="modal fade" id="addPatientModal" tabindex="-1" role="dialog" aria-labelledby="addPatientModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-          <div class="modal-content">
-              <form action="patientRecords.php" method="post">
-                  <div class="modal-header">
-                      <h5 class="modal-title" id="addPatientModalLabel">Add New Patient</h5>
-                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                          <span aria-hidden="true">&times;</span>
-                      </button>
-                  </div>
-                  <div class="modal-body">
-                      <div class="form-group">
-                          <label for="name">First Name</label>
-                          <input type="text" class="form-control" id="name" name="name" required>
-                      </div>
-                      <div class="form-group">
-                          <label for="lastname">Last Name</label>
-                          <input type="text" class="form-control" id="lastname" name="lastname" required>
-                      </div>
-                      <div class="form-group">
-                          <label for="address">Address</label>
-                          <input type="text" class="form-control" id="address" name="address">
-                      </div>
-                      <div class="form-group">
-                          <label for="age">Age</label>
-                          <input type="number" class="form-control" id="age" name="age">
-                      </div>
-                      <div class="form-group">
-                          <label for="birthday">Birthday</label>
-                          <input type="date" class="form-control" id="birthday" placeholder="yyyy-mm-dd" name="birthday">
-                      </div>
-                      <div class="form-group">
-                          <label for="phone_number">Phone Number</label>
-                          <input type="text" class="form-control" id="phone_number" name="phone_number">
-                      </div>
-                      <div class="form-group">
-                          <label for="gender">Gender</label>
-                          <select class="form-control" id="gender" name="gender">
-                              <option value="Male">Male</option>
-                              <option value="Female">Female</option>
-                              <option value="Other">Other</option>
-                          </select>
-                      </div>
-                  </div>
-                  <div class="modal-footer">
-                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                      <button type="submit" name="add_patient" class="btn btn-primary">Add Patient</button>
-                  </div>
-              </form>
-          </div>
-      </div>
-  </div>
-  </div>
-</div>
+                </form>
+            </div>
+        </div>
+    </div>
   
 <!-- ./wrapper -->
 
@@ -512,14 +549,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <script src="dist/js/adminlte.js"></script>
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-
-
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@1.16.1/dist/umd/popper.min.js"></script>
-
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<script src="Bday_Validation.js"></script>
 
 </body>
 </html>

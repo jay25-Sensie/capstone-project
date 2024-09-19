@@ -95,12 +95,16 @@ $prescriptions = $result->fetch_all(MYSQLI_ASSOC);
         text-align: center;
     }
     .content-wrapper{
-          padding-left: 2%;
-          padding-right: 2%;
+        padding-left: 2%;
+        padding-right: 2%;
     }
     .table-responsive, .editPrescriptionModal{
-      text-align: left;
+        text-align: left;
     }
+    .nav-treeview .nav-item {
+        padding-left: 3%;
+    }
+        
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">

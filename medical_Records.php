@@ -84,8 +84,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
 
   <style>
-
-    
+    .nav-treeview .nav-item {
+        padding-left: 3%;
+    }
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">

@@ -89,11 +89,11 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
         .closed {
             background-color: #f8d7da; 
         }
+        .nav-treeview .nav-item {
+            padding-left: 3%;
+        }
         
     </style>
-
-
-
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
