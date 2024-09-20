@@ -373,12 +373,13 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="edit-birthday">Birthdate</label>
-                                                        <input type="date" class="form-control" id="edit-birthday" name="birthday" value="<?php echo $patient['birthday']; ?>" required>
+                                                        <input type="date" class="form-control birthday-input" id="edit-birthday" name="birthday" value="<?php echo $patient['birthday']; ?>" required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="edit-age">Age</label>
-                                                        <input type="number" class="form-control" id="edit-age" name="age" value="<?php echo $patient['age']; ?>" required>
+                                                        <input type="number" class="form-control age-input" id="edit-age" name="age" value="<?php echo $patient['age']; ?>" required>
                                                     </div>
+
                                                     <div class="form-group">
                                                         <label for="edit-phone-number">Phone Number</label>
                                                         <input type="text" class="form-control" id="edit-phone-number" name="phone_number" value="<?php echo $patient['phone_number']; ?>" required>
@@ -488,11 +489,11 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
                         </div>
                         <div class="form-group">
                             <label for="birthday">Birthdate</label>
-                            <input type="date" class="form-control" id="birthday" name="birthday" required>
+                            <input type="date" class="form-control birthday-input" id="birthday" name="birthday" required>
                         </div>
                         <div class="form-group">
                             <label for="age">Age</label>
-                            <input type="number" class="form-control" id="age" name="age">
+                            <input type="number" class="form-control age-input" id="age" name="age">
                         </div>
                         <div class="form-group">
                             <label for="phone_number">Phone Number</label>

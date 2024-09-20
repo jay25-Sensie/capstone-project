@@ -1,24 +1,28 @@
-// Function to validate age field based on birthday
 function validateAge() {
-    const birthdayInput = document.getElementById('birthday');
-    const ageInput = document.getElementById('age');
+    const birthdayInputs = document.querySelectorAll('.birthday-input');
+    const ageInputs = document.querySelectorAll('.age-input');
 
-    if (birthdayInput && ageInput) {
-        birthdayInput.addEventListener('change', function() {
-            const birthdate = new Date(birthdayInput.value);
-            const today = new Date();
-            let age = today.getFullYear() - birthdate.getFullYear();
-            const month = today.getMonth() - birthdate.getMonth();
+    console.log('validateAge function loaded');
 
-            // Adjust age if birthday hasn't occurred yet this year
-            if (month < 0 || (month === 0 && today.getDate() < birthdate.getDate())) {
-                age--;
-            }
+    birthdayInputs.forEach((birthdayInput, index) => {
+        const ageInput = ageInputs[index];
+        if (birthdayInput && ageInput) {
+            birthdayInput.addEventListener('change', function() {
+                console.log('Birthday changed');
+                const birthdate = new Date(birthdayInput.value);
+                const today = new Date();
+                let age = today.getFullYear() - birthdate.getFullYear();
+                const month = today.getMonth() - birthdate.getMonth();
 
-            ageInput.value = age;
-        });
-    }
+                if (month < 0 || (month === 0 && today.getDate() < birthdate.getDate())) {
+                    age--;
+                }
+
+                ageInput.value = age;
+                console.log('Calculated Age:', age);
+            });
+        }
+    });
 }
 
-// Initialize validation after DOM content is loaded
 document.addEventListener('DOMContentLoaded', validateAge);
