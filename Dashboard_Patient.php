@@ -1,44 +1,41 @@
 <?php
 session_start();
+include("connection.php");
+include("function.php");
 
-    include("connection.php");
-    include("function.php");
-
-    $user_data = check_login($con);
-
-    
-    if (!isset($_SESSION['pid'])) {
-        header("Location: Signin_Patient.php");
-        exit();
-    }
-    
-    $pid = $_SESSION['pid'];
-    $query = "SELECT role FROM users WHERE username = '$pid' LIMIT 1";
-    $result = mysqli_query($con, $query);
-    $user = mysqli_fetch_assoc($result);
-    
-    if ($user['role'] !== 'patient') {
-        header("Location: Signin_Patient.php");
-        exit();
-    }
-    
-    // Your dashboard code here
-  
-    
-
-    
-
-
-    // checking if a date is in the selected dates array
-function isClosed($date, $selected_dates) {
-  return in_array($date, $selected_dates); // Check if $date exists in $selected_dates array
+// Ensure the user is logged in by checking the session
+if (!isset($_SESSION['pid'])) {
+    header("Location: Signin_Patient.php");
+    exit();
 }
 
-// select selected dates from session
+// Get the patient's PID from session
+$pid = $_SESSION['pid'];
+
+// Query to check if the user is a patient
+$query = "SELECT role FROM users WHERE username = '$pid' LIMIT 1";
+$result = mysqli_query($con, $query);
+$user = mysqli_fetch_assoc($result);
+
+// Check if the user is a patient, otherwise redirect
+if ($user['role'] !== 'patient') {
+    header("Location: Signin_Patient.php");
+    exit();
+}
+
+// Your dashboard code here
+
+// Sample logic to display the calendar or something else
+function isClosed($date, $selected_dates) {
+    return in_array($date, $selected_dates); // Check if $date exists in $selected_dates array
+}
+
+// Select selected dates from session
 $selected_dates = isset($_SESSION['selected_dates']) ? $_SESSION['selected_dates'] : [];
 
-$current_month = date('n'); // Get current month
-$current_year = date('Y'); // current year
+// Get the current month and year
+$current_month = date('n');
+$current_year = date('Y');
 
 // Number of days in the current month
 $num_days_in_month = date('t', mktime(0, 0, 0, $current_month, 1, $current_year));
@@ -46,9 +43,9 @@ $num_days_in_month = date('t', mktime(0, 0, 0, $current_month, 1, $current_year)
 // Start day of the week for the first day of the month
 $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year));
 
-   
-
+// Additional dashboard logic goes here
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -57,26 +54,30 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Patient Dashboard</title>
 
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- Tempusdominus Bootstrap 4 -->
-  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-  <!-- JQVMap -->
-  <link rel="stylesheet" href="plugins/jqvmap/jqvmap.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="dist/css/adminlte.min.css">
-  <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-  <!-- Daterange picker -->
-  <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
-  <!-- summernote -->
-  <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
+
+<!-- Font Awesome (local) -->
+<link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+
+<!-- Tempus Dominus Bootstrap 4 (local) -->
+<link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+
+<!-- iCheck Bootstrap (local) -->
+<link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+
+<!-- JQVMap (local) -->
+<link rel="stylesheet" href="plugins/jqvmap/jqvmap.min.css">
+
+<!-- AdminLTE Theme (local) -->
+<link rel="stylesheet" href="dist/css/adminlte.min.css">
+
+<!-- OverlayScrollbars (local) -->
+<link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+
+<!-- Daterange Picker (local) -->
+<link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
+
+<!-- Summernote (local) -->
+<link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
 
   <style>
         .calendar {
@@ -276,35 +277,36 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
 </div>
 <!-- ./wrapper -->
 
-<!-- jQuery -->
+<!-- jQuery (local) -->
 <script src="plugins/jquery/jquery.min.js"></script>
-<!-- jQuery UI 1.11.4 -->
+<!-- jQuery UI 1.11.4 (local) -->
 <script src="plugins/jquery-ui/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
   $.widget.bridge('uibutton', $.ui.button)
 </script>
-<!-- Bootstrap 4 -->
+<!-- Bootstrap 4 (local) -->
 <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- ChartJS -->
+<!-- ChartJS (local) -->
 <script src="plugins/chart.js/Chart.min.js"></script>
-<!-- Sparkline -->
+<!-- Sparkline (local) -->
 <script src="plugins/sparklines/sparkline.js"></script>
-<!-- JQVMap -->
+<!-- JQVMap (local) -->
 <script src="plugins/jqvmap/jquery.vmap.min.js"></script>
 <script src="plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-<!-- jQuery Knob Chart -->
+<!-- jQuery Knob Chart (local) -->
 <script src="plugins/jquery-knob/jquery.knob.min.js"></script>
-<!-- daterangepicker -->
+<!-- daterangepicker (local) -->
 <script src="plugins/moment/moment.min.js"></script>
 <script src="plugins/daterangepicker/daterangepicker.js"></script>
-<!-- Tempusdominus Bootstrap 4 -->
+<!-- Tempusdominus Bootstrap 4 (local) -->
 <script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-<!-- Summernote -->
+<!-- Summernote (local) -->
 <script src="plugins/summernote/summernote-bs4.min.js"></script>
-<!-- overlayScrollbars -->
+<!-- overlayScrollbars (local) -->
 <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-<!-- AdminLTE App -->
+<!-- AdminLTE App (local) -->
 <script src="dist/js/adminlte.js"></script>
+
 </body>
 </html>

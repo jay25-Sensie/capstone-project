@@ -62,26 +62,24 @@ session_start();
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Doctors Dashboard</title>
 
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- Tempusdominus Bootstrap 4 -->
-  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-  <!-- JQVMap -->
-  <link rel="stylesheet" href="plugins/jqvmap/jqvmap.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="dist/css/adminlte.min.css">
-  <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-  <!-- Daterange picker -->
-  <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
-  <!-- summernote -->
-  <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
+ 
+<!-- Font Awesome (local) -->
+<link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+<!-- Tempusdominus Bootstrap 4 (local) -->
+<link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+<!-- iCheck (local) -->
+<link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+<!-- JQVMap (local) -->
+<link rel="stylesheet" href="plugins/jqvmap/jqvmap.min.css">
+<!-- Theme style (local) -->
+<link rel="stylesheet" href="dist/css/adminlte.min.css">
+<!-- overlayScrollbars (local) -->
+<link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+<!-- Daterange picker (local) -->
+<link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
+<!-- Summernote (local) -->
+<link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
+
   <style>
     .calendar {
             margin-top: 20px;
@@ -208,6 +206,12 @@ session_start();
                 <a href="genReports_Doctor.php" class="nav-link">
                   <i class="nav-icon fas fa-print"></i>
                   <p>Generate Reports</p>
+                </a>
+              </li>
+              <li class="nav-item">
+                <a href="setCalendar_Doctor.php" class="nav-link">
+                  <i class="nav-icon fas fa-print"></i>
+                  <p>set calendar</p>
                 </a>
               </li>
             </ul>

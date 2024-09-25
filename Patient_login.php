@@ -1,6 +1,7 @@
 <?php
 session_start();
 include("connection.php");
+include("function.php");
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pid = sanitize_input($con, $_POST['username']);
@@ -25,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         echo '<script>alert("Invalid PID or Password.");</script>';
     }
 }
-
 function sanitize_input($con, $data) {
     return mysqli_real_escape_string($con, htmlspecialchars(strip_tags($data)));
 }

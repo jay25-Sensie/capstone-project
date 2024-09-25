@@ -89,26 +89,23 @@ $vital_signs = mysqli_fetch_all($result, MYSQLI_ASSOC);
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>View Patient Doctor</title>
 
-  <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
-  <!-- Ionicons -->
-  <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-  <!-- Tempusdominus Bootstrap 4 -->
-  <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
-  <!-- iCheck -->
-  <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
-  <!-- JQVMap -->
-  <link rel="stylesheet" href="plugins/jqvmap/jqvmap.min.css">
-  <!-- Theme style -->
-  <link rel="stylesheet" href="dist/css/adminlte.min.css">
-  <!-- overlayScrollbars -->
-  <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
-  <!-- Daterange picker -->
-  <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
-  <!-- summernote -->
-  <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
+  <!-- Font Awesome (local) -->
+<link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+<!-- Tempusdominus Bootstrap 4 (local) -->
+<link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+<!-- iCheck (local) -->
+<link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+<!-- JQVMap (local) -->
+<link rel="stylesheet" href="plugins/jqvmap/jqvmap.min.css">
+<!-- Theme style (local) -->
+<link rel="stylesheet" href="dist/css/adminlte.min.css">
+<!-- overlayScrollbars (local) -->
+<link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+<!-- Daterange picker (local) -->
+<link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
+<!-- Summernote (local) -->
+<link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
+
   <style>
     .content-wrapper{
       padding-left: 3%;
@@ -228,6 +225,12 @@ $vital_signs = mysqli_fetch_all($result, MYSQLI_ASSOC);
                   <p>Generate Reports</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="setCalendar_Doctor.php" class="nav-link">
+                  <i class="nav-icon fas fa-calendar-alt"></i>
+                  <p>set calendar</p>
+                </a>
+              </li>
             </ul>
           </li>                 
         </ul>
@@ -310,15 +313,6 @@ $vital_signs = mysqli_fetch_all($result, MYSQLI_ASSOC);
                       <th><label for="plan">Plan:</label></th>
                       <td><textarea name="plan" class="form-control" required></textarea></td>
                   </tr>
-                  <tr>
-                      <th colspan="2">
-                          <button type="button" class="btn btn-secondary" onclick="toggleLaboratory()">Recommendation</button>
-                      </th>
-                  </tr>
-                  <tr id="laboratoryField" style="display:none;">
-                      <th><label for="laboratory">Add Laboratory:</label></th>
-                      <td><input type="text" name="laboratory" class="form-control"></td>
-                  </tr>
               </table>
               <button type="submit" class="btn btn-primary">Add Diagnosis</button>
           </form>
@@ -340,23 +334,23 @@ $vital_signs = mysqli_fetch_all($result, MYSQLI_ASSOC);
                   echo '<table class="table table-bordered">
                       <thead>
                           <tr>
+                              <th>PID</th>
                               <th>Date</th>
                               <th>Subjective</th>
                               <th>Objective</th>
                               <th>Assessment</th>
                               <th>Plan</th>
-                              <th>Laboratory</th>
                           </tr>
                       </thead>
                       <tbody>';
                   while ($row = $diagnosisResult->fetch_assoc()) {
                       echo '<tr>
+                          <td>' . htmlspecialchars($row['pid']) . '</td>
                           <td>' . htmlspecialchars($row['date']) . '</td>
                           <td>' . htmlspecialchars($row['subjective']) . '</td>
                           <td>' . htmlspecialchars($row['objective']) . '</td>
                           <td>' . htmlspecialchars($row['assessment']) . '</td>
                           <td>' . htmlspecialchars($row['plan']) . '</td>
-                          <td>' . (!empty($row['laboratory']) ? htmlspecialchars($row['laboratory']) : 'N/A') . '</td>
                       </tr>';
                   }
                   echo '</tbody></table>';
@@ -429,11 +423,11 @@ $vital_signs = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 <!-- jQuery -->
 <script src="plugins/jquery/jquery.min.js"></script>
-<!-- jQuery UI 1.11.4 -->
+<!-- jQuery UI -->
 <script src="plugins/jquery-ui/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
-  $.widget.bridge('uibutton', $.ui.button)
+  $.widget.bridge('uibutton', $.ui.button);
 </script>
 <!-- Bootstrap 4 -->
 <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
@@ -446,14 +440,14 @@ $vital_signs = mysqli_fetch_all($result, MYSQLI_ASSOC);
 <script src="plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
 <!-- jQuery Knob Chart -->
 <script src="plugins/jquery-knob/jquery.knob.min.js"></script>
-<!-- daterangepicker -->
+<!-- Daterangepicker -->
 <script src="plugins/moment/moment.min.js"></script>
 <script src="plugins/daterangepicker/daterangepicker.js"></script>
 <!-- Tempusdominus Bootstrap 4 -->
 <script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
 <!-- Summernote -->
 <script src="plugins/summernote/summernote-bs4.min.js"></script>
-<!-- overlayScrollbars -->
+<!-- OverlayScrollbars -->
 <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.js"></script>
