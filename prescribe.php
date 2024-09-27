@@ -1,4 +1,5 @@
 
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -26,29 +27,8 @@
   <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
   <!-- summernote -->
   <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
-    <style>
-        table {
-            width: 100%;
-            text-align: center;
-        }
-        th, td {
-            padding: 10px;
-            border: 1px solid #ccc;
-        }
-        th {
-            background-color: #f4f4f4;
-        }
-        input[type="number"] {
-            width: 50px;
-            text-align: center;
-        }
-        h4{
-            text-align: right;
-        }
-        .form-control-num{
-            width: 30%;
-        }
-    </style>
+  <link rel="stylesheet" href="..//WBHR_MS/css/prescribe.css">
+  
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -166,105 +146,44 @@
   </aside>
   <div class="content-wrapper">
     <div class="container mt-5">
-        <!-- Display the current date -->
-        <h4 style="text-align: right;">Date: <?php echo date('m-d-Y'); ?></h4>
-
-        <?php
-        // Get the patient ID from the URL
-        $pid = isset($_GET['pid']) ? htmlspecialchars($_GET['pid']) : 'N/A';
-        ?>
-
-        <!-- Display the selected patient ID -->
-        <h3>Medicine Taking Schedule for Patient ID: <?php echo $pid; ?></h3>
-
-        <!-- Form for submitting the schedule -->
-        <form action="submit_schedule.php" method="post">
-            <input type="hidden" name="pid" value="<?php echo $pid; ?>"> <!-- Hidden input for patient ID -->
-
-            <table class="table table-bordered">
-                <thead>
-                    <tr>
-                        <th>Medicine Name</th>
-                        <th>Before</th>
-                        <th><input type="time" name="time_1" value="07:00" class="form-control"></th>
-                        <th>Before</th>
-                        <th><input type="time" name="time_2" value="12:00" class="form-control"></th>
-                        <th>Before</th>
-                        <th><input type="time" name="time_3" value="19:00" class="form-control"></th>
-                        <th>Before</th>
-                        <th><input type="time" name="time_3" value="19:00" class="form-control"></th>
-                       
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><input type="text" name="medicine_name[]" placeholder="Medicine name" class="form-control"></td>
-                        <td><input type="number" name="before_time_1_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_1_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="before_time_2_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_2_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="before_time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="before_time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        
-                    </tr>
-                    <tr>
-                        <td><input type="text" name="medicine_name[]" placeholder="Medicine name" class="form-control"></td>
-                        <td><input type="number" name="before_time_1_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_1_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="before_time_2_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_2_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="before_time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="before_time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        
-                    </tr>
-                    <tr>
-                        <td><input type="text" name="medicine_name[]" placeholder="Medicine name" class="form-control"></td>
-                        <td><input type="number" name="before_time_1_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_1_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="before_time_2_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_2_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="before_time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="before_time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        
-                    </tr>
-                    <tr>
-                        <td><input type="text" name="medicine_name[]" placeholder="Medicine name" class="form-control"></td>
-                        <td><input type="number" name="before_time_1_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_1_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="before_time_2_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_2_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="before_time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="before_time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        
-                    </tr>
-                    <tr>
-                        <td><input type="text" name="medicine_name[]" placeholder="Medicine name" class="form-control"></td>
-                        <td><input type="number" name="before_time_1_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_1_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="before_time_2_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_2_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="before_time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="before_time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        <td><input type="number" name="time_3_taken[]" class="form-control-num" min="0" max="1" value="0"></td>
-                        
-                    </tr>
-                </tbody>
-            </table>
-            <button type="submit" class="btn btn-primary" id="btn-sched">Submit Schedule</button>
-        </form>
+      <h4 style="text-align: right;">Date: <?php echo date('m-d-Y'); ?></h4>
+      <h3>Medicine Taking Schedule for Patient ID: <?php echo htmlspecialchars($_GET['pid']); ?></h3>
+      <form action="submit_schedule.php" method="post">
+          <input type="hidden" name="pid" value="<?php echo htmlspecialchars($_GET['pid']); ?>">
+          <table id="scheduleTable" class="table table-bordered">
+              <thead>
+                  <tr>
+                      <th>Medicine Name</th>
+                      <th>Doses per Day</th>
+                      <th>Dose Timings</th>
+                  </tr>
+              </thead>
+              <tbody>
+                  <tr>
+                      <td>
+                          <input type="hidden" name="medication_id[]" value="1"> <!-- Example medication ID -->
+                          <input type="text" name="medicine_name[]" placeholder="Medicine name" class="form-control" required>
+                      </td>
+                      <td>
+                          <select name="doses_per_day[]" class="form-control" onchange="generateDoses(this)">
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                          </select>
+                      </td>
+                      <td class="doses-container"></td>
+                  </tr>
+              </tbody>
+          </table>
+          <button type="button" class="btn btn-primary" onclick="addRow()">Add Another Medicine</button>
+          <button type="button" class="btn btn-warning" onclick="undoLastRow()">Undo</button>
+          <button type="submit" class="btn btn-success">Submit Schedule</button>
+      </form>
     </div>
 </div>
 
-<!-- ./wrapper -->
 
 <!-- jQuery -->
 <script src="plugins/jquery/jquery.min.js"></script>
@@ -295,11 +214,53 @@
 <!-- overlayScrollbars -->
 <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App -->
+<!-- Local AdminLTE JS -->
 <script src="dist/js/adminlte.js"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+<!-- Local Bootstrap JS -->
+<script src="plugins/bootstrap/js/bootstrap.min.js"></script>
+<script src="../wbhr_ms/prescribe.js"></script>
+<script>
+    let rowCount = 1; // Initialize row count
 
+    function addRow() {
+        rowCount++;
+        let newRow = `
+            <tr>
+                <td><input type="text" name="medicine_name[]" placeholder="Medicine name" class="form-control" required></td>
+                <td>
+                    <select name="doses_per_day[]" class="form-control" onchange="generateDoses(this)">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </td>
+                <td class="doses-container"></td>
+            </tr>
+        `;
+        $('#scheduleTable tbody').append(newRow);
+    }
+
+    function undoLastRow() {
+        if (rowCount > 1) {
+            $('#scheduleTable tbody tr:last').remove();
+            rowCount--;
+        }
+    }
+
+    function generateDoses(selectElement) {
+        // Function to generate doses based on the selected number
+        const dosesContainer = $(selectElement).closest('tr').find('.doses-container');
+        dosesContainer.empty(); // Clear existing dose timings
+        const doses = parseInt(selectElement.value);
+        for (let i = 0; i < doses; i++) {
+            dosesContainer.append(`
+                <input type="time" name="dose_timings[${rowCount}][${i}]" class="form-control" required>
+            `);
+        }
+    }
+</script>
 
 </body>
 </html>

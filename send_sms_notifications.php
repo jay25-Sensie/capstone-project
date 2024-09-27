@@ -1,56 +1,50 @@
 <?php
-include("connection.php");
+// send_sms_notifications.php
+include 'connection.php';
 
-// Get current time in the format 'H:i'
+// Semaphore API credentials
+$apiKey = 'your_semaphore_api_key'; // Your Semaphore API key
+
+// Current time for checking notifications
 $current_time = date('H:i');
 
-// Query to select medicine schedules that match the current time
-$sql = "SELECT ms.pid, ms.medicine_name, p.phone_number 
+// Get scheduled medications that need notification
+$sql = "SELECT ms.patient_id, ms.medication_id, ms.scheduled_time, pr.phone_number 
         FROM medicine_schedule ms 
-        JOIN patient_records p ON ms.pid = p.pid 
-        WHERE ms.schedule_time = '$current_time' AND ms.taken_status = 0"; // Ensure column name matches your DB
-$result = $con->query($sql);
+        JOIN patient_records pr ON ms.patient_id = pr.pid 
+        WHERE ms.scheduled_time = '$current_time' AND ms.taken_status = 0";
+
+$result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
+        $patient_id = $row['patient_id'];
+        $medication_id = $row['medication_id'];
         $phone_number = $row['phone_number'];
-        $medicine_name = $row['medicine_name'];
 
-        // Send SMS via your chosen service
-        send_sms($phone_number, "It's time to take your medicine: $medicine_name");
+        // Prepare SMS message
+        $message = "Reminder: It's time to take your medication.";
 
-        // Update taken_status to 1 after sending the notification
-        $update_sql = "UPDATE medicine_schedule SET taken_status = 1 
-                       WHERE pid = '{$row['pid']}' AND medicine_name = '$medicine_name'";
-        $con->query($update_sql);
+        // Send SMS notification via Semaphore API
+        $url = "https://semapi.com/api/v4/message/send";
+        $data = [
+            'apikey' => $apiKey,
+            'to' => $phone_number,
+            'message' => $message,
+        ];
+
+        // Use cURL to send the SMS
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
+        $response = curl_exec($ch);
+        curl_close($ch);
+
+        // Update the notification status (You may want to handle this better)
+        $conn->query("UPDATE medicine_schedule SET taken_status = 1 WHERE patient_id = '$patient_id' AND medication_id = '$medication_id'");
     }
-}
-
-$con->close();
-
-function send_sms($number, $message) {
-    $apiKey = 'YOUR_SEMAPHORE_API_KEY'; // Replace with your Semaphore API key
-    $url = "https://app.semaphore.co/api/v4/messages/send";
-
-    $data = [
-        'to' => $number,
-        'message' => $message,
-        'from' => 'YOUR_SENDER_ID', // Replace with your sender ID
-        'apiKey' => $apiKey,
-    ];
-
-    $options = [
-        'http' => [
-            'header'  => "Content-type: application/json\r\n",
-            'method'  => 'POST',
-            'content' => json_encode($data),
-        ],
-    ];
-
-    $context = stream_context_create($options);
-    $result = file_get_contents($url, false, $context);
-
-    // Log the result (for debugging)
-    file_put_contents('sms_log.txt', print_r($result, true), FILE_APPEND);
+} else {
+    echo "No notifications to send.";
 }
 ?>

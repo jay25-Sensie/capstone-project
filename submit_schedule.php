@@ -1,53 +1,73 @@
 <?php
-// submit_schedule.php
+// Include your database connection
+include 'connection.php'; // Make sure this file defines $con
 
+// Include the SMS sending function
+include 'send_sms.php';
 
-include("connection.php");
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $patientId = $_POST['pid']; // Use patient_id here
+    $medicineNames = $_POST['medicine_name'];
+    $dosesPerDay = $_POST['doses_per_day'];
 
-// Get the patient ID from the form
-$pid = isset($_POST['pid']) ? htmlspecialchars($_POST['pid']) : '';
+    // Check if medication_id is set
+    if (!isset($_POST['medication_id'])) {
+        error_log("Medication IDs not found in POST data.");
+        echo "Error: Medication IDs are missing.";
+        exit;
+    }
 
-// Initialize an array to store medicine data
-$medicine_data = [];
+    $medicationIds = $_POST['medication_id']; // Assuming you have a medication_id array
 
-// Loop through the posted medicine data
-for ($i = 0; $i < count($_POST['medicine_name']); $i++) {
-    // Get the medicine name and schedule details
-    $medicine_name = htmlspecialchars($_POST['medicine_name'][$i]);
-    $time_1 = isset($_POST['time_1_taken'][$i]) ? (int)$_POST['time_1_taken'][$i] : 0;
-    $time_2 = isset($_POST['time_2_taken'][$i]) ? (int)$_POST['time_2_taken'][$i] : 0;
-    $time_3 = isset($_POST['time_3_taken'][$i]) ? (int)$_POST['time_3_taken'][$i] : 0;
-    $before_time_1 = isset($_POST['before_time_1_taken'][$i]) ? (int)$_POST['before_time_1_taken'][$i] : 0;
-    $before_time_2 = isset($_POST['before_time_2_taken'][$i]) ? (int)$_POST['before_time_2_taken'][$i] : 0;
-    $before_time_3 = isset($_POST['before_time_3_taken'][$i]) ? (int)$_POST['before_time_3_taken'][$i] : 0;
+    // Iterate over each medicine to collect the timings
+    foreach ($medicineNames as $index => $medicineName) {
+        $doses = $dosesPerDay[$index];
 
-    // Store data in the array
-    $medicine_data[] = [
-        'pid' => $pid,
-        'medicine_name' => $medicine_name,
-        'time_1' => $time_1,
-        'time_2' => $time_2,
-        'time_3' => $time_3,
-        'before_time_1' => $before_time_1,
-        'before_time_2' => $before_time_2,
-        'before_time_3' => $before_time_3,
-    ];
+        // Check if medication_id is available for this index
+        if (!isset($medicationIds[$index])) {
+            error_log("Medication ID not found for index $index.");
+            echo "Error: Medication ID is missing for one of the medicines.";
+            continue; // Skip this iteration
+        }
+
+        $medicationId = $medicationIds[$index]; // Get the medication ID
+
+        // Collect timings for the current medicine
+        for ($i = 0; $i < $doses; $i++) {
+            if (isset($_POST['dose_timings'][$index][$i])) {
+                $timing = $_POST['dose_timings'][$index][$i];
+
+                // Prepare the SQL statement
+                $sql = "INSERT INTO medicine_schedule (patient_id, medication_id, doses_per_day, scheduled_time) VALUES (?, ?, ?, ?)";
+                $stmt = $con->prepare($sql); // Assuming $con is from connection.php
+                if ($stmt === false) {
+                    echo "Error in SQL preparation: " . $con->error;
+                    exit;
+                }
+                
+                $stmt->bind_param("iiis", $patientId, $medicationId, $doses, $timing);
+
+                // Execute the statement
+                if ($stmt->execute()) {
+                    // Prepare and send the SMS
+                    sendSMS($patientId, $medicineName, $timing);
+                } else {
+                    error_log("Failed to insert medicine schedule: " . $stmt->error);
+                    echo "Error: Could not insert the data. " . $stmt->error;
+                }
+            } else {
+                error_log("Dose timing not found for index $index and dose $i");
+            }
+        }
+    }
+
+    // Redirect or provide feedback to the user
+    echo "Schedule submitted successfully.";
 }
 
-// Prepare and execute insert statements for each medicine
-$stmt = $con->prepare("INSERT INTO medicine_schedule (pid, medicine_name, time_1_taken, before_time_1_taken, time_2_taken, before_time_2_taken, time_3_taken, before_time_3_taken) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-
-foreach ($medicine_data as $data) {
-    $stmt->bind_param("ssiiiiii", $data['pid'], $data['medicine_name'], $data['time_1'], $data['before_time_1'], $data['time_2'], $data['before_time_2'], $data['time_3'], $data['before_time_3']);
-    $stmt->execute();
+// Example sendSMS function (you need to implement this)
+function sendSMS($patientId, $medicineName, $timing) {
+    $message = "Reminder: Take your $medicineName at $timing.";
+    sendToSemaphore($patientId, $message); // Call the function defined in send_sms.php
 }
-
-
-// Close the statement and connection
-$stmt->close();
-$con->close();
-
-// Redirect back to the prescribe page or another confirmation page
-header("Location: prescribe.php?pid=" . $pid . "&success=1");
-exit;
 ?>

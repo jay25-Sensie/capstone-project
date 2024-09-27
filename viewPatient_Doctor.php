@@ -109,6 +109,7 @@ $vital_signs = mysqli_fetch_all($result, MYSQLI_ASSOC);
   <style>
     .content-wrapper{
       padding-left: 3%;
+      padding-right: 3%;
       padding-top: 5%;
     }
     h2, h3{

@@ -53,27 +53,55 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Doctor Dashboard Patient Records</title>
-    <!-- Include Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <!-- Font Awesome (local) -->
+    <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+    <!-- Tempusdominus Bootstrap 4 (local) -->
+    <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
+    <!-- iCheck (local) -->
+    <link rel="stylesheet" href="plugins/icheck-bootstrap/icheck-bootstrap.min.css">
+    <!-- JQVMap (local) -->
+    <link rel="stylesheet" href="plugins/jqvmap/jqvmap.min.css">
+    <!-- Theme style (local) -->
+    <link rel="stylesheet" href="dist/css/adminlte.min.css">
+    <!-- overlayScrollbars (local) -->
+    <link rel="stylesheet" href="plugins/overlayScrollbars/css/OverlayScrollbars.min.css">
+    <!-- Daterange picker (local) -->
+    <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
+    <!-- Summernote (local) -->
+    <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
+
     <style>
-        .action-buttons a {
-            margin-right: 5px;
-        }    
-        .table-responsive {
-            width: 40%;
-        }
-        table, th{
-            text-align:center;
-        }
-        .table-secondary {
-            background-color: rgba(0, 0, 0, 0.1);
-        }
-        .nav-treeview .nav-item {
-            padding-left: 3%;
-        }
-        
+      .content-wrapper{
+          padding-left: 1%;
+          padding-right: 1%;
+      }
+      .action-buttons a {
+          margin-right: 5px;
+      }    
+      .table-responsive {
+          width: 40%;
+      }
+      table, th{
+          text-align:center;
+      }
+      .table-secondary {
+          background-color: rgba(0, 0, 0, 0.1);
+      }
+      .nav-treeview .nav-item {
+          padding-left: 3%;
+      }
+      .action-buttons{
+          display: flex;
+          justify-content: center;
+          gap: 5px;
+          font-size: 14px;             /* Adjust font size for readability */
+          min-width: 80px;             /* Set a minimum width for buttons */
+          text-align: center;          /* Center button text */
+          display: inline-flex;
+      }
+
+
+
     </style>
 
   <!-- Font Awesome (local) -->
