@@ -1,57 +1,58 @@
 <?php
 session_start();
 
-    include("connection.php");
-    include("function.php");
+include("connection.php");
+include("function.php");
 
-    $user_data = check_login($con);
+$user_data = check_login($con);
 
-    $pid = $name = $lastname = $address = $age = $phone_number = $gender = $status = '';
+$pid = $name = $lastname = $address = $age = $phone_number = $gender = $status = '';
 
-    // search query
-    $search_query = '';
-    if (isset($_GET['search'])) {
-        $search = sanitize_input($con, $_GET['search']);
-        $search_query = "WHERE pid LIKE '%$search%' OR name LIKE '%$search%'";
+// search query
+$search_query = '';
+if (isset($_GET['search'])) {
+    $search = sanitize_input($con, $_GET['search']);
+    $search_query = "WHERE pid LIKE '%$search%' OR name LIKE '%$search%'";
+}
+
+// update status operations
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Update patient status
+    if (isset($_POST['update_status'])) {
+        $pid = intval($_POST['pid']); // Ensure pid is integer
+        $status = sanitize_input($con, $_POST['status']);
+
+        $query = "UPDATE patient_records SET status = '$status' WHERE pid = $pid";
+        mysqli_query($con, $query);
+        header("Location: patientRecords_Doctor.php");
+        exit();
     }
-    
-    // update status operations
-    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-        // Update patient status
-        if (isset($_POST['update_status'])) {
-            $pid = intval($_POST['pid']); // Ensure pid is integer
-            $status = sanitize_input($con, $_POST['status']);
-    
-            $query = "UPDATE patient_records SET status = '$status' WHERE pid = $pid";
-            mysqli_query($con, $query);
-            header("Location: patientRecords_Doctor.php");
-            exit();
-        }
-    }
-    
-    // selecting all patients from the database with optional search filtering
-    $query = "SELECT * FROM patient_records $search_query";
-    $result = mysqli_query($con, $query);
-    $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
+}
 
+// selecting all patients from the database with optional search filtering
+$query = "SELECT * FROM patient_records $search_query";
+$result = mysqli_query($con, $query);
+$patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
-    function isClosed($date, $selected_dates) {
-      return in_array($date, $selected_dates); // Check if $date exists in $selected_dates array
-    }
-    
-    $selected_dates = isset($_SESSION['selected_dates']) ? $_SESSION['selected_dates'] : [];
-    
-    // Generating a simple calendar
-    $current_month = date('n'); // to get current month
-    $current_year = date('Y'); // current year
-    
-    // Number of days in the current month
-    $num_days_in_month = date('t', mktime(0, 0, 0, $current_month, 1, $current_year));
-    
-    // Starting day of the week for the first day of the month
-    $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year));
-    
-    
+function isClosed($date, $selected_dates) {
+  return in_array($date, $selected_dates); // Check if $date exists in $selected_dates array
+}
+
+$selected_dates = isset($_SESSION['selected_dates']) ? $_SESSION['selected_dates'] : [];
+
+// Generating a simple calendar
+$current_month = isset($_GET['month']) ? intval($_GET['month']) : date('n'); // Get current month or from URL
+$current_year = isset($_GET['year']) ? intval($_GET['year']) : date('Y'); // Get current year or from URL
+
+// Month names array
+$month_names = array(1 => 'January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December');
+$month_name = $month_names[$current_month];
+
+// Number of days in the current month
+$num_days_in_month = date('t', mktime(0, 0, 0, $current_month, 1, $current_year));
+
+// Starting day of the week for the first day of the month
+$start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year));
 
 ?>
 
@@ -100,6 +101,10 @@ session_start();
         .nav-treeview .nav-item {
             padding-left: 3%;
         }
+        .mt-4{
+          text-align: right;
+          padding-right: 10%;
+        } 
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -227,6 +232,7 @@ session_start();
   <div class="content-wrapper">
     <div class="container" style="padding-left: 7%;"  >
           <h2 class="mt-4">Calendar View</h2>
+          <h3 class="month"><?php echo $month_name . " " . $current_year; ?></h3>
           <div class="calendar">
               <table class="table table-bordered" style="width: 90%;">
                   <thead>

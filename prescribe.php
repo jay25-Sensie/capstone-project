@@ -1,5 +1,3 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -146,45 +144,41 @@
   </aside>
   <div class="content-wrapper">
     <div class="container mt-5">
-      <h4 style="text-align: right;">Date: <?php echo date('m-d-Y'); ?></h4>
-      <h3>Medicine Taking Schedule for Patient ID: <?php echo htmlspecialchars($_GET['pid']); ?></h3>
-      <form action="submit_schedule.php" method="post">
-          <input type="hidden" name="pid" value="<?php echo htmlspecialchars($_GET['pid']); ?>">
-          <table id="scheduleTable" class="table table-bordered">
-              <thead>
-                  <tr>
-                      <th>Medicine Name</th>
-                      <th>Doses per Day</th>
-                      <th>Dose Timings</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <tr>
-                      <td>
-                          <input type="hidden" name="medication_id[]" value="1"> <!-- Example medication ID -->
-                          <input type="text" name="medicine_name[]" placeholder="Medicine name" class="form-control" required>
-                      </td>
-                      <td>
-                          <select name="doses_per_day[]" class="form-control" onchange="generateDoses(this)">
-                              <option value="1">1</option>
-                              <option value="2">2</option>
-                              <option value="3">3</option>
-                              <option value="4">4</option>
-                              <option value="5">5</option>
-                          </select>
-                      </td>
-                      <td class="doses-container"></td>
-                  </tr>
-              </tbody>
-          </table>
-          <button type="button" class="btn btn-primary" onclick="addRow()">Add Another Medicine</button>
-          <button type="button" class="btn btn-warning" onclick="undoLastRow()">Undo</button>
-          <button type="submit" class="btn btn-success">Submit Schedule</button>
-      </form>
+        <h4 style="text-align: right;">Date: <?php echo date('m-d-Y'); ?></h4>
+        <h3>Medicine Taking Schedule for Patient ID: <?php echo htmlspecialchars($_GET['pid']); ?></h3>
+        <form action="submit_schedule.php" method="POST">
+            <input type="hidden" name="pid" value="<?php echo htmlspecialchars($_GET['pid']); ?>">
+            <table id="scheduleTable" class="table">
+                <thead>
+                    <tr>
+                        <th>Medicine Name</th>
+                        <th>Doses per Day</th>
+                        <th>Dose Timings</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><input type="text" name="medicine_name[]" placeholder="Medicine name" class="form-control" required></td>
+                        <td>
+                            <select name="doses_per_day[]" class="form-control" onchange="generateDoses(this)">
+                                <option value="1">1</option>
+                                <option value="2">2</option>
+                                <option value="3">3</option>
+                                <option value="4">4</option>
+                                <option value="5">5</option>
+                            </select>
+                        </td>
+                        <td class="doses-container"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <button type="button" class="btn btn-secondary" onclick="addRow()">Add Row</button>
+            <button type="button" class="btn btn-danger" onclick="undoLastRow()">Remove Last Row</button>
+            <br><br>
+            <button type="submit" class="btn btn-primary">Submit Schedule</button>
+        </form>
     </div>
 </div>
-
-
 <!-- jQuery -->
 <script src="plugins/jquery/jquery.min.js"></script>
 <!-- jQuery UI 1.11.4 -->
@@ -220,46 +214,50 @@
 <script src="plugins/bootstrap/js/bootstrap.min.js"></script>
 <script src="../wbhr_ms/prescribe.js"></script>
 <script>
-    let rowCount = 1; // Initialize row count
+  let rowCount = 1; // Initialize row count
 
-    function addRow() {
-        rowCount++;
-        let newRow = `
-            <tr>
-                <td><input type="text" name="medicine_name[]" placeholder="Medicine name" class="form-control" required></td>
-                <td>
-                    <select name="doses_per_day[]" class="form-control" onchange="generateDoses(this)">
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
-                    </select>
-                </td>
-                <td class="doses-container"></td>
-            </tr>
-        `;
-        $('#scheduleTable tbody').append(newRow);
-    }
+  function addRow() {
+      // Create a new row with unique identifiers for each input
+      let newRow = `
+          <tr>
+              <td><input type="text" name="medicine_name[]" placeholder="Medicine name" class="form-control" required></td>
+              <td>
+                  <select name="doses_per_day[]" class="form-control" onchange="generateDoses(this)">
+                      <option value="1">1</option>
+                      <option value="2">2</option>
+                      <option value="3">3</option>
+                      <option value="4">4</option>
+                      <option value="5">5</option>
+                  </select>
+              </td>
+              <td class="doses-container"></td>
+          </tr>
+      `;
+      $('#scheduleTable tbody').append(newRow);
+      rowCount++; // Increment the row count after adding a new row
+  }
 
-    function undoLastRow() {
-        if (rowCount > 1) {
-            $('#scheduleTable tbody tr:last').remove();
-            rowCount--;
-        }
-    }
+  function undoLastRow() {
+      if (rowCount > 1) {
+          $('#scheduleTable tbody tr:last').remove();
+          rowCount--; // Decrement the row count after removing the last row
+      }
+  }
 
-    function generateDoses(selectElement) {
-        // Function to generate doses based on the selected number
-        const dosesContainer = $(selectElement).closest('tr').find('.doses-container');
-        dosesContainer.empty(); // Clear existing dose timings
-        const doses = parseInt(selectElement.value);
-        for (let i = 0; i < doses; i++) {
-            dosesContainer.append(`
-                <input type="time" name="dose_timings[${rowCount}][${i}]" class="form-control" required>
-            `);
-        }
-    }
+  function generateDoses(selectElement) {
+      // Function to generate doses based on the selected number
+      const dosesContainer = $(selectElement).closest('tr').find('.doses-container');
+      dosesContainer.empty(); // Clear existing dose timings
+
+      const doses = parseInt(selectElement.value); // Get the selected number of doses
+      const currentRowCount = $(selectElement).closest('tr').index(); // Get the index of the current row
+
+      for (let i = 0; i < doses; i++) {
+          dosesContainer.append(`
+              <input type="time" name="dose_timings[${currentRowCount}][${i}]" class="form-control" required>
+          `);
+      }
+  }
 </script>
 
 </body>

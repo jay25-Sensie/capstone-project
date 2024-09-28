@@ -37,6 +37,9 @@ $selected_dates = isset($_SESSION['selected_dates']) ? $_SESSION['selected_dates
 $current_month = date('n');
 $current_year = date('Y');
 
+// Get the name of the current month
+$month_name = date('F');
+
 // Number of days in the current month
 $num_days_in_month = date('t', mktime(0, 0, 0, $current_month, 1, $current_year));
 
@@ -93,7 +96,10 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
         .nav-treeview .nav-item {
             padding-left: 3%;
         }
-        
+        .mt-4{
+          text-align: right;
+          padding-right: 10%;
+        }       
     </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -186,14 +192,11 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
     </div>
     <!-- /.sidebar -->
   </aside>
-
-
-
-
-
+  <!-- Content Wrapper -->
   <div class="content-wrapper">
     <div class="container" style="padding-left: 10%;">
           <h2 class="mt-4">Calendar View</h2>
+          <h3 class="month"><?php echo $month_name . " " . $current_year; ?></h3>
           <div class="calendar">
               <table class="table table-bordered" style="width: 90%;">
                   <thead>
@@ -236,7 +239,7 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
 
                           echo "</tr>";
 
-                          // Continue dispalying calendar
+                          // Continue displaying calendar
                           while ($current_date <= $num_days_in_month) {
                               echo "<tr>";
 
@@ -264,11 +267,9 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
                   </table>
               </div>
           </div>
-
-  
-
- <!--put calendar view here with inline-->
-
+  </div>
+  <!-- Control Sidebar and Footer skipped for brevity -->
+</div>
   <!-- Control Sidebar -->
   <aside class="control-sidebar control-sidebar-dark">
     <!-- Control sidebar content goes here -->

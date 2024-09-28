@@ -3,10 +3,10 @@ function generateDoses(selectElement) {
     const dosesCount = selectElement.value;
     dosesContainer.innerHTML = ''; // Clear existing inputs
 
-    for (let i = 1; i <= dosesCount; i++) {
+    for (let i = 0; i < dosesCount; i++) {
         const doseInput = document.createElement('input');
         doseInput.type = 'time';
-        doseInput.name = 'dose_timings[' + (dosesContainer.childElementCount) + '][]';
+        doseInput.name = 'dose_timings[' + selectElement.closest('tr').rowIndex + '][' + i + ']'; // Ensure correct naming
         doseInput.className = 'form-control';
         dosesContainer.appendChild(doseInput);
     }
@@ -28,9 +28,7 @@ function addRow() {
         <option value="4">4</option>
         <option value="5">5</option>
     </select>`;
-    timingsCell.className = 'doses-container'; // Empty for now, will be populated based on doses
-
-    // Optionally call generateDoses here for the new row
+    timingsCell.className = 'doses-container'; // Set class for timing container
 }
 
 function undoLastRow() {

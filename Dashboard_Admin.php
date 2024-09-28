@@ -1,21 +1,21 @@
 <?php
 session_start();
 
-    include("connection.php");
-    include("function.php");
+include("connection.php");
+include("function.php");
 
-    $user_data = check_login($con);
+$user_data = check_login($con);
 
-   //to check if a date is in the selected dates array
+// Function to check if a date is in the selected dates array
 function isClosed($date, $selected_dates) {
-  return in_array($date, $selected_dates); // Check if $date exists in $selected_dates array
+    return in_array($date, $selected_dates); // Check if $date exists in $selected_dates array
 }
 
 $selected_dates = isset($_SESSION['selected_dates']) ? $_SESSION['selected_dates'] : [];
 
-// Generating a simple calendar
-$current_month = date('n');
-$current_year = date('Y'); 
+// Getting the current month and year
+$current_month = date('n'); // Numeric representation of a month, without leading zeros (1-12)
+$current_year = date('Y');  // Full numeric representation of a year (e.g., 2024)
 
 // Number of days in the current month
 $num_days_in_month = date('t', mktime(0, 0, 0, $current_month, 1, $current_year));
@@ -23,7 +23,8 @@ $num_days_in_month = date('t', mktime(0, 0, 0, $current_month, 1, $current_year)
 // Starting day of the week for the first day of the month
 $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year));
 
-
+// Get the full month name
+$month_name = date('F', mktime(0, 0, 0, $current_month, 1, $current_year)); // Full month name (January, February, etc.)
 ?>
 
 <!DOCTYPE html>
@@ -73,6 +74,10 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
     .nav-treeview .nav-item {
         padding-left: 3%;
     }
+    .mt-4{
+          text-align: right;
+          padding-right: 10%;
+        } 
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -208,6 +213,7 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
   <div class="content-wrapper">
     <div class="container" style="padding-left: 7%;"  >
           <h2 class="mt-4">Calendar View</h2>
+          <h3 class="month"><?php echo $month_name . " " . $current_year; ?></h3>
           <div class="calendar">
               <table class="table table-bordered" style="width: 90%;">
                   <thead>
@@ -287,7 +293,7 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
   </div>
 </div>
 <!-- ./wrapper -->
-<!-- jQuery UI -->
+
 <!-- jQuery (local) -->
 <script src="plugins/jquery/jquery.min.js"></script>
 <!-- jQuery UI (local) -->
@@ -318,7 +324,6 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
 <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App (local) -->
 <script src="dist/js/adminlte.js"></script>
-<!-- Popper (local) -->
 
 </body>
 </html>
