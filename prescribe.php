@@ -172,8 +172,8 @@
                     </tr>
                 </tbody>
             </table>
-            <button type="button" class="btn btn-secondary" onclick="addRow()">Add Row</button>
-            <button type="button" class="btn btn-danger" onclick="undoLastRow()">Remove Last Row</button>
+            <button type="button" class="btn btn-secondary" onclick="addRow()">Add Medicine</button>
+            <button type="button" class="btn btn-danger" onclick="undoLastRow()">Undo</button>
             <br><br>
             <button type="submit" class="btn btn-primary">Submit Schedule</button>
         </form>
