@@ -1,12 +1,14 @@
 <?php
 session_start();
 
-    include("connection.php");
-    include("function.php");
+include("connection.php");
+include("function.php");
 
-    $user_data = check_login($con);
-
-    
+if (!isset($_SESSION['userID']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+  header("Location: Admin_Staff_login.php");
+  exit();
+}
+      
 $query = "SELECT * FROM prescriptions_data";
 $result = $con->query($query);
 $prescriptions = $result->fetch_all(MYSQLI_ASSOC);

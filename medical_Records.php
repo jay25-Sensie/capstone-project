@@ -4,7 +4,10 @@ session_start();
 include("connection.php");
 include("function.php");
 
-$user_data = check_login($con);
+if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+  header("Location: Admin_Staff_login.php");
+  exit();
+}
 
 $uploadDir = 'uploads/';
 

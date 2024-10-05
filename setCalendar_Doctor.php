@@ -1,6 +1,11 @@
 <?php
 session_start(); // Start session if not already started
 
+// Check if the user is logged in and has the correct role
+if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'doctor') {
+  header("Location: Doctor_login.php");
+  exit();
+}
 
 //  to set calendar dates
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {

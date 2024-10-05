@@ -3,6 +3,12 @@ session_start();
 include("connection.php");
 include("function.php");
 
+// Check if the user is logged in and has the correct role
+if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'doctor') {
+    header("Location: Doctor_login.php");
+    exit();
+}
+
 // Function to sanitize input
 function sanitize_input($data) {
     return htmlspecialchars(strip_tags(trim($data)));

@@ -1,7 +1,13 @@
 <?php
 session_start();
 include("connection.php");
-include("function.php"); // Assuming this file contains necessary functions
+include("function.php"); 
+
+// Check if the user is logged in and has the correct role
+if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'doctor') {
+  header("Location: Doctor_login.php");
+  exit();
+}
 
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {

@@ -3,6 +3,10 @@ session_start();
 include("connection.php");
 include("function.php");
 
+if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+  header("Location: Admin_Staff_login.php");
+  exit();
+}
 
 // Check if the form is submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {

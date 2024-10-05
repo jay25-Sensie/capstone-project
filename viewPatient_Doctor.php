@@ -4,6 +4,12 @@ session_start();
     include("connection.php");
     include("function.php");
 
+    // Check if the user is logged in and has the correct role
+    if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'doctor') {
+      header("Location: Doctor_login.php");
+      exit();
+    }
+
     $user_data = check_login($con);
 
     $pid = $name = $lastname = $address = $age = $phone_number = $gender = $status = '';

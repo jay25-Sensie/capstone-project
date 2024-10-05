@@ -1,41 +1,49 @@
 <?php
-session_start();
+session_start(); // Start the session
 
+// Include necessary files for database connection and functions
 include("connection.php");
 include("function.php");
 
-$user_data = check_login($con);
-
-$pid = $name = $lastname = $address = $age = $phone_number = $gender = $status = '';
-
-// search query
-$search_query = '';
-if (isset($_GET['search'])) {
-    $search = sanitize_input($con, $_GET['search']);
-    $search_query = "WHERE pid LIKE '%$search%' OR name LIKE '%$search%'";
+// Check if the user is logged in and has the correct role
+if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'doctor') {
+    header("Location: Doctor_login.php");
+    exit();
 }
 
-// update status operations
+// Initialize variables
+$pid = $name = $lastname = $address = $age = $phone_number = $gender = $status = '';
+
+// Search query
+$search_query = '';
+if (isset($_GET['search'])) {
+    $search = sanitize_input($con, $_GET['search']); // Sanitize user input
+    $search_query = "WHERE pid LIKE '%$search%' OR name LIKE '%$search%'"; // Search condition
+}
+
+// Update status operations
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Update patient status
     if (isset($_POST['update_status'])) {
-        $pid = intval($_POST['pid']); // Ensure pid is integer
-        $status = sanitize_input($con, $_POST['status']);
+        $pid = intval($_POST['pid']); // Ensure pid is an integer
+        $status = sanitize_input($con, $_POST['status']); // Sanitize user input
 
+        // Update the patient's status in the database
         $query = "UPDATE patient_records SET status = '$status' WHERE pid = $pid";
         mysqli_query($con, $query);
-        header("Location: patientRecords_Doctor.php");
-        exit();
+        header("Location: patientRecords_Doctor.php"); // Redirect after update
+        exit(); // Ensure no further code is executed
     }
 }
 
-// selecting all patients from the database with optional search filtering
+// Selecting all patients from the database with optional search filtering
 $query = "SELECT * FROM patient_records $search_query";
 $result = mysqli_query($con, $query);
-$patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
+$patients = mysqli_fetch_all($result, MYSQLI_ASSOC); // Fetch all patients
 
+// Function to check if a date is closed
 function isClosed($date, $selected_dates) {
-  return in_array($date, $selected_dates); // Check if $date exists in $selected_dates array
+    return in_array($date, $selected_dates); // Check if $date exists in $selected_dates array
 }
 
 $selected_dates = isset($_SESSION['selected_dates']) ? $_SESSION['selected_dates'] : [];
@@ -55,6 +63,10 @@ $num_days_in_month = date('t', mktime(0, 0, 0, $current_month, 1, $current_year)
 $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year));
 
 ?>
+
+
+
+
 
 <!DOCTYPE html>
 <html lang="en">

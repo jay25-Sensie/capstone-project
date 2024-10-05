@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             // Hash the password
             $hashed_password = password_hash($password, PASSWORD_BCRYPT);
             
-            // Insert user with default role (e.g., 'doctor')
+            // Insert user with default role
             $query = "INSERT INTO users (username, password, role) VALUES ('$username', '$hashed_password', 'doctor')";
             $result = mysqli_query($con, $query);
             

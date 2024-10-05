@@ -1,4 +1,13 @@
+<?php
+session_start();
+include ("connection.php");
+include ("function.php");
 
+if (!isset($_SESSION['pid'])) {
+  header("Location: Patient_login.php");
+  exit();
+}
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -143,7 +152,7 @@
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
   $.widget.bridge('uibutton', $.ui.button)
-</script>
+</script> 
 <!-- Bootstrap 4 (local) -->
 <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 <!-- ChartJS (local) -->

@@ -5,7 +5,7 @@ include("function.php");
 
 // Ensure the user is logged in by checking the session
 if (!isset($_SESSION['pid'])) {
-    header("Location: Signin_Patient.php");
+    header("Location: Patient_login.php");
     exit();
 }
 

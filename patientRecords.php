@@ -5,6 +5,11 @@ ini_set('display_errors', 1);
 session_start();
 include("connection.php");
 
+if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: Admin_Staff_login.php");
+    exit();
+}
+
 // Function to sanitize input data
 function sanitize_input($con, $data) {
     return mysqli_real_escape_string($con, htmlspecialchars(strip_tags($data)));
@@ -109,10 +114,6 @@ if (!$result) {
 
 $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
 ?>
-
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">

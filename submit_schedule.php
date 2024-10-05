@@ -2,28 +2,42 @@
 // Include your database connection
 include 'connection.php'; // Make sure this file defines $con
 
-// Your Semaphore API key
-$semaphore_api_key = 'YOUR_SEMAPHORE_API_KEY'; // Replace with your actual API key
+// Your Infobip API credentials
+$infobip_api_key = '9079f0b8e361b54d608573b1d99f5adb-5f3b3665-6680-44c6-8739-e9c4de7166e9'; // Replace with your actual Infobip API key
+$infobip_base_url = 'pepknv.api.infobip.com'; // Infobip base URL
+$sender = '447491163443'; // Replace with your Sender ID
 
-// Function to send SMS via Semaphore
-function sendSMS($phone_number, $message, $api_key) {
-    $url = 'https://api.semaphore.co/api/v4/messages';
+// Function to send SMS via Infobip
+function sendSMS($phone_number, $message, $api_key, $sender, $base_url) {
+    $url = "https://$base_url/sms/2/text/advanced";
 
-    $data = array(
-        'apikey' => $api_key,
-        'number' => $phone_number,
-        'message' => $message,
-        'sendername' => 'SEMAPHORE'
-    );
+    $data = [
+        "messages" => [
+            [
+                "from" => $sender,
+                "destinations" => [
+                    [
+                        "to" => $phone_number
+                    ]
+                ],
+                "text" => $message
+            ]
+        ]
+    ];
 
     $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Authorization: App ' . $api_key,
+        'Content-Type: application/json',
+        'Accept: application/json'
+    ]);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
     $response = curl_exec($ch);
     curl_close($ch);
-
+    
     return $response;
 }
 
@@ -94,18 +108,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 echo "Record for $medicine_name added successfully.<br>";
 
                 // Now send SMS reminders based on the timings
-                $dose_timings = [$timing1, $timing2, $timing3, $timing4]; // Gather dose timings into an array
+                $dose_timings = array_filter([$timing1, $timing2, $timing3, $timing4]); // Gather only non-empty timings
 
                 foreach ($dose_timings as $timing) {
                     if (!empty($timing)) {
                         // Prepare the SMS message
                         $message = "Reminder: It's time to take your medicine $medicine_name at $timing.";
 
-                        // Send the SMS using Semaphore
-                        $sms_response = sendSMS($phone_number, $message, $semaphore_api_key);
+                        // Send the SMS using Infobip
+                        $sms_response = sendSMS($phone_number, $message, $infobip_api_key, $sender, $infobip_base_url);
 
-                        // Output for debugging
-                        echo "SMS reminder sent for $medicine_name at $timing to $phone_number. Response: $sms_response<br>";
+                        // Handle the response
+                        $response_data = json_decode($sms_response, true);
+                        if (isset($response_data['messages'][0]['status']['groupName']) && 
+                            $response_data['messages'][0]['status']['groupName'] === "SENT") {
+                            echo "SMS reminder sent successfully for $medicine_name at $timing to $phone_number.<br>";
+                        } else {
+                            echo "Failed to send SMS for $medicine_name at $timing. Response: $sms_response<br>";
+                        }
+                        
+                        // Optional: Log the SMS response
+                        file_put_contents('sms_log.txt', date('Y-m-d H:i:s') . " - $message - Response: $sms_response\n", FILE_APPEND);
                     }
                 }
             } else {
@@ -115,11 +138,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             // Close the statement
             $stmt->close();
         } else {
-            echo "Duplicate entry for $medicine_name with doses $doses_per_day and timings: $timing1, $timing2, $timing3, $timing4.<br>";
+            echo "Record for $medicine_name already exists.<br>";
         }
     }
-
-    // Close the connection
-    $con->close();
 }
-?>

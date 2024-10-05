@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             // Hash the password
             $hashed_password = password_hash($password, PASSWORD_BCRYPT);
             
-            // Insert user with default role (e.g., 'admin')
+            // Insert user with default role
             $query = "INSERT INTO users (username, password, role) VALUES ('$username', '$hashed_password', 'admin')";
             $result = mysqli_query($con, $query);
             
@@ -62,5 +62,41 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         </form><br><br><br>
     </div>
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/ajv/dist/ajv.min.js"></script>
+<script>
+  const schema = {
+    "type": "object",
+    "properties": {
+      "username": {
+        "type": "string",
+        "minLength": 3,
+        "maxLength": 50,
+        "pattern": "^[a-zA-Z0-9_]+$"
+      },
+      "password": {
+        "type": "string",
+        "minLength": 6,
+        "maxLength": 50
+      }
+    },
+    "required": ["username", "password"],
+    "additionalProperties": false
+  };
+
+  const data = {
+    username: document.getElementById('username').value,
+    password: document.getElementById('password').value
+  };
+
+  const ajv = new Ajv();
+  const validate = ajv.compile(schema);
+  const valid = validate(data);
+
+  if (!valid) {
+    console.log(validate.errors);  // Show validation errors
+  }
+</script>
+
 </body>
 </html>

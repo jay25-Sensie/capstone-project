@@ -1,44 +1,56 @@
 <?php
-session_start();
+session_start(); // Start the session
 
 include("connection.php"); 
-include("function.php");
+include("function.php"); // Include your function definitions
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
+    // Get username and password from POST request
     $username = $_POST['username'];
     $password = $_POST['password'];
     
+    // Check if username and password are not empty
     if (!empty($username) && !empty($password)) {
-        $username = mysqli_real_escape_string($con, $username);
+        $username = mysqli_real_escape_string($con, $username); // Sanitize the username
         
+        // Query to get user data
         $query = "SELECT * FROM users WHERE username = '$username' LIMIT 1";
         $result = mysqli_query($con, $query);
         
+        // Check if query was successful and user exists
         if ($result && mysqli_num_rows($result) > 0) {
-            $user_data = mysqli_fetch_assoc($result);
+            $user_data = mysqli_fetch_assoc($result); // Fetch user data
+            
+            // Verify the password
             if (password_verify($password, $user_data['password'])) {
-                $_SESSION['userID'] = $user_data['userID'];
+                $_SESSION['userID'] = $user_data['userID']; // Store user ID in session
+                $_SESSION['role'] = $user_data['role']; // Store user role in session
+                $_SESSION['username'] = $user_data['username']; // Store username in session
                 
-                // Checking the role
+                // Check the user's role and redirect accordingly
                 if ($user_data['role'] == 'admin') {
                     header("Location: Dashboard_Admin.php");
                     exit();
+                } elseif ($user_data['role'] == 'doctor') { // Fix: check for 'admin' role
+                    header("Location: Dashboard_Doctor.php");
+                    exit();
                 } else {
-                    echo '<script>alert("Access denied. You are not authorized to access this page.");</script>';
+                    echo '<script>alert("Access denied. Unknown user.");</script>';
                 }
                 
             } else {
-                echo '<script>alert("Incorrect Password");</script>';
+                echo '<script>alert("Incorrect Password");</script>'; // Wrong password alert
             }
         } else {
-            echo '<script>alert("User not found");</script>';
+            echo '<script>alert("User not found");</script>'; // User not found alert
         }
         
     } else {
-        echo '<script>alert("Please fill in all fields.");</script>';
+        echo '<script>alert("Please fill in all fields.");</script>'; // Alert for empty fields
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

@@ -5,6 +5,12 @@ ini_set('display_errors', 1);
 session_start();
 include("connection.php");
 
+// Check if the user is logged in and has the correct role
+if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'doctor') { // Check for userID and role
+  header("Location: Doctor_login.php"); 
+  exit();
+}
+
 // sanitizing input data
 function sanitize_input($con, $data) {
     return mysqli_real_escape_string($con, htmlspecialchars(strip_tags($data)));

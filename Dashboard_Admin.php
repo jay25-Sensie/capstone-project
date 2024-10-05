@@ -4,7 +4,14 @@ session_start();
 include("connection.php");
 include("function.php");
 
-$user_data = check_login($con);
+// Check if the user is logged in and has the correct role
+if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
+    header("Location: Admin_Staff_login.php");
+    exit();
+}
+
+// Fetch user data based on userID stored in the session
+$user_data = check_login($con); // Assuming this function fetches user data
 
 // Function to check if a date is in the selected dates array
 function isClosed($date, $selected_dates) {
@@ -26,6 +33,7 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
 // Get the full month name
 $month_name = date('F', mktime(0, 0, 0, $current_month, 1, $current_year)); // Full month name (January, February, etc.)
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

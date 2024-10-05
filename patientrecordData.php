@@ -1,11 +1,13 @@
 <?php
 session_start();
 include("connection.php");
+include("function.php");
 
-// Check if user is logged in
+
+// Ensure the user is logged in by checking the session
 if (!isset($_SESSION['pid'])) {
-    header("Location: login.php");
-    exit();
+  header("Location: Patient_login.php");
+  exit();
 }
 
 // Retrieve patient data based on PID

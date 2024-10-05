@@ -1,7 +1,13 @@
 <?php
-// fetch_diagnosis.php
+session_start();
+include 'connection.php';
 
-include 'connection.php'; // Include your database connection
+// Check if the user is logged in and has the correct role
+if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'doctor') {
+  header("Location: Doctor_login.php"); 
+  exit();
+}
+
 // Fetch all diagnosis records
 $diagnosisQuery = "SELECT pid, date, subjective, objective, assessment, plan FROM diagnosis";
 $stmt = $con->prepare($diagnosisQuery);
