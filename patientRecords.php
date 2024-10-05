@@ -25,6 +25,20 @@ function check_patient_exists($con, $name, $lastname, $phone_number, $pid = null
     return mysqli_num_rows($result) > 0;
 }
 
+// Function to format the phone number for the Philippines
+function format_phone_number($phone_number) {
+    // Remove all non-digit characters
+    $phone_number = preg_replace('/\D/', '', $phone_number);
+
+    // Check if the phone number starts with '0' and replace it with '+63'
+    if (strlen($phone_number) === 11 && substr($phone_number, 0, 1) === '0') {
+        return '+63' . substr($phone_number, 1); // Remove leading 0 and prepend +63
+    } elseif (strlen($phone_number) === 10) {
+        return '+63' . $phone_number; // If it has 10 digits, prepend +63
+    }
+    return $phone_number; // Return as is if it doesn't need formatting
+}
+
 // Add/Update patient, Update status
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = sanitize_input($con, $_POST['name']);
@@ -38,14 +52,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Initialize validation flag
     $validation_passed = true;
 
+    // Format the phone number
+    $formatted_phone_number = format_phone_number($phone_number);
+
     // Validate phone number
-    if (!ctype_digit($phone_number) || strlen($phone_number) != 11) {
-        echo "<script>alert('Phone number must contain exactly 11 digits and no letters!');</script>";
+    if (strlen($formatted_phone_number) !== 13 || !preg_match('/^\+63\d{10}$/', $formatted_phone_number)) {
+        echo "<script>alert('Phone number must be in the format +639XXXXXXXXX!');</script>";
         $validation_passed = false;
     }
 
     // Validate name and lastname uniqueness
-    if (check_patient_exists($con, $name, $lastname, $phone_number, $pid)) {
+    if (check_patient_exists($con, $name, $lastname, $formatted_phone_number, $pid)) {
         echo "<script>alert('Patient already exists!');</script>";
         $validation_passed = false;
     }
@@ -59,7 +76,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['add_patient'])) {
             // Insert into patients table
             $query = "INSERT INTO patient_records (name, lastname, address, age, birthday, phone_number, gender, status) 
-                      VALUES ('$name', '$lastname', '$address', $age, '$birthday', '$phone_number', '$gender', 'Active')";
+                      VALUES ('$name', '$lastname', '$address', $age, '$birthday', '$formatted_phone_number', '$gender', 'Active')";
             if (mysqli_query($con, $query)) {
                 // Get the last inserted PID
                 $pid = mysqli_insert_id($con);
@@ -77,7 +94,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } elseif (isset($_POST['update_patient'])) {
             $query = "UPDATE patient_records SET 
                       name = '$name', lastname = '$lastname', address = '$address', 
-                      age = $age, birthday = '$birthday', phone_number = '$phone_number', gender = '$gender' 
+                      age = $age, birthday = '$birthday', phone_number = '$formatted_phone_number', gender = '$gender' 
                       WHERE pid = $pid";
             if (mysqli_query($con, $query)) {
                 header("Location: patientRecords.php");
@@ -114,6 +131,7 @@ if (!$result) {
 
 $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
