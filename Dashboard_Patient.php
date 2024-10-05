@@ -126,14 +126,14 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <li class="nav-item">
-        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
+        <a class="nav-link" data-widget="fullscreen" href="#" role="button" >
           <i class="fas fa-expand-arrows-alt"></i>
         </a>
       </li>
       <li class="nav-item">
-        <a href="logout.php" class="nav-link">
-        <i class="nav-icon fas fa-sign-out-alt">log out</i>
-         </a>
+        <a href="#" class="nav-link" onclick="confirmLogout(event)">
+            <i class="nav-icon fas fa-sign-out-alt"></i> Log out
+        </a>
       </li>
     </ul>
   </nav>
@@ -308,6 +308,7 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
 <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App (local) -->
 <script src="dist/js/adminlte.js"></script>
+<script src="../wbhr_ms/logout.js"></script>
 
 </body>
 </html>

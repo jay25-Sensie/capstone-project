@@ -13,8 +13,6 @@ $query = "SELECT * FROM prescriptions_data";
 $result = $con->query($query);
 $prescriptions = $result->fetch_all(MYSQLI_ASSOC);
 
-
-
 ?>
 
 
@@ -108,10 +106,10 @@ $prescriptions = $result->fetch_all(MYSQLI_ASSOC);
           </a>
         </li>
         <li class="nav-item">
-          <a href="logout.php" class="nav-link">
-            <i class="nav-icon fas fa-sign-out-alt">log out</i>
+          <a href="#" class="nav-link" onclick="confirmLogout(event)">
+            <i class="nav-icon fas fa-sign-out-alt"></i> Log out
           </a>
-      </li>
+        </li>
     </ul>
   </nav>
   <!-- /.navbar -->
@@ -289,6 +287,8 @@ $prescriptions = $result->fetch_all(MYSQLI_ASSOC);
 <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App (local) -->
 <script src="dist/js/adminlte.js"></script>
+<script src="../wbhr_ms/logout.js"></script>
+<script>
 function setPatientId(patientId) {
     document.getElementById('patientId').value = patientId;
 }

@@ -173,9 +173,9 @@ $vital_signs = mysqli_fetch_all($result, MYSQLI_ASSOC);
         </a>
       </li>
       <li class="nav-item">
-          <a href="logout.php" class="nav-link">
-            <i class="nav-icon fas fa-sign-out-alt">log out</i>
-          </a>
+        <a href="#" class="nav-link" onclick="confirmLogout(event)">
+          <i class="nav-icon fas fa-sign-out-alt"></i> Log out
+        </a>
       </li>
     </ul>
   </nav>
@@ -458,6 +458,7 @@ $vital_signs = mysqli_fetch_all($result, MYSQLI_ASSOC);
 <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.js"></script>
+<script src="../wbhr_ms/logout.js"></script>
 <script>
 function toggleLaboratory() {
     var laboratoryField = document.getElementById('laboratoryField');

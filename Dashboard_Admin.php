@@ -4,7 +4,6 @@ session_start();
 include("connection.php");
 include("function.php");
 
-// Check if the user is logged in and has the correct role
 if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header("Location: Admin_Staff_login.php");
     exit();
@@ -134,8 +133,8 @@ $month_name = date('F', mktime(0, 0, 0, $current_month, 1, $current_year)); // F
           </a>
         </li>
         <li class="nav-item">
-          <a href="logout.php" class="nav-link">
-            <i class="nav-icon fas fa-sign-out-alt">log out</i>
+          <a href="#" class="nav-link" onclick="confirmLogout(event)">
+            <i class="nav-icon fas fa-sign-out-alt"></i> Log out
           </a>
         </li>
     </ul>
@@ -332,6 +331,6 @@ $month_name = date('F', mktime(0, 0, 0, $current_month, 1, $current_year)); // F
 <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App (local) -->
 <script src="dist/js/adminlte.js"></script>
-
+<script src="../wbhr_ms/logout.js"></script>
 </body>
 </html>

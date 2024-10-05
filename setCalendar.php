@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Set Calendar</title>
-  
+
      <!-- jQuery UI (local) -->
 <link rel="stylesheet" href="plugins/jquery-ui/jquery-ui.min.css">
 <!-- Font Awesome (local) -->
@@ -103,10 +103,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
           </a>
         </li>
         <li class="nav-item">
-          <a href="logout.php" class="nav-link">
-            <i class="nav-icon fas fa-sign-out-alt">log out</i>
+          <a href="#" class="nav-link" onclick="confirmLogout(event)">
+            <i class="nav-icon fas fa-sign-out-alt"></i> Log out
           </a>
-      </li>
+        </li>
     </ul>
   </nav>
   <!-- /.navbar -->
@@ -240,6 +240,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['submit'])) {
 <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App (local) -->
 <script src="dist/js/adminlte.js"></script>
+<script src="../wbhr_ms/logout.js"></script>
 </body>
 </html>
-

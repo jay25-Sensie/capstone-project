@@ -182,9 +182,9 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
             display: flex;
             justify-content: center;
             gap: 5px;
-            font-size: 14px;             /* Adjust font size for readability */
-            min-width: 80px;             /* Set a minimum width for buttons */
-            text-align: center;          /* Center button text */
+            font-size: 14px;             
+            min-width: 80px;             
+            text-align: center;          
             display: inline-flex;
         }
 
@@ -257,10 +257,10 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
           </a>
         </li>
         <li class="nav-item">
-          <a href="logout.php" class="nav-link">
-            <i class="nav-icon fas fa-sign-out-alt">log out</i>
+          <a href="#" class="nav-link" onclick="confirmLogout(event)">
+            <i class="nav-icon fas fa-sign-out-alt"></i> Log out
           </a>
-      </li>
+        </li>
     </ul>
   </nav>
   <!-- /.navbar -->
@@ -590,8 +590,6 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
 <!-- AdminLTE App (local) -->
 <script src="dist/js/adminlte.js"></script>
 <script src="../wbhr_ms/Bday_Validation.js"></script>
-
-
+<script src="../wbhr_ms/logout.js"></script>
 </body>
 </html>
-  

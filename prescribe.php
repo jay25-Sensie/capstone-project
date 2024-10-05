@@ -75,9 +75,9 @@
         </a>
       </li>
       <li class="nav-item">
-        <a href="logout.php" class="nav-link">
-        <i class="nav-icon fas fa-sign-out-alt">log out</i>
-         </a>
+        <a href="#" class="nav-link" onclick="confirmLogout(event)">
+          <i class="nav-icon fas fa-sign-out-alt"></i> Log out
+        </a>
       </li>
     </ul>
   </nav>
@@ -213,6 +213,7 @@
 <!-- Local Bootstrap JS -->
 <script src="plugins/bootstrap/js/bootstrap.min.js"></script>
 <script src="../wbhr_ms/prescribe.js"></script>
+<script src="../wbhr_ms/logout.js"></script>
 <script>
   let rowCount = 1; // Initialize row count
 

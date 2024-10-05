@@ -6,7 +6,7 @@ session_start();
 include("connection.php");
 
 // Check if the user is logged in and has the correct role
-if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'doctor') { // Check for userID and role
+if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'doctor') {
   header("Location: Doctor_login.php"); 
   exit();
 }
@@ -49,9 +49,6 @@ $query = "SELECT * FROM patient_records $search_query";
 $result = mysqli_query($con, $query);
 $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -100,9 +97,9 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
           display: flex;
           justify-content: center;
           gap: 5px;
-          font-size: 14px;             /* Adjust font size for readability */
-          min-width: 80px;             /* Set a minimum width for buttons */
-          text-align: center;          /* Center button text */
+          font-size: 14px;             
+          min-width: 80px;            
+          text-align: center;          
           display: inline-flex;
       }
 
@@ -174,10 +171,10 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
           </a>
         </li>
         <li class="nav-item">
-          <a href="logout.php" class="nav-link">
-            <i class="nav-icon fas fa-sign-out-alt">log out</i>
+          <a href="#" class="nav-link" onclick="confirmLogout(event)">
+            <i class="nav-icon fas fa-sign-out-alt"></i> Log out
           </a>
-      </li>
+        </li>
     </ul>
   </nav>
   <!-- /.navbar -->
@@ -365,11 +362,6 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
 <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.js"></script>
-
+<script src="../wbhr_ms/logout.js"></script>
 </body>
 </html>
-
-
-
-
-   
