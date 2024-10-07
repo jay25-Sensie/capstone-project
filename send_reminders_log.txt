@@ -1,0 +1,56 @@
+Running send_reminders.php... 
+Script executed. 
+2024-10-08 00:08:29 - Current Time: 00:08:00
+2024-10-08 00:08:29 - Records found: 0
+PHP Warning:  file_put_contents(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+
+Warning: file_put_contents(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+PHP Warning:  file_put_contents(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+
+Warning: file_put_contents(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+Tue 10/08/2024  0:21:20.17 - Starting send_reminders.php 
+PHP Warning:  fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+
+Warning: fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+Unable to open log file: send_reminders_log.txt
+PHP Warning:  fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+
+Warning: fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+Unable to open log file: send_reminders_log.txt
+Tue 10/08/2024  0:21:20.41 - Finished send_reminders.php 
+Tue 10/08/2024  0:38:38.56 - Starting send_reminders.php 
+PHP Warning:  fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+
+Warning: fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+Unable to open log file: send_reminders_log.txt
+PHP Warning:  fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+
+Warning: fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+Unable to open log file: send_reminders_log.txt
+PHP Warning:  fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+
+Warning: fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+Unable to open log file: send_reminders_log.txt
+PHP Warning:  fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+
+Warning: fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+Unable to open log file: send_reminders_log.txt
+PHP Warning:  fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+
+Warning: fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+Unable to open log file: send_reminders_log.txt
+Tue 10/08/2024  0:38:44.53 - Finished send_reminders.php 
+Tue 10/08/2024  0:58:44.18 - Starting send_reminders.php 
+PHP Warning:  fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+
+Warning: fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+Unable to open log file: send_reminders_log.txt
+PHP Warning:  fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+
+Warning: fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+Unable to open log file: send_reminders_log.txt
+PHP Warning:  fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+
+Warning: fopen(send_reminders_log.txt): Failed to open stream: Resource temporarily unavailable in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 17
+Unable to open log file: send_reminders_log.txt
+Tue 10/08/2024  0:58:46.90 - Finished send_reminders.php 

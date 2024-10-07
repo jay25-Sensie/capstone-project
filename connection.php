@@ -2,7 +2,7 @@
 
     $host = "localhost";
     $username = "root";
-    $password = " ";
+    $password = "";
     $database = "whrms_db";
 
     $con = new mysqli($host, $username, $password, $database);

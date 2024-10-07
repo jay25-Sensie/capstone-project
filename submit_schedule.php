@@ -1,58 +1,23 @@
 <?php
+// submit_schedule.php
+
 // Include your database connection
-include 'connection.php'; // Make sure this file defines $con
+include 'connection.php'; // Ensure this file defines $con
 
-// Your Infobip API credentials
-$infobip_api_key = '9079f0b8e361b54d608573b1d99f5adb-5f3b3665-6680-44c6-8739-e9c4de7166e9'; // Replace with your actual Infobip API key
-$infobip_base_url = 'pepknv.api.infobip.com'; // Infobip base URL
-$sender = '447491163443'; // Replace with your Sender ID
-
-// Function to send SMS via Infobip
-function sendSMS($phone_number, $message, $api_key, $sender, $base_url) {
-    $url = "https://$base_url/sms/2/text/advanced";
-
-    $data = [
-        "messages" => [
-            [
-                "from" => $sender,
-                "destinations" => [
-                    [
-                        "to" => $phone_number
-                    ]
-                ],
-                "text" => $message
-            ]
-        ]
-    ];
-
-    $ch = curl_init($url);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Authorization: App ' . $api_key,
-        'Content-Type: application/json',
-        'Accept: application/json'
-    ]);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-
-    $response = curl_exec($ch);
-    curl_close($ch);
-    
-    return $response;
-}
-
+// Check if the request method is POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Debugging output
-    echo "<pre>";
-    print_r($_POST); // Print the entire POST array
-    echo "</pre>";
-
-    // Check if 'pid' exists in the POST array
-    if (!isset($_POST['pid'])) {
-        die("Error: PID is missing.");
+    // Validate required fields
+    if (
+        empty($_POST['pid']) ||
+        empty($_POST['medicine_name']) ||
+        empty($_POST['doses_per_day']) ||
+        empty($_POST['dose_timings'])
+    ) {
+        die("Error: Missing required fields.");
     }
 
-    $pid = $_POST['pid'];
+    // Get form data
+    $pid = intval($_POST['pid']);
     $medicine_names = $_POST['medicine_name']; // Array of medicine names
     $doses_per_day_array = $_POST['doses_per_day']; // Array of doses per day
     $dose_timings_array = $_POST['dose_timings']; // Array of timings
@@ -71,74 +36,65 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Loop through each medicine entry
     for ($i = 0; $i < count($medicine_names); $i++) {
-        $medicine_name = $medicine_names[$i]; // Get medicine name
-        $doses_per_day = $doses_per_day_array[$i]; // Get doses per day
+        $medicine_name = trim($medicine_names[$i]); // Get medicine name
+        $doses_per_day = intval($doses_per_day_array[$i]); // Get doses per day
         $timings = $dose_timings_array[$i]; // Get timings for this medicine
 
-        // Initialize variables for timings
-        $timing1 = $timings[0] ?? null; // Get first timing
-        $timing2 = $timings[1] ?? null; // Get second timing
-        $timing3 = $timings[2] ?? null; // Get third timing
-        $timing4 = $timings[3] ?? null; // Get fourth timing
-        $timing5 = null; // Optional fifth timing, if not needed set as null
+        // Initialize variables for timings with a fallback to NULL
+        $timing1 = isset($timings[0]) ? $timings[0] . ":00" : NULL; // Append seconds
+        $timing2 = isset($timings[1]) ? $timings[1] . ":00" : NULL;
+        $timing3 = isset($timings[2]) ? $timings[2] . ":00" : NULL;
+        $timing4 = isset($timings[3]) ? $timings[3] . ":00" : NULL;
+        $timing5 = isset($timings[4]) ? $timings[4] . ":00" : NULL; // Add the fifth timing
 
-        // Check for duplicates (optional but good to avoid redundant entries)
-        $checkStmt = $con->prepare("
-            SELECT COUNT(*) FROM medicine_schedule 
-            WHERE pid = ? AND medicine_name = ? AND doses_per_day = ? 
-            AND dose_timing_1 = ? AND dose_timing_2 = ? 
-            AND dose_timing_3 = ? AND dose_timing_4 = ?
-        ");
-        $checkStmt->bind_param("issssss", $pid, $medicine_name, $doses_per_day, $timing1, $timing2, $timing3, $timing4);
-        $checkStmt->execute();
-        $checkStmt->bind_result($count);
-        $checkStmt->fetch();
-        $checkStmt->close();
+        // Prepare SQL statement to insert into the medicine_schedule table
+        $insert_stmt = $con->prepare("INSERT INTO medicine_schedule 
+            (pid, medicine_name, doses_per_day, dose_timing_1, dose_timing_2, dose_timing_3, dose_timing_4, dose_timing_5, created_at, updated_at, status_timing_1, status_timing_2, status_timing_3, status_timing_4, status_timing_5)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW(), 'Pending', 'Pending', 'Pending', 'Pending', 'Pending')");
+        
+        if ($insert_stmt) {
+            // Initialize variables for binding
+            $param_pid = $pid;
+            $param_medicine_name = $medicine_name;
+            $param_doses_per_day = $doses_per_day;
+            $param_timing1 = $timing1;
+            $param_timing2 = $timing2;
+            $param_timing3 = $timing3;
+            $param_timing4 = $timing4;
+            $param_timing5 = $timing5;
 
-        // If no duplicate found, insert the record
-        if ($count == 0) {
-            $stmt = $con->prepare("
-                INSERT INTO medicine_schedule 
-                (pid, medicine_name, doses_per_day, dose_timing_1, dose_timing_2, dose_timing_3, dose_timing_4, dose_timing_5, created_at, updated_at) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
-            ");
-            $stmt->bind_param("isssssss", $pid, $medicine_name, $doses_per_day, $timing1, $timing2, $timing3, $timing4, $timing5);
+            // Create the types string based on parameters
+            $types = "isssssss"; // Initial type string for 8 parameters (1 int, 7 strings)
 
-            if ($stmt->execute()) {
-                echo "Record for $medicine_name added successfully.<br>";
+            // Prepare final parameters array for binding
+            $final_params = [
+                &$param_pid,
+                &$param_medicine_name,
+                &$param_doses_per_day,
+                &$param_timing1,
+                &$param_timing2,
+                &$param_timing3,
+                &$param_timing4,
+                &$param_timing5,
+            ];
 
-                // Now send SMS reminders based on the timings
-                $dose_timings = array_filter([$timing1, $timing2, $timing3, $timing4]); // Gather only non-empty timings
-
-                foreach ($dose_timings as $timing) {
-                    if (!empty($timing)) {
-                        // Prepare the SMS message
-                        $message = "Reminder: It's time to take your medicine $medicine_name at $timing.";
-
-                        // Send the SMS using Infobip
-                        $sms_response = sendSMS($phone_number, $message, $infobip_api_key, $sender, $infobip_base_url);
-
-                        // Handle the response
-                        $response_data = json_decode($sms_response, true);
-                        if (isset($response_data['messages'][0]['status']['groupName']) && 
-                            $response_data['messages'][0]['status']['groupName'] === "SENT") {
-                            echo "SMS reminder sent successfully for $medicine_name at $timing to $phone_number.<br>";
-                        } else {
-                            echo "Failed to send SMS for $medicine_name at $timing. Response: $sms_response<br>";
-                        }
-                        
-                        // Optional: Log the SMS response
-                        file_put_contents('sms_log.txt', date('Y-m-d H:i:s') . " - $message - Response: $sms_response\n", FILE_APPEND);
-                    }
-                }
-            } else {
-                echo "Error: " . $stmt->error . "<br>";
-            }
-
-            // Close the statement
-            $stmt->close();
+            // Use call_user_func_array for dynamic parameter binding
+            call_user_func_array([$insert_stmt, 'bind_param'], array_merge([$types], $final_params));
+            $insert_stmt->execute();
+            $insert_stmt->close();
         } else {
-            echo "Record for $medicine_name already exists.<br>";
+            // Log error if the statement preparation fails
+            error_log("Insert statement preparation failed: " . $con->error);
         }
     }
+
+    // Close the database connection
+    $con->close();
+
+    // Display a success alert and redirect
+    echo "<script type='text/javascript'>
+            alert('Medicine schedule created successfully!');
+          </script>";
+    exit;
 }
+?>
