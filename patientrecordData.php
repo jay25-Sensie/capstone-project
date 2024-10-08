@@ -278,34 +278,6 @@ if (!$medicalResult || !$prescriptionResult) {
             ?>
 <br>
 <br>
-            <!-- Display Prescription Data -->
-            <h3>Prescriptions</h3>
-            <?php if (mysqli_num_rows($prescriptionResult) > 0): ?>
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>PID</th>
-                            <th>Medicine</th>
-                            <th>Frequency</th>
-                            <th>Time to take</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php while ($prescription = mysqli_fetch_assoc($prescriptionResult)): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($prescription['pid']); ?></td>
-                                <td><?php echo htmlspecialchars($prescription['medicine_name']); ?></td>
-                                <td><?php echo htmlspecialchars($prescription['frequency']); ?></td>
-                                <td><?php echo htmlspecialchars($prescription['time_to_take']); ?></td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <div class='alert alert-info' style='text-align: center;'>No prescriptions found for this patient.</div>
-            <?php endif; ?>
-<br>
-<br>
             <h3>Medical Records</h3>
             <?php if (mysqli_num_rows($medicalResult) > 0): ?>
                 <table class="table table-bordered">

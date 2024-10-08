@@ -9,9 +9,19 @@ if (!isset($_SESSION['userID']) || !isset($_SESSION['role']) || $_SESSION['role'
   exit();
 }
       
-$query = "SELECT * FROM prescriptions_data";
-$result = $con->query($query);
-$prescriptions = $result->fetch_all(MYSQLI_ASSOC);
+$diagnosisQuery = "SELECT pid, date, subjective, objective, assessment, plan FROM diagnosis";
+$stmt = $con->prepare($diagnosisQuery);
+$stmt->execute();
+$diagnosisResult = $stmt->get_result();
+
+$diagnosisRecords = [];
+if ($diagnosisResult->num_rows > 0) {
+    while ($row = $diagnosisResult->fetch_assoc()) {
+        $diagnosisRecords[] = $row;
+    }
+} else {
+    $diagnosisRecords = [];
+}
 
 ?>
 
@@ -192,68 +202,40 @@ $prescriptions = $result->fetch_all(MYSQLI_ASSOC);
 
 
   <div class="content-wrapper">
-    <div class="container mt-4">
-        <h2 class="mb-4">Prescriptions</h2>
+    <h3>Diagnosis Records</h3>
 
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped">
-                <thead>
-                    <tr>
-                        <th>PID</th>
-                        <th>Medicine Name</th>
-                        <th>Dosage</th>
-                        <th>Frequency</th>
-                        <th>Time to Take</th>
-                        <th>Set Prescription</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($prescriptions as $prescription): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($prescription['pid']); ?></td>
-                            <td><?php echo htmlspecialchars($prescription['medicine_name']); ?></td>
-                            <td><?php echo htmlspecialchars($prescription['dosage']); ?></td>
-                            <td><?php echo htmlspecialchars($prescription['frequency']); ?></td>
-                            <td><?php echo htmlspecialchars($prescription['time_to_take']); ?></td>
-                            <td>
-                              <button class="btn btn-sm btn-info" data-toggle="modal" data-target="#sendSMSModal" onclick="setPatientId('<?php echo htmlspecialchars($prescription['pid']); ?>')">Send Prescription</button>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
+    <?php
+    // Include the diagnosis fetching PHP file
 
-    <div class="modal fade" id="sendSMSModal" tabindex="-1" role="dialog" aria-labelledby="sendSMSModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="sendSMSModalLabel">Send SMS</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <form action="" method="post">
-              <div class="form-group">
-                <label for="number">Phone Number:</label>
-                <input type="text" class="form-control" id="number" name="number" placeholder="+1234567890" required>
-              </div>
-              <div class="form-group">
-                <label for="message">Message:</label>
-                <textarea class="form-control" id="message" name="message" rows="4" placeholder="Your message here..." required></textarea>
-              </div>
-              <input type="hidden" id="patientId" name="pid">
-              <button type="submit" class="btn btn-primary">Send SMS</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
- 
+    // Display the diagnosis records
+    if (!empty($diagnosisRecords)) {
+        echo '<table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>PID</th>
+                    <th>Date</th>
+                    <th>Subjective</th>
+                    <th>Objective</th>
+                    <th>Assessment</th>
+                    <th>Plan</th>
+                </tr>
+            </thead>
+            <tbody>';
+        foreach ($diagnosisRecords as $record) {
+            echo '<tr>
+                <td>' . htmlspecialchars($record['pid']) . '</td>
+                <td>' . htmlspecialchars($record['date']) . '</td>
+                <td>' . htmlspecialchars($record['subjective']) . '</td>
+                <td>' . htmlspecialchars($record['objective']) . '</td>
+                <td>' . htmlspecialchars($record['assessment']) . '</td>
+                <td>' . htmlspecialchars($record['plan']) . '</td>
+            </tr>';
+        }
+        echo '</tbody></table>';
+    } else {
+        echo '<div class="alert alert-info">No diagnosis records found.</div>';
+    }
+    ?>
 </div>
 <!-- ./wrapper -->
 

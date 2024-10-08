@@ -1,3 +1,15 @@
+<?php
+session_start();
+
+include("connection.php");
+include("function.php");
+
+if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'doctor') {
+    header("Location: Doctor_login.php");
+    exit();
+}
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>

@@ -40,12 +40,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $doses_per_day = intval($doses_per_day_array[$i]); // Get doses per day
         $timings = $dose_timings_array[$i]; // Get timings for this medicine
 
-        // Initialize variables for timings with a fallback to NULL
-        $timing1 = isset($timings[0]) ? $timings[0] . ":00" : NULL; // Append seconds
-        $timing2 = isset($timings[1]) ? $timings[1] . ":00" : NULL;
-        $timing3 = isset($timings[2]) ? $timings[2] . ":00" : NULL;
-        $timing4 = isset($timings[3]) ? $timings[3] . ":00" : NULL;
-        $timing5 = isset($timings[4]) ? $timings[4] . ":00" : NULL; // Add the fifth timing
+        // Assuming timings are in the format "HH:MM"
+        $timing1 = isset($timings[0]) ? $timings[0] : NULL;
+        $timing2 = isset($timings[1]) ? $timings[1] : NULL;
+        $timing3 = isset($timings[2]) ? $timings[2] : NULL;
+        $timing4 = isset($timings[3]) ? $timings[3] : NULL;
+        $timing5 = isset($timings[4]) ? $timings[4] : NULL;
 
         // Prepare SQL statement to insert into the medicine_schedule table
         $insert_stmt = $con->prepare("INSERT INTO medicine_schedule 
@@ -64,7 +64,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $param_timing5 = $timing5;
 
             // Create the types string based on parameters
-            $types = "isssssss"; // Initial type string for 8 parameters (1 int, 7 strings)
+            $types = "isssssss"; // 7 parameters: 1 int, 6 strings
 
             // Prepare final parameters array for binding
             $final_params = [

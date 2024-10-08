@@ -7,7 +7,7 @@ date_default_timezone_set('Asia/Manila'); // Set the correct timezone
 include 'connection.php'; // Ensure this file defines $con
 
 // Infobip API credentials
-$infobip_api_key = 'api key'; // Replace with your actual Infobip API key
+$infobip_api_key = 'a52b6341b131199ecae4c8fb8c78198a-40da9935-d455-482c-b654-88c748433e'; // Replace with your actual Infobip API key
 $infobip_base_url = 'api.infobip.com'; // Infobip base URL
 $sender = '447491163443'; // Replace with your approved Sender ID
 
@@ -18,9 +18,12 @@ function logMessage($message) {
     if ($fp) {
         // Acquire an exclusive lock
         if (flock($fp, LOCK_EX)) {
-            fwrite($fp, date('Y-m-d H:i:s') . " - " . $message . "\n");
-            fflush($fp); // Flush output before releasing the lock
+            file_put_contents($log_file, date('Y-m-d H:i:s') . " - " . $message . "\n", FILE_APPEND);
             flock($fp, LOCK_UN); // Release the lock
+        } else {
+            logMessage("Error: Unable to acquire file lock for send_reminders_log.txt");
+            fclose($fp); // Close the file
+            return; // Stop further processing
         }
         fclose($fp);
     } else {
@@ -135,8 +138,8 @@ while ($row = $result->fetch_assoc()) {
 
                 if ($sms_result['success']) {
                     $response_data = json_decode($sms_result['response'], true);
-                    if (json_last_error() === JSON_ERROR_NONE && 
-                        isset($response_data['messages'][0]['status']['groupName']) && 
+                    if (json_last_error() === JSON_ERROR_NONE &&
+                        isset($response_data['messages'][0]['status']['groupName']) &&
                         $response_data['messages'][0]['status']['groupName'] === "SENT") {
                         logMessage("SMS sent to $phone_number for '$medicine_name' at $dose_time.");
 
@@ -151,7 +154,10 @@ while ($row = $result->fetch_assoc()) {
                             logMessage("SQL Update Prepare Error: " . $con->error);
                         }
                     } else {
-                        logMessage("Failed to send SMS to $phone_number for '$medicine_name' at $dose_time. Response: {$sms_result['response']}");
+                        $status = isset($response_data['messages'][0]['status']['groupName'])
+                            ? $response_data['messages'][0]['status']['groupName']
+                            : 'Unknown';
+                        logMessage("Failed to send SMS to $phone_number for '$medicine_name' at $dose_time. Status: $status. Response: {$sms_result['response']}");
                     }
                 } else {
                     logMessage("cURL Error while sending SMS to $phone_number: {$sms_result['error']}");

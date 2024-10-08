@@ -1,12 +1,27 @@
 <?php
 session_start();
-include ("connection.php");
-include ("function.php");
+include ("connection.php"); 
 
 if (!isset($_SESSION['pid'])) {
   header("Location: Patient_login.php");
   exit();
 }
+
+$pid = $_SESSION['pid']; // Get the patient's PID from the session
+
+// Fetch the patient's medicine schedule from the database
+$query = "SELECT * FROM medicine_schedule WHERE pid = ?";
+$stmt = mysqli_prepare($con, $query);
+mysqli_stmt_bind_param($stmt, "i", $pid);
+mysqli_stmt_execute($stmt);
+$result = mysqli_stmt_get_result($stmt);
+
+if (!$result) {
+  die("Database query failed: " . mysqli_error($con));
+}
+
+$medicineSchedules = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -142,39 +157,78 @@ if (!isset($_SESSION['pid'])) {
     <!-- /.sidebar -->
   </aside>
 
+  <div class="content-wrapper">
+    <div class="container mt-5">
+        <h4 style="text-align: right;">Date: <?php echo date('m-d-Y'); ?></h4>
+        <h3>Medicine Taking Schedule for Patient ID: <?php echo htmlspecialchars($pid); ?></h3>
+        <?php if (!empty($medicineSchedules)): ?>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Medicine Name</th>
+                        <th>Doses per Day</th>
+                        <th>Dose Timings</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($medicineSchedules as $medicineSchedule): ?>
+                        <tr>
+                            <td><?php echo htmlspecialchars($medicineSchedule['medicine_name']); ?></td>
+                            <td><?php echo htmlspecialchars($medicineSchedule['doses_per_day']); ?></td>
+                            <td>
+                                <?php
+                                // Display the timings in the format 'h:i A' (e.g., 7:35 PM)
+                                for ($i = 1; $i <= 5; $i++) {
+                                    $timingColumn = "dose_timing_" . $i;
+                                    if (isset($medicineSchedule[$timingColumn]) && !empty($medicineSchedule[$timingColumn])):
+                                        echo date('h:i A', strtotime($medicineSchedule[$timingColumn])) . "<br>";
+                                    endif;
+                                }
+                                ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        <?php else: ?>
+            <p>No prescription found for this patient.</p>
+        <?php endif; ?>
+    </div>
+</div>
 
-<!-- ./wrapper -->
-
-<!-- jQuery (local) -->
+<!-- jQuery -->
 <script src="plugins/jquery/jquery.min.js"></script>
-<!-- jQuery UI 1.11.4 (local) -->
+<!-- jQuery UI 1.11.4 -->
 <script src="plugins/jquery-ui/jquery-ui.min.js"></script>
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
 <script>
-  $.widget.bridge('uibutton', $.ui.button)
-</script> 
-<!-- Bootstrap 4 (local) -->
+  $.widget.bridge('uibutton', $.ui.button);
+</script>
+<!-- Bootstrap 4 -->
 <script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-<!-- ChartJS (local) -->
+<!-- ChartJS -->
 <script src="plugins/chart.js/Chart.min.js"></script>
-<!-- Sparkline (local) -->
+<!-- Sparkline -->
 <script src="plugins/sparklines/sparkline.js"></script>
-<!-- JQVMap (local) -->
+<!-- JQVMap -->
 <script src="plugins/jqvmap/jquery.vmap.min.js"></script>
 <script src="plugins/jqvmap/maps/jquery.vmap.usa.js"></script>
-<!-- jQuery Knob Chart (local) -->
+<!-- jQuery Knob Chart -->
 <script src="plugins/jquery-knob/jquery.knob.min.js"></script>
-<!-- daterangepicker (local) -->
+<!-- daterangepicker -->
 <script src="plugins/moment/moment.min.js"></script>
 <script src="plugins/daterangepicker/daterangepicker.js"></script>
-<!-- Tempusdominus Bootstrap 4 (local) -->
+<!-- Tempusdominus Bootstrap 4 -->
 <script src="plugins/tempusdominus-bootstrap-4/js/tempusdominus-bootstrap-4.min.js"></script>
-<!-- Summernote (local) -->
+<!-- Summernote -->
 <script src="plugins/summernote/summernote-bs4.min.js"></script>
-<!-- overlayScrollbars (local) -->
+<!-- overlayScrollbars -->
 <script src="plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
-<!-- AdminLTE App (local) -->
+<!-- AdminLTE App -->
+<!-- Local AdminLTE JS -->
 <script src="dist/js/adminlte.js"></script>
+<!-- Local Bootstrap JS -->
+<script src="plugins/bootstrap/js/bootstrap.min.js"></script>
 <script src="../wbhr_ms/logout.js"></script>
 </body>
 </html>
