@@ -1,14 +1,14 @@
-<?php
+<!-- <?php
 // send_reminders.php
 
 date_default_timezone_set('Asia/Manila'); // Set the correct timezone
 
 // Include your database connection
-include 'connection.php'; // Ensure this file defines $con
+include 'connection.php'; 
 
 // Infobip API credentials
-$infobip_api_key = 'a52b6341b131199ecae4c8fb8c78198a-40da9935-d455-482c-b654-88c748433e'; // Replace with your actual Infobip API key
-$infobip_base_url = 'api.infobip.com'; // Infobip base URL
+$infobip_api_key = ''; // Replace with your actual Infobip API key
+$infobip_base_url = '388g6j.api.infobip.com'; // Infobip base URL
 $sender = '447491163443'; // Replace with your approved Sender ID
 
 // Log function with file locking
@@ -58,28 +58,25 @@ function sendSMS($phone_number, $message, $api_key, $sender, $base_url) {
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
     $response = curl_exec($ch);
+
     if (curl_errno($ch)) {
         $error_msg = curl_error($ch);
         curl_close($ch);
         logMessage("cURL Error: $error_msg");
         return ['success' => false, 'error' => $error_msg];
     }
+
+    $http_code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 
     logMessage("Infobip Response: $response"); // Log the response for debugging
-    return ['success' => true, 'response' => $response];
-}
+    logMessage("HTTP Status Code: $http_code");
 
-// Execute the batch file
-$batch_file = 'run_send_reminders.bat'; // Path to your batch file
-exec($batch_file, $output, $return_var);
-
-// Check the return status of the batch file
-if ($return_var !== 0) {
-    logMessage("Batch file execution failed with status: $return_var. Output: " . implode("\n", $output));
-    exit; // Stop the script if the batch file fails
-} else {
-    logMessage("Batch file executed successfully.");
+    if ($http_code >= 200 && $http_code < 300) {
+        return ['success' => true, 'response' => $response];
+    } else {
+        return ['success' => false, 'error' => "Infobip API request failed. HTTP Status Code: $http_code"];
+    }
 }
 
 // Get current time in HH:MM:00 format
@@ -137,34 +134,24 @@ while ($row = $result->fetch_assoc()) {
                 $sms_result = sendSMS($phone_number, $message, $infobip_api_key, $sender, $infobip_base_url);
 
                 if ($sms_result['success']) {
-                    $response_data = json_decode($sms_result['response'], true);
-                    if (json_last_error() === JSON_ERROR_NONE &&
-                        isset($response_data['messages'][0]['status']['groupName']) &&
-                        $response_data['messages'][0]['status']['groupName'] === "SENT") {
-                        logMessage("SMS sent to $phone_number for '$medicine_name' at $dose_time.");
+                    logMessage("SMS sent to $phone_number for '$medicine_name' at $dose_time.");
 
-                        // Update the sent status in the database
-                        $update_sql = "UPDATE medicine_schedule SET status_timing_$i = 'Sent' WHERE id = ?";
-                        $update_stmt = $con->prepare($update_sql);
-                        if ($update_stmt) {
-                            $update_stmt->bind_param("i", $id);
-                            $update_stmt->execute();
-                            $update_stmt->close();
-                        } else {
-                            logMessage("SQL Update Prepare Error: " . $con->error);
-                        }
+                    // Update the sent status in the database
+                    $update_sql = "UPDATE medicine_schedule SET status_timing_$i = 'Sent' WHERE id = ?";
+                    $update_stmt = $con->prepare($update_sql);
+                    if ($update_stmt) {
+                        $update_stmt->bind_param("i", $id);
+                        $update_stmt->execute();
+                        $update_stmt->close();
                     } else {
-                        $status = isset($response_data['messages'][0]['status']['groupName'])
-                            ? $response_data['messages'][0]['status']['groupName']
-                            : 'Unknown';
-                        logMessage("Failed to send SMS to $phone_number for '$medicine_name' at $dose_time. Status: $status. Response: {$sms_result['response']}");
+                        logMessage("SQL Update Prepare Error: " . $con->error);
                     }
                 } else {
-                    logMessage("cURL Error while sending SMS to $phone_number: {$sms_result['error']}");
+                    logMessage("Failed to send SMS to $phone_number. Error: {$sms_result['error']}");
                 }
 
                 // Log the SMS attempt
-                file_put_contents('sms_log.txt', date('Y-m-d H:i:s') . " - To: $phone_number - Message: $message - Success\n", FILE_APPEND);
+                file_put_contents('sms_log.txt', date('Y-m-d H:i:s') . " - To: $phone_number - Message: $message - Status: " . ($sms_result['success'] ? 'Success' : 'Failed') . "\n", FILE_APPEND);
             } else {
                 logMessage("Invalid phone number format for $phone_number.");
             }
@@ -174,4 +161,4 @@ while ($row = $result->fetch_assoc()) {
 
 $stmt->close();
 $con->close();
-?>
+?> -->
