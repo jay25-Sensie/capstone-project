@@ -1,0 +1,24 @@
+Sun 10/13/2024  1:02:15.64 - Starting send_reminders.php 
+<!-- PHP Notice:  file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+PHP Notice:  file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+ -->Sun 10/13/2024  1:02:18.18 - Finished send_reminders.php 
+Sun 10/13/2024 11:49:57.86 - Starting send_reminders.php 
+<!-- PHP Notice:  file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+PHP Notice:  file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+ -->Sun 10/13/2024 11:55:10.94 - Finished send_reminders.php 
+Sun 10/13/2024 14:02:18.52 - Starting send_reminders.php 
+<!-- PHP Notice:  file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+PHP Notice:  file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+ -->Sun 10/13/2024 14:02:32.91 - Finished send_reminders.php 

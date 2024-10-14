@@ -4,12 +4,127 @@ ini_set('display_errors', 1);
 
 session_start();
 include("connection.php");
-include("patientRecords_function.php");
 
 if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
     header("Location: Admin_Staff_login.php");
     exit();
 }
+
+// Function to sanitize input data
+function sanitize_input($con, $data) {
+    return mysqli_real_escape_string($con, htmlspecialchars(strip_tags($data)));
+}
+
+// Function to check if a patient already exists
+function check_patient_exists($con, $name, $lastname, $phone_number, $pid = null) {
+    $query = "SELECT * FROM patient_records WHERE name = '$name' AND lastname = '$lastname' AND phone_number = '$phone_number' ";
+    if ($pid) {
+        $query .= " AND pid != $pid";
+    }
+    $result = mysqli_query($con, $query);
+    return mysqli_num_rows($result) > 0;
+}
+
+// Function to format the phone number
+function format_phone_number($phone_number) {
+    // Check if the phone number starts with '0' and replace it with '+63'
+    if (substr($phone_number, 0, 1) === '0') {
+        return '+63' . substr($phone_number, 1); // Remove leading 0 and prepend +63
+    }
+    return $phone_number; // Return as is if it doesn't need formatting
+}
+
+// Add/Update patient, Update status
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $name = sanitize_input($con, $_POST['name']);
+    $lastname = sanitize_input($con, $_POST['lastname']);
+    $address = sanitize_input($con, $_POST['address']);
+    $birthday = sanitize_input($con, $_POST['birthday']);
+    $phone_number = sanitize_input($con, $_POST['phone_number']);
+    $gender = sanitize_input($con, $_POST['gender']);
+    $pid = isset($_POST['pid']) ? intval($_POST['pid']) : null;
+
+    // Initialize validation flag
+    $validation_passed = true;
+
+    // Format the phone number
+    $formatted_phone_number = format_phone_number($phone_number);
+
+    // Validate phone number
+    if (!ctype_digit(substr($formatted_phone_number, 3)) || strlen($formatted_phone_number) != 13) { // Check for 11 digits after +63
+        echo "<script>alert('Phone number must contain exactly 11 digits after the country code!');</script>";
+        $validation_passed = false;
+    }
+
+    // Validate name and lastname uniqueness
+    if (check_patient_exists($con, $name, $lastname, $formatted_phone_number, $pid)) {
+        echo "<script>alert('Patient already exists!');</script>";
+        $validation_passed = false;
+    }
+
+    if ($validation_passed) {
+        // Calculate age automatically from birthday
+        $birthdate = new DateTime($birthday);
+        $today = new DateTime();
+        $age = $today->diff($birthdate)->y;
+
+        if (isset($_POST['add_patient'])) {
+            // Insert into patients table
+            $query = "INSERT INTO patient_records (name, lastname, address, age, birthday, phone_number, gender, status) 
+                      VALUES ('$name', '$lastname', '$address', $age, '$birthday', '$formatted_phone_number', '$gender', 'Active')";
+            if (mysqli_query($con, $query)) {
+                // Get the last inserted PID
+                $pid = mysqli_insert_id($con);
+
+                // Insert into user table
+                $hashed_password = password_hash($pid, PASSWORD_BCRYPT);
+                $query_user = "INSERT INTO users (username, password, role) VALUES ('$pid', '$hashed_password', 'patient')";
+                mysqli_query($con, $query_user);
+
+                header("Location: patientRecords.php");
+                exit();
+            } else {
+                echo "Error: " . mysqli_error($con);
+            }
+        } elseif (isset($_POST['update_patient'])) {
+            $query = "UPDATE patient_records SET 
+                      name = '$name', lastname = '$lastname', address = '$address', 
+                      age = $age, birthday = '$birthday', phone_number = '$formatted_phone_number', gender = '$gender' 
+                      WHERE pid = $pid";
+            if (mysqli_query($con, $query)) {
+                header("Location: patientRecords.php");
+                exit();
+            } else {
+                echo "Error: " . mysqli_error($con);
+            }
+        }
+
+        if (isset($_POST['update_status'])) {
+            $status = sanitize_input($con, $_POST['status']);
+            $query = "UPDATE patient_records SET status = '$status' WHERE pid = $pid";
+            if (mysqli_query($con, $query)) {
+                header("Location: patientRecords.php");
+                exit();
+            } else {
+                echo "Error: " . mysqli_error($con);
+            }
+        }
+    } else {
+        // If validation failed, stay on the form page
+        echo "<script>window.history.back();</script>";
+        exit();
+    }
+}
+
+// Fetch all patient records
+$query = "SELECT * FROM patient_records";
+$result = mysqli_query($con, $query);
+
+if (!$result) {
+    die("Database query failed: " . mysqli_error($con));
+}
+
+$patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
 ?>
 
 
@@ -322,6 +437,7 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['rol
                                     </div>
                                 </div>
 
+
                                 <!-- Vital Sign Modal -->
                                 <div class="modal fade" id="vitalSignModal<?php echo $patient['pid']; ?>" tabindex="-1" role="dialog" aria-labelledby="vitalSignModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
@@ -345,27 +461,23 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['rol
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="vital-cr">Heart Rate</label>
-                                                        <input type="number" class="form-control" id="vital-cr" name="cr" required>
+                                                        <input type="text" class="form-control" id="vital-cr" name="cr" required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="vital-rr">Respiratory Rate</label>
-                                                        <input type="number" class="form-control" id="vital-rr" name="rr" required>
+                                                        <input type="text" class="form-control" id="vital-rr" name="rr" required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="vital-t">Temperature</label>
-                                                        <input type="number" class="form-control" id="vital-t" name="t" required>
+                                                        <input type="text" class="form-control" id="vital-t" name="t" required>
                                                     </div>
-                                                    <?php 
-                                                        $last_height_weight = get_last_height_weight($con, $patient['pid']); 
-                                                    ?>
                                                     <div class="form-group">
                                                         <label for="vital-wt">Weight (kg)</label>
-                                                        <input type="number" class="form-control" id="vital-wt" name="wt" value="<?php echo isset($last_height_weight['wt']) ? $last_height_weight['wt'] : ''; ?>">
+                                                        <input type="text" class="form-control" id="vital-wt" name="wt" required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="vital-ht">Height (cm)</label>
-                                                        <input type="number" class="form-control" id="vital-ht" name="ht" value="<?php echo isset($last_height_weight['ht']) ? $last_height_weight['ht'] : ''; ?>">
-
+                                                        <input type="text" class="form-control" id="vital-ht" name="ht" required>
                                                     </div>
                                                 </div>
                                                 <div class="modal-footer">
@@ -418,8 +530,9 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['rol
                         </div>
                         <div class="form-group">
                             <label for="age">Age</label>
-                            <input type="number" class="form-control age-input" id="age" name="age">
+                            <input type="number" class="form-control age-input" id="age" name="age" readonly>
                         </div>
+
                         <div class="form-group">
                             <label for="phone_number">Phone Number</label>
                             <input type="text" class="form-control" id="phone_number" name="phone_number" required>

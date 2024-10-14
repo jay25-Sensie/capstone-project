@@ -146,6 +146,12 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'doctor') {
                   <p>Generate Reports</p>
                 </a>
               </li>
+              <li class="nav-item">
+                <a href="setCalendar_Doctor.php" class="nav-link">
+                  <i class="nav-icon fas fa-calendar-alt"></i>
+                  <p>set calendar</p>
+                </a>
+              </li>
             </ul>
           </li>                 
         </ul>

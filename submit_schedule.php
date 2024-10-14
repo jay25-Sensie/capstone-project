@@ -3,8 +3,8 @@
 include 'connection.php'; // Make sure this file defines $con
 
 // Your Infobip API credentials
-// $infobip_api_key = 'a52b6341b131199ecae4c8fb8c78198a-40da9935-d455-482c-b654-88c748433'; 
-$infobip_base_url = '388g6j.api.infobip.com';
+// $infobip_api_key = 'a52b6341b131199ecae4c8fb8c78198a-40da9935-d455-482c-b654-88c748433ec9'; 
+$infobip_base_url = 'api.infobip.com';
 $sender = '447491163443'; 
 
 // Function to send SMS via Infobip
