@@ -205,7 +205,6 @@ if ($diagnosisResult->num_rows > 0) {
     <h3>Diagnosis Records</h3>
 
     <?php
-    // Include the diagnosis fetching PHP file
 
     // Display the diagnosis records
     if (!empty($diagnosisRecords)) {

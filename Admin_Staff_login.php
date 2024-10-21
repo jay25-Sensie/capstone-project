@@ -1,11 +1,10 @@
 <?php
-session_start(); // Start the session
+session_start(); 
 
 include("connection.php"); 
 include("function.php"); // Include your function definitions
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    // Get username and password from POST request
     $username = $_POST['username'];
     $password = $_POST['password'];
     
@@ -23,9 +22,9 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             
             // Verify the password
             if (password_verify($password, $user_data['password'])) {
-                $_SESSION['userID'] = $user_data['userID']; // Store user ID in session
-                $_SESSION['role'] = $user_data['role']; // Store user role in session
-                $_SESSION['username'] = $user_data['username']; // Store username in session
+                $_SESSION['userID'] = $user_data['userID']; 
+                $_SESSION['role'] = $user_data['role']; 
+                $_SESSION['username'] = $user_data['username'];
                 
                 // Check the user's role and redirect accordingly
                 if ($user_data['role'] == 'admin') {

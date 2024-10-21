@@ -10,6 +10,7 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'doctor') {
 }
 
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

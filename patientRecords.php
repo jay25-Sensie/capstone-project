@@ -437,8 +437,6 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                     </div>
                                 </div>
 
-
-                                <!-- Vital Sign Modal -->
                                 <div class="modal fade" id="vitalSignModal<?php echo $patient['pid']; ?>" tabindex="-1" role="dialog" aria-labelledby="vitalSignModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
@@ -451,6 +449,19 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                                 </div>
                                                 <div class="modal-body">
                                                     <input type="hidden" name="pid" value="<?php echo $patient['pid']; ?>">
+
+                                                    <?php
+                                                    // Fetch the most recent weight and height for the specific patient
+                                                    $pid = $patient['pid'];
+                                                    $query = "SELECT wt, ht FROM vital_signs WHERE pid = ? ORDER BY date DESC LIMIT 1";
+                                                    $stmt = $con->prepare($query);
+                                                    $stmt->bind_param("i", $pid);
+                                                    $stmt->execute();
+                                                    $stmt->bind_result($prev_wt, $prev_ht);
+                                                    $stmt->fetch();
+                                                    $stmt->close();
+                                                    ?>
+
                                                     <div class="form-group">
                                                         <label for="vital-date">Date</label>
                                                         <input type="date" class="form-control" id="vital-date" name="date" value="<?php echo date('Y-m-d'); ?>" required>
@@ -471,14 +482,17 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                                         <label for="vital-t">Temperature</label>
                                                         <input type="text" class="form-control" id="vital-t" name="t" required>
                                                     </div>
+
+                                                    <!-- Weight and Height with previous values pre-filled -->
                                                     <div class="form-group">
                                                         <label for="vital-wt">Weight (kg)</label>
-                                                        <input type="text" class="form-control" id="vital-wt" name="wt" required>
+                                                        <input type="text" class="form-control" id="vital-wt" name="wt" value="<?php echo htmlspecialchars($prev_wt); ?>" required>
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="vital-ht">Height (cm)</label>
-                                                        <input type="text" class="form-control" id="vital-ht" name="ht" required>
+                                                        <input type="text" class="form-control" id="vital-ht" name="ht" value="<?php echo htmlspecialchars($prev_ht); ?>" required>
                                                     </div>
+
                                                 </div>
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
@@ -488,6 +502,8 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                         </div>
                                     </div>
                                 </div>
+
+
                             <?php endforeach; ?>
                         <?php else: ?>
                             <tr>

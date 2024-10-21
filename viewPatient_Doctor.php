@@ -64,15 +64,6 @@ if (isset($_GET['pid']) && ctype_digit($_GET['pid'])) {
 $medicalQuery = "SELECT * FROM medical_records WHERE pid = '$pid'";
 $medicalResult = mysqli_query($con, $medicalQuery);
 
-// Retrieve prescription data associated with the PID
-$prescriptionQuery = "SELECT * FROM prescriptions_data WHERE pid = '$pid'";
-$prescriptionResult = mysqli_query($con, $prescriptionQuery);
-
-// Check for SQL errors
-if (!$medicalResult || !$prescriptionResult) {
-  echo "<div class='alert alert-danger' style='text-align: center;'>Error retrieving data.</div>";
-  exit();
-}
 
 // Prepare the SQL query to fetch diagnosis for the patient
 $stmt = $con->prepare("SELECT date, subjective, objective, assessment, plan, laboratory FROM diagnosis WHERE pid = ?");
@@ -367,35 +358,6 @@ $vital_signs = mysqli_fetch_all($result, MYSQLI_ASSOC);
           }
           ?>
 
-<br>
-<br>
-<br>
-          <!-- Display Prescription Data -->
-          <h3>Prescriptions</h3>
-                  <?php if (mysqli_num_rows($prescriptionResult) > 0): ?>
-                      <table class="table table-bordered">
-                          <thead>
-                              <tr>
-                                  <th>PID</th>
-                                  <th>Medicine</th>
-                                  <th>Frequency</th>
-                                  <th>Time to take</th>
-                              </tr>
-                          </thead>
-                          <tbody>
-                              <?php while ($prescription = mysqli_fetch_assoc($prescriptionResult)): ?>
-                                  <tr>
-                                      <td><?php echo htmlspecialchars($prescription['pid']); ?></td>
-                                      <td><?php echo htmlspecialchars($prescription['medicine_name']); ?></td>
-                                      <td><?php echo htmlspecialchars($prescription['frequency']); ?></td>
-                                      <td><?php echo htmlspecialchars($prescription['time_to_take']); ?></td>
-                                  </tr>
-                              <?php endwhile; ?>
-                          </tbody>
-                      </table>
-                  <?php else: ?>
-                      <div class='alert alert-info' style='text-align: center;'>No prescriptions found for this patient.</div>
-                  <?php endif; ?>
 <br>
 <br>
 <br>

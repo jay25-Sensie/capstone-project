@@ -22,3 +22,111 @@ PHP Notice:  file_put_contents(): Write of 39 bytes failed with errno=13 Permiss
 
 Notice: file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
  -->Sun 10/13/2024 14:02:32.91 - Finished send_reminders.php 
+Mon 10/14/2024 20:37:20.07 - Starting send_reminders.php 
+<!-- PHP Notice:  file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+PHP Notice:  file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+ -->Mon 10/14/2024 20:37:33.09 - Finished send_reminders.php 
+Tue 10/15/2024 20:32:05.62 - Starting send_reminders.php 
+<!-- PHP Notice:  file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+PHP Notice:  file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+ -->Tue 10/15/2024 20:32:09.59 - Finished send_reminders.php 
+Tue 10/15/2024 21:02:05.74 - Starting send_reminders.php 
+<!-- PHP Notice:  file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+PHP Notice:  file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+ -->Tue 10/15/2024 21:02:08.64 - Finished send_reminders.php 
+Wed 10/16/2024  8:32:43.21 - Starting send_reminders.php 
+<!-- PHP Notice:  file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+PHP Notice:  file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+ -->Wed 10/16/2024  8:33:06.86 - Finished send_reminders.php 
+Thu 10/17/2024 19:42:55.44 - Starting send_reminders.php 
+<!-- PHP Notice:  file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+PHP Notice:  file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+ -->Thu 10/17/2024 19:59:46.12 - Finished send_reminders.php 
+Fri 10/18/2024 20:32:08.25 - Starting send_reminders.php 
+<!-- PHP Fatal error:  Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\xampp\htdocs\WBHR_MS\connection.php:8
+Stack trace:
+#0 C:\xampp\htdocs\WBHR_MS\connection.php(8): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue), 'whrms_db')
+#1 C:\xampp\htdocs\WBHR_MS\send_reminders.php(7): include('C:\\xampp\\htdocs...')
+#2 {main}
+  thrown in C:\xampp\htdocs\WBHR_MS\connection.php on line 8
+
+Fatal error: Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\xampp\htdocs\WBHR_MS\connection.php:8
+Stack trace:
+#0 C:\xampp\htdocs\WBHR_MS\connection.php(8): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue), 'whrms_db')
+#1 C:\xampp\htdocs\WBHR_MS\send_reminders.php(7): include('C:\\xampp\\htdocs...')
+#2 {main}
+  thrown in C:\xampp\htdocs\WBHR_MS\connection.php on line 8
+Fri 10/18/2024 20:32:56.83 - Finished send_reminders.php 
+Fri 10/18/2024 21:02:05.05 - Starting send_reminders.php 
+<!-- PHP Fatal error:  Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\xampp\htdocs\WBHR_MS\connection.php:8
+Stack trace:
+#0 C:\xampp\htdocs\WBHR_MS\connection.php(8): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue), 'whrms_db')
+#1 C:\xampp\htdocs\WBHR_MS\send_reminders.php(7): include('C:\\xampp\\htdocs...')
+#2 {main}
+  thrown in C:\xampp\htdocs\WBHR_MS\connection.php on line 8
+
+Fatal error: Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\xampp\htdocs\WBHR_MS\connection.php:8
+Stack trace:
+#0 C:\xampp\htdocs\WBHR_MS\connection.php(8): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue), 'whrms_db')
+#1 C:\xampp\htdocs\WBHR_MS\send_reminders.php(7): include('C:\\xampp\\htdocs...')
+#2 {main}
+  thrown in C:\xampp\htdocs\WBHR_MS\connection.php on line 8
+Fri 10/18/2024 21:02:23.74 - Finished send_reminders.php 
+Fri 10/18/2024 22:02:05.71 - Starting send_reminders.php 
+<!-- PHP Fatal error:  Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\xampp\htdocs\WBHR_MS\connection.php:8
+Stack trace:
+#0 C:\xampp\htdocs\WBHR_MS\connection.php(8): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue), 'whrms_db')
+#1 C:\xampp\htdocs\WBHR_MS\send_reminders.php(7): include('C:\\xampp\\htdocs...')
+#2 {main}
+  thrown in C:\xampp\htdocs\WBHR_MS\connection.php on line 8
+
+Fatal error: Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\xampp\htdocs\WBHR_MS\connection.php:8
+Stack trace:
+#0 C:\xampp\htdocs\WBHR_MS\connection.php(8): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue), 'whrms_db')
+#1 C:\xampp\htdocs\WBHR_MS\send_reminders.php(7): include('C:\\xampp\\htdocs...')
+#2 {main}
+  thrown in C:\xampp\htdocs\WBHR_MS\connection.php on line 8
+Fri 10/18/2024 22:02:34.34 - Finished send_reminders.php 
+Mon 10/21/2024  8:25:28.81 - Starting send_reminders.php 
+<!-- PHP Fatal error:  Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\xampp\htdocs\WBHR_MS\connection.php:8
+Stack trace:
+#0 C:\xampp\htdocs\WBHR_MS\connection.php(8): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue), 'whrms_db')
+#1 C:\xampp\htdocs\WBHR_MS\send_reminders.php(7): include('C:\\xampp\\htdocs...')
+#2 {main}
+  thrown in C:\xampp\htdocs\WBHR_MS\connection.php on line 8
+
+Fatal error: Uncaught mysqli_sql_exception: No connection could be made because the target machine actively refused it in C:\xampp\htdocs\WBHR_MS\connection.php:8
+Stack trace:
+#0 C:\xampp\htdocs\WBHR_MS\connection.php(8): mysqli->__construct('localhost', 'root', Object(SensitiveParameterValue), 'whrms_db')
+#1 C:\xampp\htdocs\WBHR_MS\send_reminders.php(7): include('C:\\xampp\\htdocs...')
+#2 {main}
+  thrown in C:\xampp\htdocs\WBHR_MS\connection.php on line 8
+Mon 10/21/2024  8:26:36.44 - Finished send_reminders.php 
+Mon 10/21/2024 20:32:05.44 - Starting send_reminders.php 
+<!-- PHP Notice:  file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+PHP Notice:  file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+ -->Mon 10/21/2024 20:32:17.16 - Finished send_reminders.php 

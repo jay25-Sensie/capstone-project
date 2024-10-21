@@ -314,34 +314,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
                         mysqli_close($con);
                         ?>
  <br>
- <br>                       
-                        <h3>Prescription Information</h3>
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Medicine Name</th>
-                                    <th>Dosage</th>
-                                    <th>Frequency</th>
-                                    <th>Time to Take</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($prescriptions)): ?>
-                                    <?php foreach ($prescriptions as $prescription): ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($prescription['medicine_name']); ?></td>
-                                            <td><?php echo htmlspecialchars($prescription['dosage']); ?></td>
-                                            <td><?php echo htmlspecialchars($prescription['frequency']); ?></td>
-                                            <td><?php echo htmlspecialchars($prescription['time_to_take']); ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr><td colspan="4">No prescriptions found.</td></tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-<br>
-<br>
+ <br>
                         <h3>Medical Records</h3>
                         <table class="table table-bordered">
                             <thead>

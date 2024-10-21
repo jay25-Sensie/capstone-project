@@ -27,11 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
     $medicalRecordsResult = mysqli_query($con, $medicalRecordsQuery);
     $medicalRecords = mysqli_fetch_all($medicalRecordsResult, MYSQLI_ASSOC);
 
-     // Fetch vital signs
-     $vitalQuery = "SELECT * FROM vital_signs WHERE pid = $pid";
-     $vitalResult = mysqli_query($con, $vitalQuery);
-     $vital_signs = mysqli_fetch_all($vitalResult, MYSQLI_ASSOC);
-    
+    // Fetch vital signs
+    $vitalQuery = "SELECT * FROM vital_signs WHERE pid = $pid";
+    $vitalResult = mysqli_query($con, $vitalQuery);
+    $vital_signs = mysqli_fetch_all($vitalResult, MYSQLI_ASSOC);
 
     $noPatientFound = !$patient; // Set flag if no patient found
 } else {
@@ -227,171 +226,104 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
   </aside>
 
 <br>
-  <div class="content-wrapper">
+<div class="content-wrapper">
     <div class="wrapper">
         <?php if ($pid === null): ?>
-            <!-- Form to enter PID -->
+            <!-- Form to select PID and patient name -->
             <div class="container mt-4">
                 <h2>Generate Patient Report</h2>
                 <form method="POST" action="genReports.php">
                     <div class="form-group">
-                        <label for="pid">Enter Patient PID:</label>
-                        <input type="text" class="form-control" name="pid" id="pid" required>
+                        <label for="pid">Select Patient (ID - Name):</label>
+                        <select class="form-control" id="pid" name="pid" required>
+                            <option value="" disabled selected>Select a patient</option>
+                            <?php
+                            // Fetch the list of patients from the database
+                            $query = "SELECT pid, name, lastname FROM patient_records";
+                            $result = mysqli_query($con, $query);
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                echo "<option value='" . $row['pid'] . "'>" . $row['pid'] . " - " . htmlspecialchars($row['name']) . " " . htmlspecialchars($row['lastname']) . "</option>";
+                            }
+                            ?>
+                        </select>
                     </div>
                     <button type="submit" class="btn btn-primary">Generate Report</button>
                 </form>
             </div>
-                <?php else: ?>
+        <?php else: ?>
             <!-- Display Patient Report -->
-                <div class="container mt-4">
-                    <?php if ($patient): ?>
-                        <h2>Generate Reports for <?php echo htmlspecialchars($patient['name']); ?></h2>
-                        
-                        <!-- Patient Information -->
-                        <h4>Patient Information</h4>
-                        <table class="table table-bordered">
-                            <tr><th>PID</th><td><?php echo htmlspecialchars($patient['pid']); ?></td></tr>
-                            <tr><th>Name</th><td><?php echo htmlspecialchars($patient['name']); ?> <?php echo htmlspecialchars($patient['lastname']); ?></td></tr>
-                            <tr><th>Address</th><td><?php echo htmlspecialchars($patient['address']); ?></td></tr>
-                            <tr><th>Age</th><td><?php echo htmlspecialchars($patient['age']); ?></td></tr>
-                            <tr><th>Birthdate</th><td><?php echo htmlspecialchars($patient['birthday']); ?></td></tr>
-                            <tr><th>Phone Number</th><td><?php echo htmlspecialchars($patient['phone_number']); ?></td></tr>
-                            <tr><th>Gender</th><td><?php echo htmlspecialchars($patient['gender']); ?></td></tr>
-                            <tr><th>Status</th><td><?php echo htmlspecialchars($patient['status']); ?></td></tr>
-                        </table>
-<br>
-<br>
-                        <h3>Vital Signs</h3>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>BP</th>
-                                    <th>CR</th>
-                                    <th>RR</th>
-                                    <th>T</th>
-                                    <th>WT</th>
-                                    <th>HT</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php foreach ($vital_signs as $vital): ?>
-                                <tr>
-                                    <td><?php echo htmlspecialchars($vital['date']); ?></td>
-                                    <td><?php echo htmlspecialchars($vital['bp']); ?></td>
-                                    <td><?php echo htmlspecialchars($vital['cr']); ?></td>
-                                    <td><?php echo htmlspecialchars($vital['rr']); ?></td>
-                                    <td><?php echo htmlspecialchars($vital['t']); ?></td>
-                                    <td><?php echo htmlspecialchars($vital['wt']); ?></td>
-                                    <td><?php echo htmlspecialchars($vital['ht']); ?></td>
-                                </tr>
-                                <?php endforeach; ?>
-                            </tbody>
-                        </table>
-<br>
-<br>
-                        <h3>Diagnosis Records</h3>
-                        <?php
-                        // Fetch diagnosis records
-                        if (isset($pid) && $pid > 0) {
-                            $diagnosisQuery = "SELECT * FROM diagnosis WHERE pid = ?";
-                            $stmt = $con->prepare($diagnosisQuery);
-                            $stmt->bind_param("i", $pid);
-                            $stmt->execute();
-                            $diagnosisResult = $stmt->get_result();
-                            
-                            if ($diagnosisResult->num_rows > 0) {
-                                echo '<table class="table table-bordered">
-                                    <thead>
-                                        <tr>
-                                            <th>Date</th>
-                                            <th>Subjective</th>
-                                            <th>Objective</th>
-                                            <th>Assessment</th>
-                                            <th>Plan</th>
-                                            <th>Laboratory</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>';
-                                while ($row = $diagnosisResult->fetch_assoc()) {
-                                    echo '<tr>
-                                        <td>' . htmlspecialchars($row['date']) . '</td>
-                                        <td>' . htmlspecialchars($row['subjective']) . '</td>
-                                        <td>' . htmlspecialchars($row['objective']) . '</td>
-                                        <td>' . htmlspecialchars($row['assessment']) . '</td>
-                                        <td>' . htmlspecialchars($row['plan']) . '</td>
-                                        <td>' . (!empty($row['laboratory']) ? htmlspecialchars($row['laboratory']) : 'N/A') . '</td>
-                                    </tr>';
-                                }
-                                echo '</tbody></table>';
-                            } else {
-                                echo '<div class="alert alert-info">No diagnosis records found for this patient.</div>';
-                            }
-                        }
-                        ?>
-<br>
-<br>
-                        <h4>Prescription Information</h4>
-                        <table class="table table-bordered table-striped">
-                            <thead>
-                                <tr>
-                                    <th>Medicine Name</th>
-                                    <th>Dosage</th>
-                                    <th>Frequency</th>
-                                    <th>Time to Take</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($prescriptions)): ?>
-                                    <?php foreach ($prescriptions as $prescription): ?>
-                                        <tr>
-                                            <td><?php echo htmlspecialchars($prescription['medicine_name']); ?></td>
-                                            <td><?php echo htmlspecialchars($prescription['dosage']); ?></td>
-                                            <td><?php echo htmlspecialchars($prescription['frequency']); ?></td>
-                                            <td><?php echo htmlspecialchars($prescription['time_to_take']); ?></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr><td colspan="4">No prescriptions found.</td></tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
-<br>
-<br>
-                        <h4>Medical Records</h4>
-                        <table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>File Path</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($medicalRecords)): ?>
-                                    <?php foreach ($medicalRecords as $record): ?>
-                                        <tr>
-                                            <td><a href="<?php echo htmlspecialchars($record['file_path']); ?>" target="_self"><?php echo htmlspecialchars($record['file_path']); ?></a></td>
-                                        </tr>
-                                    <?php endforeach; ?>
-                                <?php else: ?>
-                                    <tr><td>No medical records found.</td></tr>
-                                <?php endif; ?>
-                            </tbody>
-                        </table>
+            <div class="container mt-4">
+                <?php if ($patient): ?>
+                    <h2>Generate Reports for <?php echo htmlspecialchars($patient['name']); ?> <?php echo htmlspecialchars($patient['lastname']); ?></h2>
 
-                        <!-- Print Button -->
-                        <button id="printButton" onclick="window.print()" class="btn btn-primary">Print Report</button>
+                    <!-- Patient Information -->
+                    <h4>Patient Information</h4>
+                    <table class="table table-bordered">
+                        <tr><th>PID</th><td><?php echo htmlspecialchars($patient['pid']); ?></td></tr>
+                        <tr><th>Name</th><td><?php echo htmlspecialchars($patient['name']); ?> <?php echo htmlspecialchars($patient['lastname']); ?></td></tr>
+                        <tr><th>Address</th><td><?php echo htmlspecialchars($patient['address']); ?></td></tr>
+                        <tr><th>Age</th><td><?php echo htmlspecialchars($patient['age']); ?></td></tr>
+                        <tr><th>Birthdate</th><td><?php echo htmlspecialchars($patient['birthday']); ?></td></tr>
+                        <tr><th>Phone Number</th><td><?php echo htmlspecialchars($patient['phone_number']); ?></td></tr>
+                        <tr><th>Gender</th><td><?php echo htmlspecialchars($patient['gender']); ?></td></tr>
+                        <tr><th>Status</th><td><?php echo htmlspecialchars($patient['status']); ?></td></tr>
+                    </table>
+                    <br>
 
-                    <?php else: ?>
-                        <!-- Alert Message -->
-                        <div class="alert alert-warning mt-4" id="alert">No patient found with the provided PID.</div>
-                    <?php endif; ?>
-                </div>
+                    <!-- Vital Signs Section -->
+                    <h3>Vital Signs</h3>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>BP</th>
+                                <th>CR</th>
+                                <th>RR</th>
+                                <th>T</th>
+                                <th>WT</th>
+                                <th>HT</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($vital_signs as $vital): ?>
+                            <tr>
+                                <td><?php echo htmlspecialchars($vital['date']); ?></td>
+                                <td><?php echo htmlspecialchars($vital['bp']); ?></td>
+                                <td><?php echo htmlspecialchars($vital['cr']); ?></td>
+                                <td><?php echo htmlspecialchars($vital['rr']); ?></td>
+                                <td><?php echo htmlspecialchars($vital['t']); ?></td>
+                                <td><?php echo htmlspecialchars($vital['wt']); ?></td>
+                                <td><?php echo htmlspecialchars($vital['ht']); ?></td>
+                            </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    <br>
+
+                    <!-- Medical Records Section -->
+                    <h4>Medical Records</h4>
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr><th>File Path</th></tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($medicalRecords as $record): ?>
+                            <tr><td><a href="<?php echo htmlspecialchars($record['file_path']); ?>" target="_self"><?php echo htmlspecialchars($record['file_path']); ?></a></td></tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+
+                    <!-- Print Button -->
+                    <button id="printButton" onclick="window.print()" class="btn btn-primary">Print Report</button>
+                    <br>
+                    <br>
+
+                <?php else: ?>
+                    <div class="alert alert-warning mt-4" id="alert">No patient found with the provided PID.</div>
+                <?php endif; ?>
+            </div>
         <?php endif; ?>
-
     </div>
-
-  </div>
-  <!-- /.control-sidebar -->
 </div>
 <!-- ./wrapper -->
 

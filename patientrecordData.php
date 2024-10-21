@@ -256,7 +256,6 @@ if (!$medicalResult || !$prescriptionResult) {
                                 <th>Objective</th>
                                 <th>Assessment</th>
                                 <th>Plan</th>
-                                <th>Laboratory</th>
                             </tr>
                         </thead>
                         <tbody>';
@@ -267,7 +266,6 @@ if (!$medicalResult || !$prescriptionResult) {
                             <td>' . htmlspecialchars($row['objective']) . '</td>
                             <td>' . htmlspecialchars($row['assessment']) . '</td>
                             <td>' . htmlspecialchars($row['plan']) . '</td>
-                            <td>' . (!empty($row['laboratory']) ? htmlspecialchars($row['laboratory']) : 'N/A') . '</td>
                         </tr>';
                     }
                     echo '</tbody></table>';

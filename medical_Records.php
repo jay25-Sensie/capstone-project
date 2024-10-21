@@ -5,8 +5,8 @@ include("connection.php");
 include("function.php");
 
 if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-  header("Location: Admin_Staff_login.php");
-  exit();
+    header("Location: Admin_Staff_login.php");
+    exit();
 }
 
 $uploadDir = 'uploads/';
@@ -16,7 +16,8 @@ if (!is_dir($uploadDir)) {
     mkdir($uploadDir, 0777, true); // Create directory with proper permissions
 }
 
-// Define the maximum file size (5MB)
+// Define the allowed file types and maximum file size (5MB)
+$allowedFileTypes = ['pdf', 'doc', 'docx', 'jpeg', 'jpg', 'png'];
 $maxFileSize = 5 * 1024 * 1024; // 5MB in bytes
 
 // Check if the form is submitted
@@ -28,16 +29,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $fileTmpName = $file['tmp_name'];
         $fileSize = $file['size'];
         $targetFile = $uploadDir . basename($fileName);
-        
+
         // Check if the PID exists in the database
         $pidCheckSql = "SELECT COUNT(*) as count FROM patient_records WHERE pid='$pid'";
         $result = mysqli_query($con, $pidCheckSql);
         $row = mysqli_fetch_assoc($result);
 
+        // Get the file extension
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+
         if ($row['count'] > 0) {
             // Check if the file size is within the limit
             if ($fileSize > $maxFileSize) {
                 echo "<div class='alert alert-danger' style='padding-left:20%; text-align: center;'>File size exceeds the 5MB limit.</div>";
+            } elseif (!in_array($fileExtension, $allowedFileTypes)) {
+                echo "<div class='alert alert-danger' style='padding-left:20%; text-align: center;'>Invalid file type. Only PDF, DOC, JPEG, JPG, PNG files are allowed.</div>";
             } else {
                 // Proceed with file upload
                 if (move_uploaded_file($fileTmpName, $targetFile)) {
@@ -57,6 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -222,40 +229,48 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- /.sidebar -->
   </aside>
 
-
-
+  <div class="wrapper">
   <div class="content-wrapper">
-        <div class="container mt-5">
-            <!-- Display messages -->
-            <?php if (!empty($message)): ?>
-                <div class="alert-container">
-                    <?php echo $message; ?>
-                </div>
-            <?php endif; ?>
+    <div class="container mt-5">
+        <!-- Display messages -->
+        <?php if (!empty($message)): ?>
+            <div class="alert-container">
+                <?php echo $message; ?>
+            </div>
+        <?php endif; ?>
 
-            <!-- Form to upload files -->
-            <div class="card">
-                <div class="card-header">
-                    <h3 class="card-title">Upload Medical Records</h3>
-                </div>
-                <div class="card-body">
-                    <form action="medical_records.php" method="POST" enctype="multipart/form-data">
-                        <div class="form-group">
-                            <label for="pid">Patient ID:</label>
-                            <input type="text" class="form-control" id="pid" name="pid" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="file">Select File/Image:</label>
-                            <input type="file" class="form-control-file" id="file" name="file" required>
-                        </div>
-                        <button type="submit" name="upload" class="btn btn-primary">Upload</button>
-                    </form>
-                </div>
+        <!-- Form to upload files -->
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Upload Medical Records</h3>
+            </div>
+            <div class="card-body">
+                <form action="medical_records.php" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="pid">Select Patient (ID - Name):</label>
+                        <select class="form-control" id="pid" name="pid" required>
+                            <option value="" disabled selected>Select a patient</option>
+                            <?php
+                            // Fetch the list of patients from the database
+                            $query = "SELECT pid, name FROM patient_records";
+                            $result = mysqli_query($con, $query);
+                            while ($row = mysqli_fetch_assoc($result)) {
+                                echo "<option value='" . $row['pid'] . "'>" . $row['pid'] . " - " . $row['name'] . "</option>";
+                            }
+                            ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="file">Select File/Image:</label>
+                        <input type="file" class="form-control-file" id="file" name="file" required>
+                    </div>
+                    <button type="submit" name="upload" class="btn btn-primary">Upload</button>
+                </form>
             </div>
         </div>
     </div>
-    <!-- /.control-sidebar -->
   </div>
+</div>
 </div>
 <!-- ./wrapper -->
 
