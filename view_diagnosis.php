@@ -8,19 +8,37 @@ if (!isset($_SESSION['userID']) || !isset($_SESSION['role']) || $_SESSION['role'
   header("Location: Admin_Staff_login.php");
   exit();
 }
-      
-$diagnosisQuery = "SELECT pid, date, subjective, objective, assessment, plan FROM diagnosis";
-$stmt = $con->prepare($diagnosisQuery);
-$stmt->execute();
-$diagnosisResult = $stmt->get_result();
-
-$diagnosisRecords = [];
-if ($diagnosisResult->num_rows > 0) {
-    while ($row = $diagnosisResult->fetch_assoc()) {
-        $diagnosisRecords[] = $row;
+if (isset($_GET['pid'])) {
+    $pid = htmlspecialchars($_GET['pid']);
+    
+    // Function to fetch diagnosis records by PID
+    function fetchDiagnosisRecordsByPID($pid) {
+        global $con;
+        $stmt = $con->prepare("SELECT 
+                                    d.date, 
+                                    d.subjective, 
+                                    d.objective, 
+                                    d.assessment, 
+                                    d.plan,
+                                    p.pid, 
+                                    p.name, 
+                                    p.lastname,
+                                    p.address, 
+                                    p.phone_number, 
+                                    p.age, 
+                                    p.gender, 
+                                    p.birthday 
+                                FROM diagnosis d
+                                JOIN patient_records p ON d.pid = p.pid
+                                WHERE d.pid = ?");
+        $stmt->bind_param("s", $pid);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        return $result->fetch_all(MYSQLI_ASSOC); // Return results as an associative array
     }
-} else {
-    $diagnosisRecords = [];
+
+    // Fetch the diagnosis records for the specified PID
+    $diagnosisRecords = fetchDiagnosisRecordsByPID($pid);     
 }
 
 ?>
@@ -65,6 +83,11 @@ if ($diagnosisResult->num_rows > 0) {
     }
     .nav-treeview .nav-item {
         padding-left: 3%;
+    }
+    @media print {
+        #printButton {
+            display: none;
+        }
     }
   </style>
   
@@ -200,48 +223,72 @@ if ($diagnosisResult->num_rows > 0) {
     <!-- /.sidebar -->
   </aside>
 
-
   <div class="content-wrapper">
-    <h3>Diagnosis Records</h3>
+    <div class="container mt-5">
+            <h3 class="text-center mb-4">Immaculate Medico-Surgical Clinic</h3>
+            <h4 class="text-center mb-4">Diagnosis Records for PID: <?php echo $pid; ?></h4>
+            <hr>
+            <br> <br>
 
-    <?php
-    // Display the diagnosis records
-    if (!empty($diagnosisRecords)) {
-        echo '<table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>PID</th>
-                    <th>Date</th>
-                    <th>Subjective</th>
-                    <th>Objective</th>
-                    <th>Assessment</th>
-                    <th>Plan</th>
-                    <th>Actions</th> <!-- Add an Actions column -->
-                </tr>
-            </thead>
-            <tbody>';
-        foreach ($diagnosisRecords as $record) {
-            echo '<tr>
-                <td>' . htmlspecialchars($record['pid']) . '</td>
-                <td>' . htmlspecialchars($record['date']) . '</td>
-                <td>' . htmlspecialchars($record['subjective']) . '</td>
-                <td>' . htmlspecialchars($record['objective']) . '</td>
-                <td>' . htmlspecialchars($record['assessment']) . '</td>
-                <td>' . htmlspecialchars($record['plan']) . '</td>
-                <td>
-                    <form method="GET" action="view_diagnosis.php"> <!-- Update the action to your specific page -->
-                        <input type="hidden" name="pid" value="' . htmlspecialchars($record['pid']) . '">
-                        <button type="submit" class="btn btn-info btn-sm">View Diagnosis</button>
-                    </form>
-                </td>
-            </tr>';
-        }
-        echo '</tbody></table>';
-    } else {
-        echo '<div class="alert alert-info">No diagnosis records found.</div>';
-    }
-    ?>
-</div>
+            <?php
+            if (!empty($diagnosisRecords)) {
+                $record = $diagnosisRecords[0]; // Get the first record for patient info
+                echo '<div class="row mb-4">
+                        <div class="col-md-6">
+                            <p><strong>Name:</strong> ' . htmlspecialchars($record['name'])  . ' ' . htmlspecialchars($record['lastname']). '</p>
+                            <p><strong>Address:</strong> ' . htmlspecialchars($record['address']) . '</p>
+                            <p><strong>Phone Number:</strong> ' . htmlspecialchars($record['phone_number']) . '</p>
+                        </div>
+                        <div class="col-md-6" style="text-align: right;">
+                            <p><strong>Age:</strong> ' . htmlspecialchars($record['age']) . '</p>
+                            <p><strong>Sex:</strong> ' . htmlspecialchars($record['gender']) . '</p>
+                            <p><strong>Birthday:</strong> ' . htmlspecialchars($record['birthday']) . '</p>
+                        </div>
+                    </div>';
+            } else {
+                echo '<div class="alert alert-info">No diagnosis records found for PID: ' . $pid . '.</div>';
+            }
+            ?>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <?php
+                    if (!empty($diagnosisRecords)) {
+                        echo '<table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Subjective</th>
+                                    <th>Objective</th>
+                                    <th>Assessment</th>
+                                    <th>Plan</th>
+                                </tr>
+                            </thead>
+                            <tbody>';
+                        foreach ($diagnosisRecords as $record) {
+                            echo '<tr>
+                                <td>' . htmlspecialchars($record['date']) . '</td>
+                                <td>' . htmlspecialchars($record['subjective']) . '</td>
+                                <td>' . htmlspecialchars($record['objective']) . '</td>
+                                <td>' . htmlspecialchars($record['assessment']) . '</td>
+                                <td>' . htmlspecialchars($record['plan']) . '</td>
+                            </tr>';
+                        }
+                        echo '</tbody></table>';
+                    } else {
+                        echo '<div class="alert alert-info">No diagnosis records found for PID: ' . $pid . '.</div>';
+                    }
+                    ?>
+                </div>
+            </div>
+
+            <div class="row mt-4">
+                <div class="col-md-12 text-left">
+                    <button onclick="window.print()" class="btn btn-primary" id="printButton">Print Diagnosis</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
 <!-- ./wrapper -->
 

@@ -10,14 +10,13 @@ if (!isset($_SESSION['username']) || !isset($_SESSION['role']) || $_SESSION['rol
     exit();
 }
 
-// Function to sanitize input data
 function sanitize_input($con, $data) {
     return mysqli_real_escape_string($con, htmlspecialchars(strip_tags($data)));
 }
 
-// Function to check if a patient already exists
-function check_patient_exists($con, $name, $lastname, $phone_number, $pid = null) {
-    $query = "SELECT * FROM patient_records WHERE name = '$name' AND lastname = '$lastname' AND phone_number = '$phone_number' ";
+// Function to check if a patient with the same name and lastname exists
+function check_patient_name_exists($con, $name, $lastname, $pid = null) {
+    $query = "SELECT * FROM patient_records WHERE name = '$name' AND lastname = '$lastname'";
     if ($pid) {
         $query .= " AND pid != $pid";
     }
@@ -25,16 +24,23 @@ function check_patient_exists($con, $name, $lastname, $phone_number, $pid = null
     return mysqli_num_rows($result) > 0;
 }
 
-// Function to format the phone number
-function format_phone_number($phone_number) {
-    // Check if the phone number starts with '0' and replace it with '+63'
-    if (substr($phone_number, 0, 1) === '0') {
-        return '+63' . substr($phone_number, 1); // Remove leading 0 and prepend +63
+// Function to check if a patient with the same phone number exists
+function check_phone_number_exists($con, $phone_number, $pid = null) {
+    $query = "SELECT * FROM patient_records WHERE phone_number = '$phone_number'";
+    if ($pid) {
+        $query .= " AND pid != $pid";
     }
-    return $phone_number; // Return as is if it doesn't need formatting
+    $result = mysqli_query($con, $query);
+    return mysqli_num_rows($result) > 0;
 }
 
-// Add/Update patient, Update status
+function format_phone_number($phone_number) {
+    if (substr($phone_number, 0, 1) === '0') {
+        return '+63' . substr($phone_number, 1);
+    }
+    return $phone_number;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = sanitize_input($con, $_POST['name']);
     $lastname = sanitize_input($con, $_POST['lastname']);
@@ -44,39 +50,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $gender = sanitize_input($con, $_POST['gender']);
     $pid = isset($_POST['pid']) ? intval($_POST['pid']) : null;
 
-    // Initialize validation flag
     $validation_passed = true;
-
-    // Format the phone number
     $formatted_phone_number = format_phone_number($phone_number);
 
-    // Validate phone number
-    if (!ctype_digit(substr($formatted_phone_number, 3)) || strlen($formatted_phone_number) != 13) { // Check for 11 digits after +63
+    if (!ctype_digit(substr($formatted_phone_number, 3)) || strlen($formatted_phone_number) != 13) {
         echo "<script>alert('Phone number must contain exactly 11 digits after the country code!');</script>";
         $validation_passed = false;
     }
 
-    // Validate name and lastname uniqueness
-    if (check_patient_exists($con, $name, $lastname, $formatted_phone_number, $pid)) {
-        echo "<script>alert('Patient already exists!');</script>";
+    if (check_patient_name_exists($con, $name, $lastname, $pid)) {
+        echo "<script>alert('A patient with this name and last name already exists!');</script>";
+        $validation_passed = false;
+    }
+
+    if (check_phone_number_exists($con, $formatted_phone_number, $pid)) {
+        echo "<script>alert('A patient with this phone number already exists!');</script>";
         $validation_passed = false;
     }
 
     if ($validation_passed) {
-        // Calculate age automatically from birthday
         $birthdate = new DateTime($birthday);
         $today = new DateTime();
         $age = $today->diff($birthdate)->y;
 
         if (isset($_POST['add_patient'])) {
-            // Insert into patients table
             $query = "INSERT INTO patient_records (name, lastname, address, age, birthday, phone_number, gender, status) 
                       VALUES ('$name', '$lastname', '$address', $age, '$birthday', '$formatted_phone_number', '$gender', 'Active')";
             if (mysqli_query($con, $query)) {
-                // Get the last inserted PID
                 $pid = mysqli_insert_id($con);
-
-                // Insert into user table
                 $hashed_password = password_hash($pid, PASSWORD_BCRYPT);
                 $query_user = "INSERT INTO users (username, password, role) VALUES ('$pid', '$hashed_password', 'patient')";
                 mysqli_query($con, $query_user);
@@ -110,13 +111,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     } else {
-        // If validation failed, stay on the form page
         echo "<script>window.history.back();</script>";
         exit();
     }
 }
 
-// Fetch all patient records
 $query = "SELECT * FROM patient_records";
 $result = mysqli_query($con, $query);
 
@@ -126,6 +125,7 @@ if (!$result) {
 
 $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
 ?>
+
 
 
 <!DOCTYPE html>

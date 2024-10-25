@@ -130,3 +130,19 @@ PHP Notice:  file_put_contents(): Write of 39 bytes failed with errno=13 Permiss
 
 Notice: file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
  -->Mon 10/21/2024 20:32:17.16 - Finished send_reminders.php 
+Mon 10/21/2024 21:47:11.38 - Starting send_reminders.php 
+<!-- PHP Notice:  file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+PHP Notice:  file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+ -->Mon 10/21/2024 21:47:18.06 - Finished send_reminders.php 
+Fri 10/25/2024 20:37:42.95 - Starting send_reminders.php 
+<!-- PHP Notice:  file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+PHP Notice:  file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 39 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+ -->Fri 10/25/2024 20:39:54.12 - Finished send_reminders.php 

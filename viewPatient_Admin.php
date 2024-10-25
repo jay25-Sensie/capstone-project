@@ -36,12 +36,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $medicalQuery = "SELECT * FROM medical_records WHERE pid = $pid";
     $medicalResult = mysqli_query($con, $medicalQuery);
 
-    // Retrieve prescription data associated with the PID
-    $prescriptionQuery = "SELECT * FROM prescriptions_data WHERE pid = $pid";
-    $prescriptionResult = mysqli_query($con, $prescriptionQuery);
-
     // Check for SQL errors
-    if (!$medicalResult || !$prescriptionResult) {
+    if (!$medicalResult) {
       echo "<div class='alert alert-danger' style='text-align: center;'>Error retrieving data.</div>";
       exit();
     }
@@ -291,7 +287,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                               <th>Objective</th>
                               <th>Assessment</th>
                               <th>Plan</th>
-                              <th>Laboratory</th>
                           </tr>
                       </thead>
                       <tbody>';
@@ -302,7 +297,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                           <td>' . htmlspecialchars($row['objective']) . '</td>
                           <td>' . htmlspecialchars($row['assessment']) . '</td>
                           <td>' . htmlspecialchars($row['plan']) . '</td>
-                          <td>' . (!empty($row['laboratory']) ? htmlspecialchars($row['laboratory']) : 'N/A') . '</td>
                       </tr>';
                   }
                   echo '</tbody></table>';
@@ -311,33 +305,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               }
           }
           ?>
-<br>
-<br>
-      <h3>Prescriptions</h3>
-              <?php if (mysqli_num_rows($prescriptionResult) > 0): ?>
-                  <table class="table table-bordered">
-                      <thead>
-                          <tr>
-                              <th>PID</th>
-                              <th>Medicine</th>
-                              <th>Frequency</th>
-                              <th>Time to take</th>
-                          </tr>
-                      </thead>
-                      <tbody>
-                          <?php while ($prescription = mysqli_fetch_assoc($prescriptionResult)): ?>
-                              <tr>
-                                  <td><?php echo htmlspecialchars($prescription['pid']); ?></td>
-                                  <td><?php echo htmlspecialchars($prescription['medicine_name']); ?></td>
-                                  <td><?php echo htmlspecialchars($prescription['frequency']); ?></td>
-                                  <td><?php echo htmlspecialchars($prescription['time_to_take']); ?></td>
-                              </tr>
-                          <?php endwhile; ?>
-                      </tbody>
-                  </table>
-              <?php else: ?>
-                  <div class='alert alert-info' style='text-align: center;'>No prescriptions found for this patient.</div>
-              <?php endif; ?>
 <br>
 <br>
       <h3>Medical Records</h3>
