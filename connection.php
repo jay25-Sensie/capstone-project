@@ -3,7 +3,7 @@
     $host = "localhost";
     $username = "root";
     $password = "";
-    $database = "whrms_db";
+    $database = "wbhrms_db";
 
     $con = new mysqli($host, $username, $password, $database);
 

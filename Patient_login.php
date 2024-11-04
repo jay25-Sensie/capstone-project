@@ -7,15 +7,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $pid = sanitize_input($con, $_POST['username']);
     $password = sanitize_input($con, $_POST['password']);
 
-    // Check if the user exists
     $query = "SELECT * FROM users WHERE username = '$pid' LIMIT 1";
     $result = mysqli_query($con, $query);
     $user = mysqli_fetch_assoc($result);
 
     if ($user && password_verify($password, $user['password'])) {
-        // Check the user's role
         if ($user['role'] === 'patient') {
-            // Set session and redirect to patient dashboard
             $_SESSION['pid'] = $pid;
             header("Location: Dashboard_Patient.php");
             exit();

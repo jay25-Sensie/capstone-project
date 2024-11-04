@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 <body>
 <div class="con_2">
     <img src=".//img/logo.png" style="width:20%; height: 20%;" alt="">
-    <h3>DOCTORS SIGN IN PAGE</h3>
+    <h3>DOCTOR'S SIGN UP</h3>
     <div class="form2">
         <form method="post">
             <label for="username">Email:</label><br>

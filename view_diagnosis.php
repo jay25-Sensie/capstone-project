@@ -85,9 +85,27 @@ if (isset($_GET['pid'])) {
         padding-left: 3%;
     }
     @media print {
-        #printButton {
+        title, #printButton {
             display: none;
         }
+    .row mb-4{
+      position: fixed;
+    }
+    }
+    .agb{
+      text-align: right;
+      position: relative;
+    }
+    @media print {
+      .row.mb-4 > div {
+        display: inline-block;
+        width: 50%;
+        vertical-align: top;
+      }
+
+      .row.mb-4 > div > p {
+        margin: 0;
+      }
     }
   </style>
   
@@ -239,10 +257,10 @@ if (isset($_GET['pid'])) {
                             <p><strong>Address:</strong> ' . htmlspecialchars($record['address']) . '</p>
                             <p><strong>Phone Number:</strong> ' . htmlspecialchars($record['phone_number']) . '</p>
                         </div>
-                        <div class="col-md-6" style="text-align: right;">
-                            <p><strong>Age:</strong> ' . htmlspecialchars($record['age']) . '</p>
-                            <p><strong>Sex:</strong> ' . htmlspecialchars($record['gender']) . '</p>
-                            <p><strong>Birthday:</strong> ' . htmlspecialchars($record['birthday']) . '</p>
+                        <div class="col-md-6">
+                            <p class="agb"><strong>Age:</strong> ' . htmlspecialchars($record['age']) . '</p>
+                            <p class="agb"><strong>Sex:</strong> ' . htmlspecialchars($record['gender']) . '</p>
+                            <p class="agb"><strong>Birthday:</strong> ' . htmlspecialchars($record['birthday']) . '</p>
                         </div>
                     </div>';
             } else {

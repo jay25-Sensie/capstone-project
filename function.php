@@ -8,6 +8,7 @@ function check_login($con)
         $query ="select * from users where userID = '$id' limit 1";
 
         $result = mysqli_query($con, $query);
+        //counts the number 0f raws
         if($result && mysqli_num_rows($result) > 0)
         {
             $user_data = mysqli_fetch_assoc($result);

@@ -1,58 +1,46 @@
 <?php
-session_start(); // Start the session
+session_start(); 
 
 include("connection.php"); 
-include("function.php"); // Include your function definitions
+include("function.php");
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    // Get username and password from POST request
     $username = $_POST['username'];
     $password = $_POST['password'];
     
-    // Check if username and password are not empty
     if (!empty($username) && !empty($password)) {
-        $username = mysqli_real_escape_string($con, $username); // Sanitize the username
+        $username = mysqli_real_escape_string($con, $username); 
         
-        // Query to get user data
         $query = "SELECT * FROM users WHERE username = '$username' LIMIT 1";
         $result = mysqli_query($con, $query);
         
-        // Check if query was successful and user exists
         if ($result && mysqli_num_rows($result) > 0) {
-            $user_data = mysqli_fetch_assoc($result); // Fetch user data
+            $user_data = mysqli_fetch_assoc($result);
             
-            // Verify the password
             if (password_verify($password, $user_data['password'])) {
-                $_SESSION['userID'] = $user_data['userID']; // Store user ID in session
-                $_SESSION['role'] = $user_data['role']; // Store user role in session
-                $_SESSION['username'] = $user_data['username']; // Store username in session
+                $_SESSION['userID'] = $user_data['userID']; 
+                $_SESSION['role'] = $user_data['role']; 
+                $_SESSION['username'] = $user_data['username']; 
                 
-                // Check the user's role and redirect accordingly
                 if ($user_data['role'] == 'doctor') {
                     header("Location: Dashboard_Doctor.php");
-                    exit();
-                } elseif ($user_data['role'] == 'admin') { // Fix: check for 'admin' role
-                    header("Location: Dashboard_Admin.php");
                     exit();
                 } else {
                     echo '<script>alert("Access denied. Unknown user.");</script>';
                 }
                 
             } else {
-                echo '<script>alert("Incorrect Password");</script>'; // Wrong password alert
+                echo '<script>alert("Incorrect Password");</script>';
             }
         } else {
-            echo '<script>alert("User not found");</script>'; // User not found alert
+            echo '<script>alert("User not found");</script>'; 
         }
         
     } else {
-        echo '<script>alert("Please fill in all fields.");</script>'; // Alert for empty fields
+        echo '<script>alert("Please fill in all fields.");</script>'; 
     }
 }
 ?>
-
-
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -66,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 <body>
 <div class="con_3">
     <img src=".//img/logo.png" style="width:20%; height: 20%;" alt="">
-    <h3>DOCTORS LOGIN PAGE</h3>
+    <h3>DOCTOR'S LOGIN PAGE</h3>
     <div class="form3">
         <form method="post">
             <label for="patient_id">Username:</label><br>
@@ -75,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
             <input type="password" name="password" id="password" required><br><br>
             <input type="submit" name="login" value="Log In" id="login_p">
         </form><br>
-        <a href="Signin_Doctor.php" id="signin">Sign In</a>
+        <a href="Signin_Doctor.php" id="signin">Sign Up</a>
         <a href="#" id="fgotpass">Forgot Password?</a><br>
     </div>
 </div>

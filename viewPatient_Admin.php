@@ -46,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     $vitalQuery = "SELECT * FROM vital_signs WHERE pid = $pid";
     $vitalResult = mysqli_query($con, $vitalQuery);
     $vital_signs = mysqli_fetch_all($vitalResult, MYSQLI_ASSOC);
+    
 }
 ?>
 
@@ -87,6 +88,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     }
     .nav-treeview .nav-item {
         padding-left: 3%;
+    }
+    #editbtn{
+      width: 100px;
     }
   </style>
 
@@ -239,33 +243,93 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         </table>
 <br>
 <br>
-      <h3>Vital Signs</h3>
-      <table class="table table-bordered">
-          <thead>
-              <tr>
-                  <th>Date</th>
-                  <th>BP</th>
-                  <th>CR</th>
-                  <th>RR</th>
-                  <th>T</th>
-                  <th>WT</th>
-                  <th>HT</th>
-              </tr>
-          </thead>
-          <tbody>
-              <?php foreach ($vital_signs as $vital): ?>
-              <tr>
-                  <td><?php echo htmlspecialchars($vital['date']); ?></td>
-                  <td><?php echo htmlspecialchars($vital['bp']); ?></td>
-                  <td><?php echo htmlspecialchars($vital['cr']); ?></td>
-                  <td><?php echo htmlspecialchars($vital['rr']); ?></td>
-                  <td><?php echo htmlspecialchars($vital['t']); ?></td>
-                  <td><?php echo htmlspecialchars($vital['wt']); ?></td>
-                  <td><?php echo htmlspecialchars($vital['ht']); ?></td>
-              </tr>
-              <?php endforeach; ?>
-          </tbody>
-      </table>
+        <h3>Vital Signs</h3>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>BP</th>
+                        <th>CR</th>
+                        <th>RR</th>
+                        <th>T</th>
+                        <th>WT</th>
+                        <th>HT</th>
+                        <th style="text-align:center;">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($vital_signs as $vital): ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($vital['date']); ?></td>
+                        <td><?php echo htmlspecialchars($vital['bp']); ?></td>
+                        <td><?php echo htmlspecialchars($vital['cr']); ?></td>
+                        <td><?php echo htmlspecialchars($vital['rr']); ?></td>
+                        <td><?php echo htmlspecialchars($vital['t']); ?></td>
+                        <td><?php echo htmlspecialchars($vital['wt']); ?></td>
+                        <td><?php echo htmlspecialchars($vital['ht']); ?></td>
+                        <td style="text-align: center;">
+                            <!-- Edit Button to trigger modal -->
+                            <button type="button" class="btn btn-primary btn-sm" id="editbtn" data-toggle="modal" data-target="#editVitalSignModal<?php echo $vital['id']; ?>">
+                                Edit
+                            </button>
+                        </td>
+                    </tr>
+
+                    <!-- Edit Modal for Vital Sign -->
+                    <div class="modal fade" id="editVitalSignModal<?php echo $vital['id']; ?>" tabindex="-1" role="dialog" aria-labelledby="editVitalSignModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                            <div class="modal-content">
+                                <form action="updateVitalSign.php" method="post">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="editVitalSignModalLabel">Edit Vital Signs for <?php echo htmlspecialchars($patient['name']); ?></h5>
+                                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                        </button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <input type="hidden" name="vital_id" value="<?php echo $vital['id']; ?>">
+                                        <input type="hidden" name="pid" value="<?php echo $patient['pid']; ?>">
+
+                                        <div class="form-group">
+                                            <label for="vital-date-<?php echo $vital['id']; ?>">Date</label>
+                                            <input type="date" class="form-control" id="vital-date-<?php echo $vital['id']; ?>" name="date" value="<?php echo htmlspecialchars($vital['date']); ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="vital-bp-<?php echo $vital['id']; ?>">Blood Pressure</label>
+                                            <input type="text" class="form-control" id="vital-bp-<?php echo $vital['id']; ?>" name="bp" value="<?php echo htmlspecialchars($vital['bp']); ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="vital-cr-<?php echo $vital['id']; ?>">Heart Rate</label>
+                                            <input type="text" class="form-control" id="vital-cr-<?php echo $vital['id']; ?>" name="cr" value="<?php echo htmlspecialchars($vital['cr']); ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="vital-rr-<?php echo $vital['id']; ?>">Respiratory Rate</label>
+                                            <input type="text" class="form-control" id="vital-rr-<?php echo $vital['id']; ?>" name="rr" value="<?php echo htmlspecialchars($vital['rr']); ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="vital-t-<?php echo $vital['id']; ?>">Temperature</label>
+                                            <input type="text" class="form-control" id="vital-t-<?php echo $vital['id']; ?>" name="t" value="<?php echo htmlspecialchars($vital['t']); ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="vital-wt-<?php echo $vital['id']; ?>">Weight (kg)</label>
+                                            <input type="text" class="form-control" id="vital-wt-<?php echo $vital['id']; ?>" name="wt" value="<?php echo htmlspecialchars($vital['wt']); ?>" required>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="vital-ht-<?php echo $vital['id']; ?>">Height (cm)</label>
+                                            <input type="text" class="form-control" id="vital-ht-<?php echo $vital['id']; ?>" name="ht" value="<?php echo htmlspecialchars($vital['ht']); ?>" required>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
 <br>
 <br>
       <h3>Diagnosis Records</h3>

@@ -51,7 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 <body>
 <div class="con_2">
     <img src=".//img/logo.png" style="width:20%; height: 20%;" alt="">
-    <h3>ADMIN STAFF SIGN IN PAGE</h3>
+    <h3>ADMIN STAFF SIGN UP</h3>
     <div class="form2">
         <form method="post">
             <label for="username">Email:</label><br>
@@ -62,41 +62,6 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
         </form><br><br><br>
     </div>
 </div>
-
-<script src="https://cdn.jsdelivr.net/npm/ajv/dist/ajv.min.js"></script>
-<script>
-  const schema = {
-    "type": "object",
-    "properties": {
-      "username": {
-        "type": "string",
-        "minLength": 3,
-        "maxLength": 50,
-        "pattern": "^[a-zA-Z0-9_]+$"
-      },
-      "password": {
-        "type": "string",
-        "minLength": 6,
-        "maxLength": 50
-      }
-    },
-    "required": ["username", "password"],
-    "additionalProperties": false
-  };
-
-  const data = {
-    username: document.getElementById('username').value,
-    password: document.getElementById('password').value
-  };
-
-  const ajv = new Ajv();
-  const validate = ajv.compile(schema);
-  const valid = validate(data);
-
-  if (!valid) {
-    console.log(validate.errors);  // Show validation errors
-  }
-</script>
 
 </body>
 </html>
