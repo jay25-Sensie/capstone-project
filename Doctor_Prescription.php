@@ -8,10 +8,22 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'doctor') {
   exit();
 }
 
-// Fetch all diagnosis records
-$diagnosisQuery = "SELECT pid, date, subjective, objective, assessment, plan FROM diagnosis";
+$diagnosisQuery = "
+    SELECT 
+        d.pid, 
+        d.date, 
+        d.subjective, 
+        d.objective, 
+        d.assessment, 
+        d.plan, 
+        CONCAT(p.name, ' ', p.lastname) AS patient_name
+    FROM 
+        diagnosis d 
+    JOIN 
+        patient_records p ON d.pid = p.pid
+";
 $stmt = $con->prepare($diagnosisQuery);
-$stmt->execute();
+$stmt->execute(); // Execute the prepared statement
 $diagnosisResult = $stmt->get_result();
 
 $diagnosisRecords = [];
@@ -199,6 +211,7 @@ if ($diagnosisResult->num_rows > 0) {
             <thead>
                 <tr>
                     <th>PID</th>
+                    <th>Patient Name</th>
                     <th>Date</th>
                     <th>Subjective</th>
                     <th>Objective</th>
@@ -211,6 +224,7 @@ if ($diagnosisResult->num_rows > 0) {
         foreach ($diagnosisRecords as $record) {
             echo '<tr>
                 <td>' . htmlspecialchars($record['pid']) . '</td>
+                <td>' . htmlspecialchars($record['patient_name']) . '</td>
                 <td>' . htmlspecialchars($record['date']) . '</td>
                 <td>' . htmlspecialchars($record['subjective']) . '</td>
                 <td>' . htmlspecialchars($record['objective']) . '</td>

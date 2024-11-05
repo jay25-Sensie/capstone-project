@@ -5,13 +5,26 @@ include("connection.php");
 include("function.php");
 
 if (!isset($_SESSION['userID']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-  header("Location: Admin_Staff_login.php");
-  exit();
+    header("Location: Admin_Staff_login.php");
+    exit();
 }
-      
-$diagnosisQuery = "SELECT pid, date, subjective, objective, assessment, plan FROM diagnosis";
+
+$diagnosisQuery = "
+    SELECT 
+        d.pid, 
+        d.date, 
+        d.subjective, 
+        d.objective, 
+        d.assessment, 
+        d.plan, 
+        CONCAT(p.name, ' ', p.lastname) AS patient_name
+    FROM 
+        diagnosis d 
+    JOIN 
+        patient_records p ON d.pid = p.pid
+";
 $stmt = $con->prepare($diagnosisQuery);
-$stmt->execute();
+$stmt->execute(); // Execute the prepared statement
 $diagnosisResult = $stmt->get_result();
 
 $diagnosisRecords = [];
@@ -22,7 +35,6 @@ if ($diagnosisResult->num_rows > 0) {
 } else {
     $diagnosisRecords = [];
 }
-
 ?>
 
 
@@ -211,18 +223,20 @@ if ($diagnosisResult->num_rows > 0) {
             <thead>
                 <tr>
                     <th>PID</th>
+                    <th>Patient Name</th>                  
                     <th>Date</th>
                     <th>Subjective</th>
                     <th>Objective</th>
                     <th>Assessment</th>
                     <th>Plan</th>
-                    <th>Actions</th> <!-- Add an Actions column -->
+                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>';
         foreach ($diagnosisRecords as $record) {
             echo '<tr>
                 <td>' . htmlspecialchars($record['pid']) . '</td>
+                <td>' . htmlspecialchars($record['patient_name']) . '</td>
                 <td>' . htmlspecialchars($record['date']) . '</td>
                 <td>' . htmlspecialchars($record['subjective']) . '</td>
                 <td>' . htmlspecialchars($record['objective']) . '</td>

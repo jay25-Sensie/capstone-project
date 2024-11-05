@@ -1,2 +1,2 @@
-2024-10-30 03:36:21 - Reminder: take your medicine mefinamic at 10:36 AM - Response: 
-2024-10-30 03:38:46 - Reminder: take your medicine mefinamic at 10:39 AM - Response: 
+2024-11-05 15:21:20 - Reminder: take your medicine losartan at 10:22 PM - Response: {"messages":[{"messageId":"4308164788664335269003","status":{"description":"Message sent to next instance","groupId":1,"groupName":"PENDING","id":26,"name":"PENDING_ACCEPTED"},"to":"+639455543566"}]}
+2024-11-05 16:02:08 - Reminder: take your medicine losartan at 11:05 PM - Response: {"messages":[{"messageId":"4308189268174335913696","status":{"description":"Message sent to next instance","groupId":1,"groupName":"PENDING","id":26,"name":"PENDING_ACCEPTED"},"to":"+639925497331"}]}

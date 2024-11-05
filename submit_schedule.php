@@ -1,11 +1,10 @@
 <?php
-// Include your database connection
-include 'connection.php'; // Make sure this file defines $con
+include 'connection.php';
 
 // Your Infobip API credentials
-$infobip_api_key = 'a52b6341b131199ecae4c8fb8c78198a-40da9935-d455-482c-b654-88c748433ec9'; 
+$infobip_api_key = 'ac157f43605f77922500584d70356284-a0e348e7-0e38-4ee2-9a94-77d305e5a519'; 
 $infobip_base_url = 'api.infobip.com';
-$sender = '447491163443'; 
+$sender = '447491163443';
 
 // Function to send SMS via Infobip
 function sendSMS($phone_number, $message, $api_key, $sender, $base_url) {
@@ -100,7 +99,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->bind_param("isssssss", $pid, $medicine_name, $doses_per_day, $timing1, $timing2, $timing3, $timing4, $timing5);
 
             if ($stmt->execute()) {
-                echo "<script>alert('Medicine schedule created successfully!');</script>"; // Alert for successful submission
+                echo "<script>
+                        alert('Medicine schedule created successfully!');
+                        window.location.href = 'Doctor_Prescription.php'; // Redirect after alert
+                      </script>";
 
                 // Now send SMS reminders based on the timings
                 $dose_timings = array_filter([$timing1, $timing2, $timing3, $timing4]); // Gather only non-empty timings
@@ -137,5 +139,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 }
-
 ?>

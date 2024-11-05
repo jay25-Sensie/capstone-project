@@ -61,3 +61,35 @@ Stack trace:
 #1 {main}
   thrown in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 104
 Mon 11/04/2024 21:19:25.12 - Finished send_reminders.php 
+Tue 11/05/2024 20:11:42.97 - Starting send_reminders.php 
+<!-- PHP Notice:  file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'ms.status_timing_1' in 'field list' in C:\xampp\htdocs\WBHR_MS\send_reminders.php:104
+Stack trace:
+#0 C:\xampp\htdocs\WBHR_MS\send_reminders.php(104): mysqli->prepare('\n    SELECT ms....')
+#1 {main}
+  thrown in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 104
+
+Fatal error: Uncaught mysqli_sql_exception: Unknown column 'ms.status_timing_1' in 'field list' in C:\xampp\htdocs\WBHR_MS\send_reminders.php:104
+Stack trace:
+#0 C:\xampp\htdocs\WBHR_MS\send_reminders.php(104): mysqli->prepare('\n    SELECT ms....')
+#1 {main}
+  thrown in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 104
+Tue 11/05/2024 20:13:01.06 - Finished send_reminders.php 
+Tue 11/05/2024 20:32:03.06 - Starting send_reminders.php 
+<!-- PHP Notice:  file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'ms.status_timing_1' in 'field list' in C:\xampp\htdocs\WBHR_MS\send_reminders.php:104
+Stack trace:
+#0 C:\xampp\htdocs\WBHR_MS\send_reminders.php(104): mysqli->prepare('\n    SELECT ms....')
+#1 {main}
+  thrown in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 104
+
+Fatal error: Uncaught mysqli_sql_exception: Unknown column 'ms.status_timing_1' in 'field list' in C:\xampp\htdocs\WBHR_MS\send_reminders.php:104
+Stack trace:
+#0 C:\xampp\htdocs\WBHR_MS\send_reminders.php(104): mysqli->prepare('\n    SELECT ms....')
+#1 {main}
+  thrown in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 104
+Tue 11/05/2024 20:32:13.67 - Finished send_reminders.php 
