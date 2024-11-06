@@ -365,7 +365,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                   }
                   echo '</tbody></table>';
               } else {
-                  echo '<div class="alert alert-info">No diagnosis records found for this patient.</div>';
+                  echo '<div class="alert alert-info" style="text-align: center;">No diagnosis records found for this patient.</div>';
               }
           }
           ?>

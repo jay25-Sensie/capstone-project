@@ -290,6 +290,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
                     </table>
                     <br>
 
+                    <h3>Diagnosis Records</h3>
+                    <?php
+                    // Fetch diagnosis records
+                    if (isset($pid) && $pid > 0) {
+                        $diagnosisQuery = "SELECT * FROM diagnosis WHERE pid = ?";
+                        $stmt = $con->prepare($diagnosisQuery);
+                        $stmt->bind_param("i", $pid);
+                        $stmt->execute();
+                        $diagnosisResult = $stmt->get_result();
+                        
+                        if ($diagnosisResult->num_rows > 0) {
+                            echo '<table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Subjective</th>
+                                        <th>Objective</th>
+                                        <th>Assessment</th>
+                                        <th>Plan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>';
+                            while ($row = $diagnosisResult->fetch_assoc()) {
+                                echo '<tr>
+                                    <td>' . htmlspecialchars($row['date']) . '</td>
+                                    <td>' . htmlspecialchars($row['subjective']) . '</td>
+                                    <td>' . htmlspecialchars($row['objective']) . '</td>
+                                    <td>' . htmlspecialchars($row['assessment']) . '</td>
+                                    <td>' . htmlspecialchars($row['plan']) . '</td>
+                                </tr>';
+                            }
+                            echo '</tbody></table>';
+                        } else {
+                            echo '<div class="alert alert-info" style="text-align: center;">No diagnosis records found for this patient.</div>';
+                        }
+                    }
+                    ?>
+
                     <!-- Medical Records Section -->
                     <h4>Medical Records</h4>
                     <table class="table table-bordered">

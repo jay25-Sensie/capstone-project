@@ -173,6 +173,7 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'doctor') {
                         <th>Medicine Name</th>
                         <th>Doses per Day</th>
                         <th>Dose Timings</th>
+                        <th>Meal Time</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -188,6 +189,12 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'doctor') {
                             </select>
                         </td>
                         <td class="doses-container"></td>
+                        <td>
+                            <select name="meal_time[]" class="form-control">
+                                <option value="0">Before Meal</option>
+                                <option value="1">After Meal</option>
+                            </select>
+                        </td>
                     </tr>
                 </tbody>
             </table>
@@ -198,6 +205,7 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'doctor') {
         </form>
     </div>
 </div>
+
 <!-- jQuery -->
 <script src="plugins/jquery/jquery.min.js"></script>
 <!-- jQuery UI 1.11.4 -->
@@ -234,51 +242,56 @@ if (!isset($_SESSION['username']) || $_SESSION['role'] !== 'doctor') {
 <script src="../wbhr_ms/prescribe.js"></script>
 <script src="../wbhr_ms/logout.js"></script>
 <script>
-  let rowCount = 1; // Initialize row count
+let rowCount = 1; // Initialize row count
 
-  function addRow() {
-      // Create a new row with unique identifiers for each input
-      let newRow = `
-          <tr>
-              <td><input type="text" name="medicine_name[]" placeholder="Medicine name" class="form-control" required></td>
-              <td>
-                  <select name="doses_per_day[]" class="form-control" onchange="generateDoses(this)">
-                      <option value="1">1</option>
-                      <option value="2">2</option>
-                      <option value="3">3</option>
-                      <option value="4">4</option>
-                      <option value="5">5</option>
-                  </select>
-              </td>
-              <td class="doses-container"></td>
-          </tr>
-      `;
-      $('#scheduleTable tbody').append(newRow);
-      rowCount++; // Increment the row count after adding a new row
-  }
+function addRow() {
+    // Create a new row with unique identifiers for each input
+    let newRow = `
+        <tr>
+            <td><input type="text" name="medicine_name[]" placeholder="Medicine name" class="form-control" required></td>
+            <td>
+                <select name="doses_per_day[]" class="form-control" onchange="generateDoses(this)">
+                    <option value="1">1</option>
+                    <option value="2">2</option>
+                    <option value="3">3</option>
+                    <option value="4">4</option>
+                    <option value="5">5</option>
+                </select>
+            </td>
+            <td class="doses-container"></td>
+            <td> 
+                <select name="meal_time[]" class="form-control">
+                    <option value="0">Before Meal</option>
+                    <option value="1">After Meal</option>
+                </select> 
+            </td>
+        </tr>
+    `;
+    $('#scheduleTable tbody').append(newRow);
+    rowCount++; // Increment the row count after adding a new row
+}
 
-  function undoLastRow() {
-      if (rowCount > 1) {
-          $('#scheduleTable tbody tr:last').remove();
-          rowCount--; // Decrement the row count after removing the last row
-      }
-  }
+function undoLastRow() {
+    if (rowCount > 1) {
+        $('#scheduleTable tbody tr:last').remove();
+        rowCount--; // Decrement the row count after removing the last row
+    }
+}
 
-  function generateDoses(selectElement) {
-      // Function to generate doses based on the selected number
-      const dosesContainer = $(selectElement).closest('tr').find('.doses-container');
-      dosesContainer.empty(); // Clear existing dose timings
+function generateDoses(selectElement) {
+    // Function to generate doses based on the selected number
+    const dosesContainer = $(selectElement).closest('tr').find('.doses-container');
+    dosesContainer.empty(); // Clear existing dose timings
 
-      const doses = parseInt(selectElement.value); // Get the selected number of doses
-      const currentRowCount = $(selectElement).closest('tr').index(); // Get the index of the current row
+    const doses = parseInt(selectElement.value); // Get the selected number of doses
+    const currentRowCount = $(selectElement).closest('tr').index(); // Get the index of the current row
 
-      for (let i = 0; i < doses; i++) {
-          dosesContainer.append(`
-              <input type="time" name="dose_timings[${currentRowCount}][${i}]" class="form-control" required>
-          `);
-      }
-  }
+    for (let i = 0; i < doses; i++) {
+        dosesContainer.append(`
+            <input type="time" name="dose_timings[${currentRowCount}][${i}]" class="form-control" required>
+        `);
+    }
+}
 </script>
-
 </body>
 </html>

@@ -32,6 +32,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
     $vitalResult = mysqli_query($con, $vitalQuery);
     $vital_signs = mysqli_fetch_all($vitalResult, MYSQLI_ASSOC);
 
+    // Fetch diagnosis records
+    $diagnosisQuery = "SELECT * FROM diagnosis WHERE pid = $pid";
+    $diagnosisResult = mysqli_query($con, $diagnosisQuery);
+
+    if ($diagnosisResult === false) {
+        echo "<div class='alert alert-danger'>Error fetching diagnosis records: " . mysqli_error($con) . "</div>";
+    }
+
     $noPatientFound = !$patient; // Set flag if no patient found
 } else {
     $pid = null; // No PID provided
@@ -299,6 +307,44 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
                         </tbody>
                     </table>
                     <br>
+
+                    <h3>Diagnosis Records</h3>
+                    <?php
+                    // Fetch diagnosis records
+                    if (isset($pid) && $pid > 0) {
+                        $diagnosisQuery = "SELECT * FROM diagnosis WHERE pid = ?";
+                        $stmt = $con->prepare($diagnosisQuery);
+                        $stmt->bind_param("i", $pid);
+                        $stmt->execute();
+                        $diagnosisResult = $stmt->get_result();
+                        
+                        if ($diagnosisResult->num_rows > 0) {
+                            echo '<table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Subjective</th>
+                                        <th>Objective</th>
+                                        <th>Assessment</th>
+                                        <th>Plan</th>
+                                    </tr>
+                                </thead>
+                                <tbody>';
+                            while ($row = $diagnosisResult->fetch_assoc()) {
+                                echo '<tr>
+                                    <td>' . htmlspecialchars($row['date']) . '</td>
+                                    <td>' . htmlspecialchars($row['subjective']) . '</td>
+                                    <td>' . htmlspecialchars($row['objective']) . '</td>
+                                    <td>' . htmlspecialchars($row['assessment']) . '</td>
+                                    <td>' . htmlspecialchars($row['plan']) . '</td>
+                                </tr>';
+                            }
+                            echo '</tbody></table>';
+                        } else {
+                            echo '<div class="alert alert-info" style="text-align: center;">No diagnosis records found for this patient.</div>';
+                        }
+                    }
+                    ?>
 
                     <!-- Medical Records Section -->
                     <h4>Medical Records</h4>

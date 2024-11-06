@@ -2,7 +2,7 @@
 include 'connection.php';
 
 // Your Infobip API credentials
-$infobip_api_key = 'ac157f43605f77922500584d70356284-a0e348e7-0e38-4ee2-9a94-77d305e5a519'; 
+$infobip_api_key = 'ac157f43605f77922500584d70356284-a0e348e7-0e38-4ee2-9a94-77d305e5a51'; 
 $infobip_base_url = 'api.infobip.com';
 $sender = '447491163443';
 
@@ -36,7 +36,7 @@ function sendSMS($phone_number, $message, $api_key, $sender, $base_url) {
 
     $response = curl_exec($ch);
     curl_close($ch);
-    
+
     return $response;
 }
 
@@ -49,7 +49,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $pid = $_POST['pid'];
     $medicine_names = $_POST['medicine_name']; // Array of medicine names
     $doses_per_day_array = $_POST['doses_per_day']; // Array of doses per day
-    $dose_timings_array = $_POST['dose_timings']; // Array of timings
+    $dose_timings_array = $_POST['dose_timings']; // Array of timings for each dose
+    $meal_timings_array = isset($_POST['meal_time']) ? $_POST['meal_time'] : []; // Default to empty array if meal_time is not set
 
     // Fetch the patient's phone number based on the PID
     $patient_stmt = $con->prepare("SELECT phone_number FROM patient_records WHERE pid = ?");
@@ -68,6 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $medicine_name = $medicine_names[$i]; // Get medicine name
         $doses_per_day = $doses_per_day_array[$i]; // Get doses per day
         $timings = $dose_timings_array[$i]; // Get timings for this medicine
+        $meal_timing = isset($meal_timings_array[$i]) ? $meal_timings_array[$i] : 0; // Default to 0 if not set
 
         // Initialize variables for timings
         $timing1 = $timings[0] ?? null; // Get first timing
@@ -93,49 +95,25 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($count == 0) {
             $stmt = $con->prepare("
                 INSERT INTO medicine_schedule 
-                (pid, medicine_name, doses_per_day, dose_timing_1, dose_timing_2, dose_timing_3, dose_timing_4, dose_timing_5, created_at, updated_at) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
+                (pid, medicine_name, doses_per_day, dose_timing_1, dose_timing_2, dose_timing_3, dose_timing_4, dose_timing_5, meal_timing, created_at, updated_at) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())
             ");
-            $stmt->bind_param("isssssss", $pid, $medicine_name, $doses_per_day, $timing1, $timing2, $timing3, $timing4, $timing5);
+            $stmt->bind_param("issssssss", $pid, $medicine_name, $doses_per_day, $timing1, $timing2, $timing3, $timing4, $timing5, $meal_timing);
 
             if ($stmt->execute()) {
+                // Send SMS reminder to the patient (notification)
+                $message = "Reminder: It's time to take your $medicine_name.";
+                sendSMS($phone_number, $message, $infobip_api_key, $sender, $infobip_base_url);
                 echo "<script>
-                        alert('Medicine schedule created successfully!');
-                        window.location.href = 'Doctor_Prescription.php'; // Redirect after alert
-                      </script>";
-
-                // Now send SMS reminders based on the timings
-                $dose_timings = array_filter([$timing1, $timing2, $timing3, $timing4]); // Gather only non-empty timings
-
-                foreach ($dose_timings as $timing) {
-                    if (!empty($timing)) {
-                        // Prepare the SMS message
-                        $message = "Reminder: take your medicine $medicine_name at " . date('h:i A', strtotime($timing)); // Format time to 12-hour format
-
-                        // Send the SMS using Infobip
-                        $sms_response = sendSMS($phone_number, $message, $infobip_api_key, $sender, $infobip_base_url);
-
-                        // Handle the response
-                        $response_data = json_decode($sms_response, true);
-                        if (isset($response_data['messages'][0]['status']['groupName']) && 
-                            $response_data['messages'][0]['status']['groupName'] === "SENT") {
-                            echo "SMS reminder sent successfully for $medicine_name at $timing to $phone_number.<br>";
-                        } else {
-                            echo "Failed to send SMS for $medicine_name at $timing. Response: $sms_response<br>";
-                        }
-                        
-                        // Optional: Log the SMS response
-                        file_put_contents('sms_log.txt', date('Y-m-d H:i:s') . " - $message - Response: $sms_response\n", FILE_APPEND);
-                    }
-                }
+                alert('Schedule saved and SMS sent successfully!')
+                window.location.href = 'Doctor_Prescription.php'
+                </script>";
             } else {
-                echo "Error: " . $stmt->error . "<br>";
+                echo "Error: " . $stmt->error;
             }
-
-            // Close the statement
             $stmt->close();
         } else {
-            echo "Record for $medicine_name already exists.<br>";
+            echo "<script>alert('Duplicate entry found for this schedule!')</script>";
         }
     }
 }

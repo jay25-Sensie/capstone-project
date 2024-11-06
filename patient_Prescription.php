@@ -191,7 +191,7 @@ $medicineSchedules = mysqli_fetch_all($result, MYSQLI_ASSOC);
                 </tbody>
             </table>
         <?php else: ?>
-            <p>No prescription found for this patient.</p>
+          <div class='alert alert-info' style='text-align: center;'>No Prescription found.</div>
         <?php endif; ?>
     </div>
 </div>

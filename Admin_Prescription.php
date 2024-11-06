@@ -9,34 +9,34 @@ if (!isset($_SESSION['userID']) || !isset($_SESSION['role']) || $_SESSION['role'
     exit();
 }
 
-$diagnosisQuery = "
-    SELECT 
-        d.pid, 
-        d.date, 
-        d.subjective, 
-        d.objective, 
-        d.assessment, 
-        d.plan, 
-        CONCAT(p.name, ' ', p.lastname) AS patient_name
-    FROM 
-        diagnosis d 
-    JOIN 
-        patient_records p ON d.pid = p.pid
-";
-$stmt = $con->prepare($diagnosisQuery);
-$stmt->execute(); // Execute the prepared statement
-$diagnosisResult = $stmt->get_result();
+// Fetch the list of patients from the database
+$query = "SELECT pid, name, lastname FROM patient_records";
+$result = mysqli_query($con, $query);
 
-$diagnosisRecords = [];
-if ($diagnosisResult->num_rows > 0) {
-    while ($row = $diagnosisResult->fetch_assoc()) {
-        $diagnosisRecords[] = $row;
-    }
-} else {
-    $diagnosisRecords = [];
+if (!$result) {
+    die("Database query failed: " . mysqli_error($con));
 }
-?>
 
+$patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
+
+// Process the form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $pid = $_POST['pid'];
+
+    // Check if the patient exists
+    $query = "SELECT * FROM patient_records WHERE pid = '$pid'";
+    $result = mysqli_query($con, $query);
+
+    if (mysqli_num_rows($result) > 0) {
+        // Redirect to the prescription form with the patient ID
+        header("Location: prescription_form.php?pid=$pid");
+        exit();
+    } else {
+        $patientNotFound = true; // Set a flag for the alert message
+    }
+}
+
+?>
 
 <!DOCTYPE html>
 <html lang="en">
@@ -45,8 +45,6 @@ if ($diagnosisResult->num_rows > 0) {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Admin Prescription</title>
 
-<!-- jQuery UI (local) -->
-<link rel="stylesheet" href="plugins/jquery-ui/jquery-ui.min.css">
 <!-- Font Awesome (local) -->
 <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
 <!-- Tempusdominus Bootstrap 4 (local) -->
@@ -63,23 +61,20 @@ if ($diagnosisResult->num_rows > 0) {
 <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
 <!-- Summernote (local) -->
 <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
-
   <style>
-   
-    .table-responsive{
+    .table-responsive {
         width: 100%;
         text-align: center;
     }
-    .content-wrapper{
-          padding-left: 5%;
-          padding-right: 5%;
-          padding-top: 3%;
+    .content-wrapper {
+        padding-left: 5%;
+        padding-right: 5%;
+        padding-top: 3%;
     }
     .nav-treeview .nav-item {
         padding-left: 3%;
     }
   </style>
-  
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -145,7 +140,6 @@ if ($diagnosisResult->num_rows > 0) {
     </a>
 
     <!-- Sidebar -->
-    
     <div class="sidebar">   
       <!-- Sidebar Menu -->
       <nav class="mt-2">
@@ -212,51 +206,42 @@ if ($diagnosisResult->num_rows > 0) {
     <!-- /.sidebar -->
   </aside>
 
-
   <div class="content-wrapper">
-    <h3>Diagnosis Records</h3>
-
-    <?php
-    // Display the diagnosis records
-    if (!empty($diagnosisRecords)) {
-        echo '<table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>PID</th>
-                    <th>Patient Name</th>                  
-                    <th>Date</th>
-                    <th>Subjective</th>
-                    <th>Objective</th>
-                    <th>Assessment</th>
-                    <th>Plan</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>';
-        foreach ($diagnosisRecords as $record) {
-            echo '<tr>
-                <td>' . htmlspecialchars($record['pid']) . '</td>
-                <td>' . htmlspecialchars($record['patient_name']) . '</td>
-                <td>' . htmlspecialchars($record['date']) . '</td>
-                <td>' . htmlspecialchars($record['subjective']) . '</td>
-                <td>' . htmlspecialchars($record['objective']) . '</td>
-                <td>' . htmlspecialchars($record['assessment']) . '</td>
-                <td>' . htmlspecialchars($record['plan']) . '</td>
-                <td>
-                    <form method="GET" action="view_diagnosis.php"> <!-- Update the action to your specific page -->
-                        <input type="hidden" name="pid" value="' . htmlspecialchars($record['pid']) . '">
-                        <button type="submit" class="btn btn-info btn-sm">View Diagnosis</button>
-                    </form>
-                </td>
-            </tr>';
-        }
-        echo '</tbody></table>';
-    } else {
-        echo '<div class="alert alert-info">No diagnosis records found.</div>';
-    }
-    ?>
+    <div class="wrapper">
+        <!-- Form to select PID and patient name -->
+        <div class="container mt-4">
+            <h2>Generate Patient Prescriptiom</h2>
+            <form method="POST" action="<?php echo htmlspecialchars($_SERVER['PHP_SELF']); ?>">
+                <div class="form-group">
+                    <label for="pid">Select Patient (ID - Name):</label>
+                    <select class="form-control" id="pid" name="pid" required>
+                        <option value="" disabled selected>Select a patient</option>
+                        <?php
+                        foreach ($patients as $patient) {
+                            echo "<option value='" . $patient['pid'] . "'>" . $patient['pid'] . " - " . htmlspecialchars($patient['name']) . " " . htmlspecialchars($patient['lastname']) . "</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
+                <button type="submit" class="btn btn-primary">Print Prescription</button>
+            </form>
+            <?php if (isset($patientNotFound) && $patientNotFound): ?>
+                <div class="alert alert-warning mt-4" id="alert">No patient found with the provided PID.</div>
+            <?php endif; ?>
+        </div>
+    </div>
 </div>
+  <!-- Main content -->
+  
 
+  <!-- /.content-wrapper -->
+
+  <!-- Control Sidebar -->
+  <aside class="control-sidebar control-sidebar-dark">
+    <!-- Control sidebar content goes here -->
+  </aside>
+  <!-- /.control-sidebar -->
+</div>
 <!-- ./wrapper -->
 
 <!-- jQuery (local) -->
@@ -290,10 +275,5 @@ if ($diagnosisResult->num_rows > 0) {
 <!-- AdminLTE App (local) -->
 <script src="dist/js/adminlte.js"></script>
 <script src="../wbhr_ms/logout.js"></script>
-<script>
-function setPatientId(patientId) {
-    document.getElementById('patientId').value = patientId;
-}
-</script>
 </body>
 </html>

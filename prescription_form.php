@@ -5,44 +5,45 @@ include("connection.php");
 include("function.php");
 
 if (!isset($_SESSION['userID']) || !isset($_SESSION['role']) || $_SESSION['role'] !== 'admin') {
-  header("Location: Admin_Staff_login.php");
-  exit();
+    header("Location: Admin_Staff_login.php");
+    exit();
 }
-if (isset($_GET['pid'])) {
-    $pid = htmlspecialchars($_GET['pid']);
-    
-    // Function to fetch diagnosis records by PID
-    function fetchDiagnosisRecordsByPID($pid) {
-        global $con;
-        $stmt = $con->prepare("SELECT 
-                                    d.date, 
-                                    d.subjective, 
-                                    d.objective, 
-                                    d.assessment, 
-                                    d.plan,
-                                    p.pid, 
-                                    p.name, 
-                                    p.lastname,
-                                    p.address, 
-                                    p.phone_number, 
-                                    p.age, 
-                                    p.gender, 
-                                    p.birthday 
-                                FROM diagnosis d
-                                JOIN patient_records p ON d.pid = p.pid
-                                WHERE d.pid = ?");
-        $stmt->bind_param("s", $pid);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        return $result->fetch_all(MYSQLI_ASSOC); // Return results as an associative array
-    }
 
-    // Fetch the diagnosis records for the specified PID
-    $diagnosisRecords = fetchDiagnosisRecordsByPID($pid);     
+// Get the patient ID from the query parameter
+$pid = $_GET['pid'];
+
+// Check if the patient ID is valid
+if (empty($pid)) {
+    echo "Invalid patient ID.";
+    exit;
 }
+
+// Fetch the patient's details from the database
+$query = "SELECT * FROM patient_records WHERE pid = '$pid'";
+$result = mysqli_query($con, $query);
+
+if (!$result) {
+    die("Database query failed: " . mysqli_error($con));
+}
+
+$patient = mysqli_fetch_assoc($result);
+
+if (!$patient) {
+    echo "Patient not found.";
+    exit;
+}
+
+// Fetch the medicine schedule for the selected patient
+$query = "SELECT * FROM medicine_schedule WHERE pid = '$pid'";
+$result = mysqli_query($con, $query);
+
+if (!$result) {
+    die("Database query failed: " . mysqli_error($con));
+}
+
+$medicineSchedules = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -50,10 +51,7 @@ if (isset($_GET['pid'])) {
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Admin Prescription</title>
-
-<!-- jQuery UI (local) -->
-<link rel="stylesheet" href="plugins/jquery-ui/jquery-ui.min.css">
-<!-- Font Awesome (local) -->
+  <!-- Font Awesome (local) -->
 <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
 <!-- Tempusdominus Bootstrap 4 (local) -->
 <link rel="stylesheet" href="plugins/tempusdominus-bootstrap-4/css/tempusdominus-bootstrap-4.min.css">
@@ -69,20 +67,33 @@ if (isset($_GET['pid'])) {
 <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
 <!-- Summernote (local) -->
 <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
-
+  
   <style>
-   
     .table-responsive{
-        width: 100%;
-        text-align: center;
+       width: 100%;
+       text-align: center;
     }
     .content-wrapper{
-          padding-left: 5%;
-          padding-right: 5%;
-          padding-top: 3%;
+       padding-left: 5%;
+       padding-right: 5%;
+       padding-top: 3%;
     }
     .nav-treeview .nav-item {
-        padding-left: 3%;
+       padding-left: 3%;
+    }
+    .agb{
+       text-align: right;
+       position: relative;
+    }
+    @media print {
+       .row.mb-4 > div {
+         display: inline-block;
+         width: 50%;
+         vertical-align: top;
+       }
+       .row.mb-4 > div > p {
+         margin: 0;
+       }
     }
     @media print {
         title, #printButton {
@@ -92,23 +103,8 @@ if (isset($_GET['pid'])) {
       position: fixed;
     }
     }
-    .agb{
-      text-align: right;
-      position: relative;
-    }
-    @media print {
-      .row.mb-4 > div {
-        display: inline-block;
-        width: 50%;
-        vertical-align: top;
-      }
-
-      .row.mb-4 > div > p {
-        margin: 0;
-      }
-    }
   </style>
-  
+
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -174,7 +170,6 @@ if (isset($_GET['pid'])) {
     </a>
 
     <!-- Sidebar -->
-    
     <div class="sidebar">   
       <!-- Sidebar Menu -->
       <nav class="mt-2">
@@ -240,75 +235,67 @@ if (isset($_GET['pid'])) {
     </div>
     <!-- /.sidebar -->
   </aside>
-
+  <!-- Main Content -->
   <div class="content-wrapper">
     <div class="container mt-5">
-            <h3 class="text-center mb-4">Immaculate Medico-Surgical Clinic</h3>
-            <h4 class="text-center mb-4">Diagnosis Records for PID: <?php echo $pid; ?></h4>
-            <hr>
-            <br> <br>
-
-            <?php
-            if (!empty($diagnosisRecords)) {
-                $record = $diagnosisRecords[0]; // Get the first record for patient info
-                echo '<div class="row mb-4">
-                        <div class="col-md-6">
-                            <p><strong>Name:</strong> ' . htmlspecialchars($record['name'])  . ' ' . htmlspecialchars($record['lastname']). '</p>
-                            <p><strong>Address:</strong> ' . htmlspecialchars($record['address']) . '</p>
-                            <p><strong>Phone Number:</strong> ' . htmlspecialchars($record['phone_number']) . '</p>
-                        </div>
-                        <div class="col-md-6">
-                            <p class="agb"><strong>Age:</strong> ' . htmlspecialchars($record['age']) . '</p>
-                            <p class="agb"><strong>Sex:</strong> ' . htmlspecialchars($record['gender']) . '</p>
-                            <p class="agb"><strong>Birthday:</strong> ' . htmlspecialchars($record['birthday']) . '</p>
-                        </div>
-                    </div>';
-            } else {
-                echo '<div class="alert alert-info">No diagnosis records found for PID: ' . $pid . '.</div>';
-            }
-            ?>
-
-            <div class="row">
-                <div class="col-md-12">
-                    <?php
-                    if (!empty($diagnosisRecords)) {
-                        echo '<table class="table table-bordered">
-                            <thead>
-                                <tr>
-                                    <th>Date</th>
-                                    <th>Subjective</th>
-                                    <th>Objective</th>
-                                    <th>Assessment</th>
-                                    <th>Plan</th>
-                                </tr>
-                            </thead>
-                            <tbody>';
-                        foreach ($diagnosisRecords as $record) {
-                            echo '<tr>
-                                <td>' . htmlspecialchars($record['date']) . '</td>
-                                <td>' . htmlspecialchars($record['subjective']) . '</td>
-                                <td>' . htmlspecialchars($record['objective']) . '</td>
-                                <td>' . htmlspecialchars($record['assessment']) . '</td>
-                                <td>' . htmlspecialchars($record['plan']) . '</td>
-                            </tr>';
-                        }
-                        echo '</tbody></table>';
-                    } else {
-                        echo '<div class="alert alert-info">No diagnosis records found for PID: ' . $pid . '.</div>';
-                    }
-                    ?>
-                </div>
-            </div>
-
-            <div class="row mt-4">
-                <div class="col-md-12 text-left">
-                    <button onclick="window.print()" class="btn btn-primary" id="printButton">Print Diagnosis</button>
-                </div>
-            </div>
+      <h3 class="text-center mb-4">Immaculate Medico-Surgical Clinic</h3>
+      <h4 class="text-center mb-4">Diagnosis Records for PID: <?php echo $pid; ?></h4>
+      <hr>
+      <br><br>
+      
+      <!-- Display Patient Information -->
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <p><strong>Name:</strong> <?php echo htmlspecialchars($patient['name']) . ' ' . htmlspecialchars($patient['lastname']); ?></p>
+          <p><strong>Address:</strong> <?php echo htmlspecialchars($patient['address']); ?></p>
+          <p><strong>Phone Number:</strong> <?php echo htmlspecialchars($patient['phone_number']); ?></p>
         </div>
-    </div>
+        <div class="col-md-6">
+          <p class="agb"><strong>Age:</strong> <?php echo htmlspecialchars($patient['age']); ?></p>
+          <p class="agb"><strong>Sex:</strong> <?php echo htmlspecialchars($patient['gender']); ?></p>
+          <p class="agb"><strong>Birthday:</strong> <?php echo htmlspecialchars($patient['birthday']); ?></p>
+        </div>
+      </div>
 
-<!-- ./wrapper -->
+      <!-- Display Medicine Schedule -->
+      <?php if (!empty($medicineSchedules)): ?>
+        <table class="table table-bordered">
+          <thead>
+            <tr>
+              <th>Medicine Name</th>
+              <th>Doses per Day</th>
+              <th>Dose Timings</th>
+              <th>Meal Timing</th>
+            </tr>
+          </thead>
+          <tbody>
+            <?php foreach ($medicineSchedules as $medicineSchedule): ?>
+              <tr>
+                <td><?php echo htmlspecialchars($medicineSchedule['medicine_name']); ?></td>
+                <td><?php echo htmlspecialchars($medicineSchedule['doses_per_day']); ?></td>
+                <td>
+                  <?php
+                  for ($i = 1; $i <= 5; $i++) {
+                    $timingColumn = "dose_timing_" . $i;
+                    if (isset($medicineSchedule[$timingColumn]) && !empty($medicineSchedule[$timingColumn])):
+                      echo date('h:i A', strtotime($medicineSchedule[$timingColumn])) . "<br>";
+                    endif;
+                  }
+                  ?>
+                </td>
+                <td><?php echo htmlspecialchars($medicineSchedule['meal_timing']); ?></td>
+              </tr>
+            <?php endforeach; ?>
+          </tbody>
+        </table>
+      <?php else: ?>
+        <div class='alert alert-info' style='text-align: center;'>No Prescription found.</div>
+      <?php endif; ?>
+      <button id="printButton" class="btn btn-primary" onclick="window.print()">Print Prescription</button>
+    </div>
+  </div>
+
+</div>
 
 <!-- jQuery (local) -->
 <script src="plugins/jquery/jquery.min.js"></script>
@@ -341,10 +328,6 @@ if (isset($_GET['pid'])) {
 <!-- AdminLTE App (local) -->
 <script src="dist/js/adminlte.js"></script>
 <script src="../wbhr_ms/logout.js"></script>
-<script>
-function setPatientId(patientId) {
-    document.getElementById('patientId').value = patientId;
-}
-</script>
+
 </body>
 </html>
