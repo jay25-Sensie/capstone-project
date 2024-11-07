@@ -125,3 +125,19 @@ Stack trace:
 #1 {main}
   thrown in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 104
 Wed 11/06/2024 11:17:16.17 - Finished send_reminders.php 
+Thu 11/07/2024  8:31:27.87 - Starting send_reminders.php 
+<!-- PHP Notice:  file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+
+Notice: file_put_contents(): Write of 45 bytes failed with errno=13 Permission denied in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 21
+PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'ms.status_timing_1' in 'field list' in C:\xampp\htdocs\WBHR_MS\send_reminders.php:104
+Stack trace:
+#0 C:\xampp\htdocs\WBHR_MS\send_reminders.php(104): mysqli->prepare('\n    SELECT ms....')
+#1 {main}
+  thrown in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 104
+
+Fatal error: Uncaught mysqli_sql_exception: Unknown column 'ms.status_timing_1' in 'field list' in C:\xampp\htdocs\WBHR_MS\send_reminders.php:104
+Stack trace:
+#0 C:\xampp\htdocs\WBHR_MS\send_reminders.php(104): mysqli->prepare('\n    SELECT ms....')
+#1 {main}
+  thrown in C:\xampp\htdocs\WBHR_MS\send_reminders.php on line 104
+Thu 11/07/2024  8:35:05.82 - Finished send_reminders.php 

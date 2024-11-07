@@ -103,6 +103,44 @@ $medicineSchedules = mysqli_fetch_all($result, MYSQLI_ASSOC);
       position: fixed;
     }
     }
+    .pright{
+      text-align: right;
+      position: relative;
+    }
+    .row {
+      display: flex; 
+      justify-content: space-between; 
+      align-items: flex-start; 
+    }
+
+    .left-column {
+      text-align: left; 
+      flex-basis: 40%; 
+    }
+
+    .right-column {
+      text-align: right; 
+      flex-basis: 50%; 
+      list-style-type: none; 
+      padding: 0; 
+    }
+
+    .right-column li {
+      margin-bottom: 0.5em; 
+    }
+
+    .mb-4 {
+      margin-bottom: 1rem; 
+    }
+
+    .row hr {
+      margin: 1rem 0; 
+      border-top: 1px solid #ccc; 
+      width: 100%; 
+    }
+    ul{
+      list-style: none;
+    }
   </style>
 
 </head>
@@ -238,10 +276,11 @@ $medicineSchedules = mysqli_fetch_all($result, MYSQLI_ASSOC);
   <!-- Main Content -->
   <div class="content-wrapper">
     <div class="container mt-5">
-      <h3 class="text-center mb-4">Immaculate Medico-Surgical Clinic</h3>
-      <h4 class="text-center mb-4">Diagnosis Records for PID: <?php echo $pid; ?></h4>
+      <h2 class="text-center mb-4">General Surgeon/ Physician</h2>
+      <h4 class="text-center mb-4">Immaculate Medico-Surgical Clinic</h4>
+      <h4 class="text-center mb-4">Padre Diaz Street, Zone 6, Bulan, Sorsogon</h4>
       <hr>
-      <br><br>
+      <h4 class="text-center mb-4">Prescription Records for PID: <?php echo $pid; ?></h4>
       
       <!-- Display Patient Information -->
       <div class="row mb-4">
@@ -256,6 +295,8 @@ $medicineSchedules = mysqli_fetch_all($result, MYSQLI_ASSOC);
           <p class="agb"><strong>Birthday:</strong> <?php echo htmlspecialchars($patient['birthday']); ?></p>
         </div>
       </div>
+
+      <img src=".//img/rx-icon.png" style="height: 100px;" alt="rx"> <br><br>
 
       <!-- Display Medicine Schedule -->
       <?php if (!empty($medicineSchedules)): ?>
@@ -291,11 +332,25 @@ $medicineSchedules = mysqli_fetch_all($result, MYSQLI_ASSOC);
       <?php else: ?>
         <div class='alert alert-info' style='text-align: center;'>No Prescription found.</div>
       <?php endif; ?>
-      <button id="printButton" class="btn btn-primary" onclick="window.print()">Print Prescription</button>
+      <div class="row mb-4">
+        <div class="left-column">
+          <p> Next Appointment:</p>
+        <input type="date" style="border: none;">
+        </div>
+        <div class="right-column">
+          <ul>
+            <li>Leonardo G. Carpio, MD.</li>
+            <li>Li. No. : 55597</li>
+            <li>PTR No. : </li>
+            <li>S2 No.  :</li>
+          </ul> 
+        </div>
+      </div>
+      <button id="printButton" class="btn btn-primary" onclick="window.print()">Print Prescription</button> <br><br>
     </div>
   </div>
 
-</div>
+</div> 
 
 <!-- jQuery (local) -->
 <script src="plugins/jquery/jquery.min.js"></script>

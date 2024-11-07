@@ -243,93 +243,90 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
     <!-- /.sidebar -->
   </aside>
 
+  <div class="content-wrapper">
+    <div class="container mt-4" >
+        <h2 class="mb-4">Patient Records</h2>
 
+        <div class="table-responsive">
+            <table class="table table-bordered table-striped">
+                <thead>
+                    <tr>
+                        <th>PID</th>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Address</th>
+                        <th>Age</th>
+                        <th>Birthdate</th>
+                        <th>Phone Number</th>
+                        <th>Gender</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if (!empty($patients)): ?>
+                        <?php foreach ($patients as $patient): ?>
+                            <tr class="<?php echo ($patient['status'] === 'Not Active') ? 'table-secondary' : ''; ?>">
+                                <td><?php echo htmlspecialchars($patient['pid']); ?></td>
+                                <td><?php echo htmlspecialchars($patient['name']); ?></td>
+                                <td><?php echo htmlspecialchars($patient['lastname']); ?></td>
+                                <td><?php echo htmlspecialchars($patient['address']); ?></td>
+                                <td><?php echo htmlspecialchars($patient['age']); ?></td>
+                                <td><?php echo htmlspecialchars($patient['birthday']); ?></td>
+                                <td><?php echo htmlspecialchars($patient['phone_number']); ?></td>
+                                <td><?php echo htmlspecialchars($patient['gender']); ?></td>
+                                <td><?php echo htmlspecialchars($patient['status']); ?></td>
+                                <td class="action-buttons">
+                                    <?php if ($patient['status'] === 'Active'): ?>
+                                        <a href="#" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#statusModal<?php echo $patient['pid']; ?>">Set Inactive</a>
+                                    <?php else: ?>
+                                        <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#statusModal<?php echo $patient['pid']; ?>">Set Active</a>
+                                    <?php endif; ?>
+                                    <a href="viewPatient_Doctor.php?pid=<?php echo $patient['pid']; ?>" class="btn btn-sm btn-info">View More</a>
+                                </td>
+                            </tr>
 
-
-<div class="content-wrapper">
-  <div class="container mt-4" >
-      <h2 class="mb-4">Patient Records</h2>
-
-      <div class="table-responsive">
-          <table class="table table-bordered table-striped">
-              <thead>
-                  <tr>
-                      <th>PID</th>
-                      <th>First Name</th>
-                      <th>Last Name</th>
-                      <th>Address</th>
-                      <th>Age</th>
-                      <th>Birthdate</th>
-                      <th>Phone Number</th>
-                      <th>Gender</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <?php if (!empty($patients)): ?>
-                      <?php foreach ($patients as $patient): ?>
-                          <tr class="<?php echo ($patient['status'] === 'Not Active') ? 'table-secondary' : ''; ?>">
-                              <td><?php echo htmlspecialchars($patient['pid']); ?></td>
-                              <td><?php echo htmlspecialchars($patient['name']); ?></td>
-                              <td><?php echo htmlspecialchars($patient['lastname']); ?></td>
-                              <td><?php echo htmlspecialchars($patient['address']); ?></td>
-                              <td><?php echo htmlspecialchars($patient['age']); ?></td>
-                              <td><?php echo htmlspecialchars($patient['birthday']); ?></td>
-                              <td><?php echo htmlspecialchars($patient['phone_number']); ?></td>
-                              <td><?php echo htmlspecialchars($patient['gender']); ?></td>
-                              <td><?php echo htmlspecialchars($patient['status']); ?></td>
-                              <td class="action-buttons">
-                                  <?php if ($patient['status'] === 'Active'): ?>
-                                      <a href="#" class="btn btn-sm btn-warning" data-toggle="modal" data-target="#statusModal<?php echo $patient['pid']; ?>">Set Inactive</a>
-                                  <?php else: ?>
-                                      <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#statusModal<?php echo $patient['pid']; ?>">Set Active</a>
-                                  <?php endif; ?>
-                                  <a href="viewPatient_Doctor.php?pid=<?php echo $patient['pid']; ?>" class="btn btn-sm btn-info">View More</a>
-                              </td>
-                          </tr>
-
-                          <!-- Status Update -->
-                          <div class="modal fade" id="statusModal<?php echo $patient['pid']; ?>" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
-                              <div class="modal-dialog" role="document">
-                                  <div class="modal-content">
-                                      <form action="patientRecords_Doctor.php" method="post">
-                                          <div class="modal-header">
-                                              <h5 class="modal-title" id="statusModalLabel">Update Status</h5>
-                                              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                  <span aria-hidden="true">&times;</span>
-                                              </button>
-                                          </div>
-                                          <div class="modal-body">
-                                              <input type="hidden" name="pid" value="<?php echo htmlspecialchars($patient['pid']); ?>">
-                                              <div class="form-group">
-                                                  <label for="status">Status</label>
-                                                  <select class="form-control" id="status" name="status" required>
-                                                      <option value="Active" <?php echo ($patient['status'] === 'Active') ? 'selected' : ''; ?>>Active</option>
-                                                      <option value="Not Active" <?php echo ($patient['status'] === 'Not Active') ? 'selected' : ''; ?>>Not Active</option>
-                                                  </select>
-                                              </div>
-                                          </div>
-                                          <div class="modal-footer">
-                                              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                              <button type="submit" name="update_status" class="btn btn-primary">Update Status</button>
-                                          </div>
-                                      </form>
-                                  </div>
-                              </div>
-                          </div>
-                      <?php endforeach; ?>
-                  <?php else: ?>
-                      <tr>
-                          <td colspan="9" class="text-center">No patients found</td>
-                      </tr>
-                  <?php endif; ?>
-              </tbody>
-          </table>
-      </div>
+                            <!-- Status Update -->
+                            <div class="modal fade" id="statusModal<?php echo $patient['pid']; ?>" tabindex="-1" role="dialog" aria-labelledby="statusModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <form action="patientRecords_Doctor.php" method="post">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="statusModalLabel">Update Status</h5>
+                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="modal-body">
+                                                <input type="hidden" name="pid" value="<?php echo htmlspecialchars($patient['pid']); ?>">
+                                                <div class="form-group">
+                                                    <label for="status">Status</label>
+                                                    <select class="form-control" id="status" name="status" required>
+                                                        <option value="Active" <?php echo ($patient['status'] === 'Active') ? 'selected' : ''; ?>>Active</option>
+                                                        <option value="Not Active" <?php echo ($patient['status'] === 'Not Active') ? 'selected' : ''; ?>>Not Active</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="modal-footer">
+                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                <button type="submit" name="update_status" class="btn btn-primary">Update Status</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <tr>
+                            <td colspan="9" class="text-center">No patients found</td>
+                        </tr>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
   </div>
-  </div>
-</div>
 <!-- ./wrapper -->
 
 <!-- jQuery -->

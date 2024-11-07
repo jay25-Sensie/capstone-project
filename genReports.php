@@ -240,29 +240,21 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
             <!-- Form to select PID and patient name -->
             <div class="container mt-4">
                 <h2>Generate Patient Report</h2>
-                <form method="POST" action="genReports.php">
+                <form method="POST" action="genReports.php" id="patientReportForm">
                     <div class="form-group">
-                        <label for="pid">Select Patient (ID - Name):</label>
-                        <select class="form-control" id="pid" name="pid" required>
-                            <option value="" disabled selected>Select a patient</option>
-                            <?php
-                            // Fetch the list of patients from the database
-                            $query = "SELECT pid, name, lastname FROM patient_records";
-                            $result = mysqli_query($con, $query);
-                            while ($row = mysqli_fetch_assoc($result)) {
-                                echo "<option value='" . $row['pid'] . "'>" . $row['pid'] . " - " . htmlspecialchars($row['name']) . " " . htmlspecialchars($row['lastname']) . "</option>";
-                            }
-                            ?>
-                        </select>
+                        <label for="patient_search">Select Patient (ID - Name):</label>
+                        <input type="text" class="form-control" id="patient_search" name="patient_search" placeholder="Search by ID or Name" required>
+                        <div id="patient_suggestions" class="list-group" style="display: none;"></div>
+                        <input type="hidden" id="pid" name="pid"> 
                     </div>
-                    <button type="submit" class="btn btn-primary">Generate Report</button>
+                    <button type="submit" class="btn btn-primary" id="generateReportButton" disabled>Generate Report</button>
                 </form>
             </div>
         <?php else: ?>
             <!-- Display Patient Report -->
             <div class="container mt-4">
                 <?php if ($patient): ?>
-                    <h2>Generate Reports for <?php echo htmlspecialchars($patient['name']); ?> <?php echo htmlspecialchars($patient['lastname']); ?></h2>
+                    <h2>Generate Report for <?php echo htmlspecialchars($patient['name']); ?> <?php echo htmlspecialchars($patient['lastname']); ?></h2>
 
                     <!-- Patient Information -->
                     <h4>Patient Information</h4>
@@ -404,6 +396,53 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
 <!-- AdminLTE App (local) -->
 <script src="dist/js/adminlte.js"></script>
 <script src="../wbhr_ms/logout.js"></script>
+<script>
+   $(document).ready(function() {
+    // Handle the input field for search
+    $("#patient_search").on("keyup", function() {
+        var search_term = $(this).val().trim();
+
+        if (search_term.length > 2) {
+            // If input is more than 2 characters, fetch suggestions from the server
+            $.ajax({
+                url: 'search_patients.php',
+                method: 'GET',
+                data: { q: search_term },
+                success: function(response) {
+                    $("#patient_suggestions").html(response).show(); // Show suggestions
+                }
+            });
+        } else {
+            $("#patient_suggestions").hide(); // Hide suggestions when input is too short
+        }
+    });
+
+    // Handle selection of a patient from suggestions
+    $("#patient_suggestions").on("click", "li", function() {
+        var patientName = $(this).text(); // Get the patient's name
+        var patientId = $(this).data("pid"); // Get the patient's PID
+
+        // Set the selected patient's name in the search field
+        $("#patient_search").val(patientName);
+
+        // Store the patient ID in the hidden input field
+        $("#pid").val(patientId);
+
+        // Hide the suggestions once a patient is selected
+        $("#patient_suggestions").hide();
+
+        // Optionally enable a button or perform other actions
+        $("#generateReportButton").prop("disabled", false);
+    });
+
+    // Hide suggestions when the input loses focus
+    $("#patient_search").on("blur", function() {
+        setTimeout(function() {
+            $("#patient_suggestions").hide(); // Hide suggestions after a short delay
+        }, 500); // 500ms delay before hiding suggestions
+    });
+});
+</script>
 </body>
 </html>
 
