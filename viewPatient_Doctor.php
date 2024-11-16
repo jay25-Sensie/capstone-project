@@ -244,7 +244,7 @@ $vital_signs = mysqli_fetch_all($result, MYSQLI_ASSOC);
             <tr><th>PID</th><td><?php echo htmlspecialchars($patient['pid']); ?></td></tr>
             <tr><th>First Name</th><td><?php echo htmlspecialchars($patient['name']); ?></td></tr>
             <tr><th>Last Name</th><td><?php echo htmlspecialchars($patient['lastname']); ?></td></tr>
-            <tr><th>Address</th><td><?php echo htmlspecialchars($patient['address']); ?></td></tr>
+            <tr><th>Address</th><td><?php echo htmlspecialchars($patient['brgy']) . ' ' .  htmlspecialchars($patient['municipality']) . ', ' . htmlspecialchars($patient['province']); ?></td></tr>
             <tr><th>Age</th><td><?php echo htmlspecialchars($patient['age']); ?></td></tr>
             <tr><th>Birthdate</th><td><?php echo htmlspecialchars($patient['birthday']); ?></td></tr>
             <tr><th>Phone Number</th><td><?php echo htmlspecialchars($patient['phone_number']); ?></td></tr>

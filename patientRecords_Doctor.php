@@ -102,8 +102,9 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
           text-align: center;          
           display: inline-flex;
       }
-
-
+      .col-size{
+        width: 15%;
+      }
 
     </style>
 
@@ -252,11 +253,11 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
                 <thead>
                     <tr>
                         <th>PID</th>
-                        <th>First Name</th>
-                        <th>Last Name</th>
+                        <th class="col-size">First Name</th>
+                        <th class="col-size">Last Name</th>
                         <th>Address</th>
                         <th>Age</th>
-                        <th>Birthdate</th>
+                        <th class="col-size">Birthdate</th>
                         <th>Phone Number</th>
                         <th>Gender</th>
                         <th>Status</th>
@@ -268,11 +269,11 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
                         <?php foreach ($patients as $patient): ?>
                             <tr class="<?php echo ($patient['status'] === 'Not Active') ? 'table-secondary' : ''; ?>">
                                 <td><?php echo htmlspecialchars($patient['pid']); ?></td>
-                                <td><?php echo htmlspecialchars($patient['name']); ?></td>
-                                <td><?php echo htmlspecialchars($patient['lastname']); ?></td>
-                                <td><?php echo htmlspecialchars($patient['address']); ?></td>
+                                <td class="col-size"><?php echo htmlspecialchars($patient['name']); ?></td>
+                                <td class="col-size"><?php echo htmlspecialchars($patient['lastname']); ?></td>
+                                <td ><?php echo htmlspecialchars($patient['brgy']) . ' ' .  htmlspecialchars($patient['municipality']) . ', ' . htmlspecialchars($patient['province']); ?></td>
                                 <td><?php echo htmlspecialchars($patient['age']); ?></td>
-                                <td><?php echo htmlspecialchars($patient['birthday']); ?></td>
+                                <td class="col-size"><?php echo htmlspecialchars($patient['birthday']); ?></td>
                                 <td><?php echo htmlspecialchars($patient['phone_number']); ?></td>
                                 <td><?php echo htmlspecialchars($patient['gender']); ?></td>
                                 <td><?php echo htmlspecialchars($patient['status']); ?></td>

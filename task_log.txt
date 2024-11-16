@@ -1,2 +1,0 @@
-Tue 10/08/2024  0:08:26.23 - Running send_reminders.php 
-Tue 10/08/2024  0:08:29.47 - Completed send_reminders.php 

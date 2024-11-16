@@ -1,9 +1,12 @@
 function validateAge() {
-    const birthdayInputs = document.querySelectorAll('.birthday-input');
+    
+    const birthdayInputs = document.querySelectorAll('.birthday-input');  
     const ageInputs = document.querySelectorAll('.age-input');
-
+   
     console.log('validateAge function loaded');
 
+    // birthdayInput: Represents the current birthday input element.
+    // index: Represents the index of the current birthday input element in the array.
     birthdayInputs.forEach((birthdayInput, index) => {
         const ageInput = ageInputs[index];
         if (birthdayInput && ageInput) {

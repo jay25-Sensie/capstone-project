@@ -95,6 +95,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
     .nav-treeview .nav-item {
         padding-left: 3%;
     }
+    .col-size{
+        width: 15%;
+    }
   </style>
 
 
@@ -236,6 +239,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
 <br>
 <div class="content-wrapper">
     <div class="wrapper">
+      <h2 class="text-center mb-4">General Surgeon/ Physician</h2>
+      <h4 class="text-center mb-4">Immaculate Medico-Surgical Clinic</h4>
+      <h4 class="text-center mb-4">Padre Diaz Street, Zone 6, Bulan, Sorsogon</h4>
+      <hr>
+      <br>
         <?php if ($pid === null): ?>
             <!-- Form to select PID and patient name -->
             <div class="container mt-4">
@@ -261,7 +269,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
                     <table class="table table-bordered">
                         <tr><th>PID</th><td><?php echo htmlspecialchars($patient['pid']); ?></td></tr>
                         <tr><th>Name</th><td><?php echo htmlspecialchars($patient['name']); ?> <?php echo htmlspecialchars($patient['lastname']); ?></td></tr>
-                        <tr><th>Address</th><td><?php echo htmlspecialchars($patient['address']); ?></td></tr>
+                        <tr><th>Address</th><td><?php echo htmlspecialchars($patient['brgy']) . ' ' .  htmlspecialchars($patient['municipality']) . ' ' .  htmlspecialchars($patient['province']); ?></td></tr>
                         <tr><th>Age</th><td><?php echo htmlspecialchars($patient['age']); ?></td></tr>
                         <tr><th>Birthdate</th><td><?php echo htmlspecialchars($patient['birthday']); ?></td></tr>
                         <tr><th>Phone Number</th><td><?php echo htmlspecialchars($patient['phone_number']); ?></td></tr>
@@ -314,7 +322,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
                             echo '<table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th>Date</th>
+                                        <th class="col-size">Date</th>
                                         <th>Subjective</th>
                                         <th>Objective</th>
                                         <th>Assessment</th>
@@ -324,7 +332,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
                                 <tbody>';
                             while ($row = $diagnosisResult->fetch_assoc()) {
                                 echo '<tr>
-                                    <td>' . htmlspecialchars($row['date']) . '</td>
+                                    <td class="col-size">' . htmlspecialchars($row['date']) . '</td>
                                     <td>' . htmlspecialchars($row['subjective']) . '</td>
                                     <td>' . htmlspecialchars($row['objective']) . '</td>
                                     <td>' . htmlspecialchars($row['assessment']) . '</td>
@@ -397,9 +405,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
 <script src="dist/js/adminlte.js"></script>
 <script src="../wbhr_ms/logout.js"></script>
 <script>
-   $(document).ready(function() {
+  $(document).ready(function() {
     // Handle the input field for search
-    $("#patient_search").on("keyup", function() {
+    $("#patient_search").on("keyup", function(event) {
         var search_term = $(this).val().trim();
 
         if (search_term.length > 2) {
@@ -409,7 +417,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
                 method: 'GET',
                 data: { q: search_term },
                 success: function(response) {
-                    $("#patient_suggestions").html(response).show(); // Show suggestions
+                    if (response.trim() !== "") {
+                        $("#patient_suggestions").html(response).show(); // Show suggestions if there are results
+                    } else {
+                        $("#patient_suggestions").hide(); // Hide if no results
+                    }
                 }
             });
         } else {
@@ -435,13 +447,41 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['pid'])) {
         $("#generateReportButton").prop("disabled", false);
     });
 
-    // Hide suggestions when the input loses focus
+    // Hide suggestions when the input loses focus, unless a suggestion is clicked
     $("#patient_search").on("blur", function() {
         setTimeout(function() {
             $("#patient_suggestions").hide(); // Hide suggestions after a short delay
-        }, 500); // 500ms delay before hiding suggestions
+        }, 300); // Small delay to allow click event on suggestion to register
+    });
+
+    // Handle Enter key press to select the first suggestion
+    $("#patient_search").on("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // Prevent the form from submitting
+
+            // Find the first suggestion
+            var firstSuggestion = $("#patient_suggestions li").first();
+
+            if (firstSuggestion.length) {
+                var patientName = firstSuggestion.text(); // Get the patient's name
+                var patientId = firstSuggestion.data("pid"); // Get the patient's PID
+
+                // Set the selected patient's name in the search field
+                $("#patient_search").val(patientName);
+
+                // Store the patient ID in the hidden input field
+                $("#pid").val(patientId);
+
+                // Hide the suggestions once a patient is selected
+                $("#patient_suggestions").hide();
+
+                // Enable the generate report button if it's disabled
+                $("#generateReportButton").prop("disabled", false);
+            }
+        }
     });
 });
+
 </script>
 </body>
 </html>

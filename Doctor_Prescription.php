@@ -69,14 +69,16 @@ if ($diagnosisResult->num_rows > 0) {
         text-align: center;
     }
     .content-wrapper{
-          padding-left: 5%;
-          padding-right: 5%;
+          padding-left: 3%;
+          padding-right: 3%;
           padding-top: 3%;
     }
     .nav-treeview .nav-item {
         padding-left: 3%;
     }
-     
+    .col-size{
+      width: 15%;
+    }
   </style>
 </head>
 <body class="hold-transition sidebar-mini layout-fixed">
@@ -211,12 +213,12 @@ if ($diagnosisResult->num_rows > 0) {
             <thead>
                 <tr>
                     <th>PID</th>
-                    <th>Patient Name</th>
-                    <th>Date</th>
-                    <th>Subjective</th>
-                    <th>Objective</th>
-                    <th>Assessment</th>
-                    <th>Plan</th>
+                    <th class="col-size">Patient Name</th>
+                    <th class="col-size">Date</th>
+                    <th class="col-size">Subjective</th>
+                    <th class="col-size">Objective</th>
+                    <th class="col-size">Assessment</th>
+                    <th class="col-size">Plan</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -224,12 +226,12 @@ if ($diagnosisResult->num_rows > 0) {
         foreach ($diagnosisRecords as $record) {
             echo '<tr>
                 <td>' . htmlspecialchars($record['pid']) . '</td>
-                <td>' . htmlspecialchars($record['patient_name']) . '</td>
-                <td>' . htmlspecialchars($record['date']) . '</td>
-                <td>' . htmlspecialchars($record['subjective']) . '</td>
-                <td>' . htmlspecialchars($record['objective']) . '</td>
-                <td>' . htmlspecialchars($record['assessment']) . '</td>
-                <td>' . htmlspecialchars($record['plan']) . '</td>
+                <td class="col-size">' . htmlspecialchars($record['patient_name']) . '</td>
+                <td class="col-size">' . htmlspecialchars($record['date']) . '</td>
+                <td class="col-size">' . htmlspecialchars($record['subjective']) . '</td>
+                <td class="col-size">' . htmlspecialchars($record['objective']) . '</td>
+                <td class="col-size">' . htmlspecialchars($record['assessment']) . '</td>
+                <td class="col-size">' . htmlspecialchars($record['plan']) . '</td>
                 <td style="text-align: center;">
                     <a href="prescribe.php?pid=' . htmlspecialchars($record['pid']) . '" class="btn btn-sm btn-info" >Set Medicine</a>
                 </td>

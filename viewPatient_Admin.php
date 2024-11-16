@@ -234,7 +234,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             <tr><th>PID</th><td><?php echo htmlspecialchars($patient['pid']); ?></td></tr>
             <tr><th>First Name</th><td><?php echo htmlspecialchars($patient['name']); ?></td></tr>
             <tr><th>Last Name</th><td><?php echo htmlspecialchars($patient['lastname']); ?></td></tr>
-            <tr><th>Address</th><td><?php echo htmlspecialchars($patient['address']); ?></td></tr>
+            <tr><th>Address</th><td><?php echo htmlspecialchars($patient['brgy']) . ' ' .  htmlspecialchars($patient['municipality']) . ', ' . htmlspecialchars($patient['province']); ?></td></tr>
             <tr><th>Age</th><td><?php echo htmlspecialchars($patient['age']); ?></td></tr>
             <tr><th>Birthdate</th><td><?php echo htmlspecialchars($patient['birthday']); ?></td></tr>
             <tr><th>Phone Number</th><td><?php echo htmlspecialchars($patient['phone_number']); ?></td></tr>
@@ -296,27 +296,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                                         </div>
                                         <div class="form-group">
                                             <label for="vital-bp-<?php echo $vital['id']; ?>">Blood Pressure</label>
-                                            <input type="text" class="form-control" id="vital-bp-<?php echo $vital['id']; ?>" name="bp" value="<?php echo htmlspecialchars($vital['bp']); ?>" required>
+                                            <input type="text" class="form-control" id="vital-bp-<?php echo $vital['id']; ?>" name="bp" value="<?php echo htmlspecialchars($vital['bp']); ?>" required oninput="removeStrings(this)">
                                         </div>
                                         <div class="form-group">
                                             <label for="vital-cr-<?php echo $vital['id']; ?>">Heart Rate</label>
-                                            <input type="text" class="form-control" id="vital-cr-<?php echo $vital['id']; ?>" name="cr" value="<?php echo htmlspecialchars($vital['cr']); ?>" required>
+                                            <input type="text" class="form-control" id="vital-cr-<?php echo $vital['id']; ?>" name="cr" value="<?php echo htmlspecialchars($vital['cr']); ?>" required oninput="removeStrings(this)">
                                         </div>
                                         <div class="form-group">
                                             <label for="vital-rr-<?php echo $vital['id']; ?>">Respiratory Rate</label>
-                                            <input type="text" class="form-control" id="vital-rr-<?php echo $vital['id']; ?>" name="rr" value="<?php echo htmlspecialchars($vital['rr']); ?>" required>
+                                            <input type="text" class="form-control" id="vital-rr-<?php echo $vital['id']; ?>" name="rr" value="<?php echo htmlspecialchars($vital['rr']); ?>" required oninput="removeStrings(this)">
                                         </div>
                                         <div class="form-group">
                                             <label for="vital-t-<?php echo $vital['id']; ?>">Temperature</label>
-                                            <input type="text" class="form-control" id="vital-t-<?php echo $vital['id']; ?>" name="t" value="<?php echo htmlspecialchars($vital['t']); ?>" required>
+                                            <input type="text" class="form-control" id="vital-t-<?php echo $vital['id']; ?>" name="t" value="<?php echo htmlspecialchars($vital['t']); ?>" required oninput="removeStrings(this)">
                                         </div>
                                         <div class="form-group">
                                             <label for="vital-wt-<?php echo $vital['id']; ?>">Weight (kg)</label>
-                                            <input type="text" class="form-control" id="vital-wt-<?php echo $vital['id']; ?>" name="wt" value="<?php echo htmlspecialchars($vital['wt']); ?>" required>
+                                            <input type="text" class="form-control" id="vital-wt-<?php echo $vital['id']; ?>" name="wt" value="<?php echo htmlspecialchars($vital['wt']); ?>" required oninput="removeStrings(this)">
                                         </div>
                                         <div class="form-group">
                                             <label for="vital-ht-<?php echo $vital['id']; ?>">Height (cm)</label>
-                                            <input type="text" class="form-control" id="vital-ht-<?php echo $vital['id']; ?>" name="ht" value="<?php echo htmlspecialchars($vital['ht']); ?>" required>
+                                            <input type="text" class="form-control" id="vital-ht-<?php echo $vital['id']; ?>" name="ht" value="<?php echo htmlspecialchars($vital['ht']); ?>" required oninput="removeStrings(this)">
                                         </div>
                                     </div>
                                     <div class="modal-footer">
@@ -431,5 +431,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 <!-- AdminLTE App -->
 <script src="dist/js/adminlte.js"></script>
 <script src="../wbhr_ms/logout.js"></script>
+<script>
+  function removeStrings(input){
+    input.value = input.value.replace(/[a-z]/g, '');
+  }
+</script>
 </body>
 </html>

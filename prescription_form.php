@@ -286,7 +286,7 @@ $medicineSchedules = mysqli_fetch_all($result, MYSQLI_ASSOC);
       <div class="row mb-4">
         <div class="col-md-6">
           <p><strong>Name:</strong> <?php echo htmlspecialchars($patient['name']) . ' ' . htmlspecialchars($patient['lastname']); ?></p>
-          <p><strong>Address:</strong> <?php echo htmlspecialchars($patient['address']); ?></p>
+          <p><strong>Address:</strong> <?php echo htmlspecialchars($patient['brgy']) .' ' . htmlspecialchars($patient['municipality']) . ', ' . htmlspecialchars($patient['province']); ?></p>
           <p><strong>Phone Number:</strong> <?php echo htmlspecialchars($patient['phone_number']); ?></p>
         </div>
         <div class="col-md-6">

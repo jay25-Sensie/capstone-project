@@ -242,7 +242,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <!-- Form to upload files -->
             <div class="card">
                 <div class="card-header">
-                    <h3 class="card-title">Upload Medical Records</h3>
+                    <h2 class="card-title">Upload Medical Records</h2>
                 </div>
                 <div class="card-body">
                     <form action="medical_records.php" method="POST" enctype="multipart/form-data">
@@ -305,7 +305,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <script>
   $(document).ready(function() {
     // Handle the input field for search
-    $("#patient_search").on("keyup", function() {
+    $("#patient_search").on("keyup", function(event) {
         var search_term = $(this).val().trim();
 
         if (search_term.length > 2) {
@@ -336,6 +336,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         // Hide the suggestions
         $("#patient_suggestions").hide();
+
+        // Enable the "Generate Report" button
+        $("#generateReportButton").prop("disabled", false).click();
+    });
+
+    // Handle Enter key press to select the first suggestion and generate the report
+    $("#patient_search").on("keydown", function(event) {
+        if (event.key === "Enter") {
+            event.preventDefault(); // Prevent the form from submitting
+
+            // Find the first suggestion
+            var firstSuggestion = $("#patient_suggestions li").first();
+
+            if (firstSuggestion.length) {
+                var patientName = firstSuggestion.text(); // Get the patient's name
+                var patientId = firstSuggestion.data("pid"); // Get the patient's PID
+
+                // Set the selected patient's name in the search field
+                $("#patient_search").val(patientName);
+
+                // Store the patient ID in the hidden input field
+                $("#pid").val(patientId);
+
+                // Hide the suggestions
+                $("#patient_suggestions").hide();
+
+                // Enable the "Generate Report" button and trigger a click to generate the report
+                $("#generateReportButton").prop("disabled", false).click();
+            }
+        }
     });
 
     // Hide suggestions when the input loses focus
@@ -345,6 +375,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         }, 500); // 500ms delay before hiding suggestions
     });
 });
+
 </script>
 </body>
 </html>

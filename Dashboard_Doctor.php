@@ -92,7 +92,6 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
 <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker.css">
 <!-- Summernote (local) -->
 <link rel="stylesheet" href="plugins/summernote/summernote-bs4.min.css">
-
   <style>
     .calendar {
             margin-top: 20px;
@@ -275,7 +274,7 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
 
                                   // Checking if the date is in the selected closed days array
                                   if (isClosed($date, $selected_dates)) {
-                                      echo '<br><span class="badge badge-danger">Closed</span>';
+                                      echo '<br><span class="badge badge-danger">Doctor\'s Not <br> Available</span>';
                                   }
 
                                   $current_date++;
@@ -298,7 +297,7 @@ $start_day_of_week = date('N', mktime(0, 0, 0, $current_month, 1, $current_year)
                                       echo $current_date;
 
                                       if (isClosed($date, $selected_dates)) {
-                                          echo '<br><span class="badge badge-danger">Closed</span>';
+                                          echo '<br><span class="badge badge-danger">Doctor\'s Not <br> Available</span>';
                                       }
 
                                       $current_date++;

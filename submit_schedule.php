@@ -2,7 +2,7 @@
 include 'connection.php';
 
 // Semaphore API credentials
-//$semaphore_api_key = 'paki paste nlng ang actual api key bawal kase eei push'; 
+// $semaphore_api_key = '598b6a6303a6fb12fe5a5f46d1af565f'; 
 $sender_name = 'Thesis'; 
 
 // Function to send SMS via Semaphore
@@ -45,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $medicine_names = $_POST['medicine_name'];
     $doses_per_day_array = $_POST['doses_per_day'];
     $dose_timings_array = $_POST['dose_timings'];
-    $meal_timings_array = isset($_POST['meal_time']) ? $_POST['meal_time'] : []; // Get meal timings from form
+    $meal_timings_array = isset($_POST['meal_time']) ? $_POST['meal_time'] : [];
 
     // Fetch the patient's phone number based on the PID
     $patient_stmt = $con->prepare("SELECT phone_number FROM patient_records WHERE pid = ?");
@@ -60,15 +60,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    // Ensure the phone number is formatted correctly (remove any extra "+" or country code prefix)
+    // phone number is formatted correctly (remove any extra "+" country code prefix)
     $phone_number = preg_replace('/^\+?63/', '63', $phone_number);
 
     for ($i = 0; $i < count($medicine_names); $i++) {
         $medicine_name = $medicine_names[$i];
         $doses_per_day = $doses_per_day_array[$i];
         $timings = $dose_timings_array[$i];
-        $meal_timing = isset($meal_timings_array[$i]) ? $meal_timings_array[$i] : null; // Get meal timing for this medicine
-
+        $meal_timing = isset($meal_timings_array[$i]) ? $meal_timings_array[$i] : null; 
         $timing1 = $timings[0] ?? null;
         $timing2 = $timings[1] ?? null;
         $timing3 = $timings[2] ?? null;
@@ -113,7 +112,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         // Decode the response to check the status
                         $response_data = json_decode($sms_response, true);
                         if (isset($response_data['status']) && $response_data['status'] === "Queued") {
-                            echo "<script>alert('SMS reminder sent successfully for $medicine_name at $timing to $phone_number.')window.location.href = 'Doctor_Prescription'</script>";
+                            echo "<script>alert('SMS reminder sent successfully for $medicine_name at $timing to $phone_number.'); window.location.href = 'Doctor_Prescription.php';</script>";
                         }
 
                         file_put_contents('sms_log.txt', date('Y-m-d H:i:s') . " - $message - Response: $sms_response\n", FILE_APPEND);

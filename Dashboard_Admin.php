@@ -251,7 +251,7 @@ $month_name = date('F', mktime(0, 0, 0, $current_month, 1, $current_year)); // F
 
                                   // Checking if the date is in the selected closed days array
                                   if (isClosed($date, $selected_dates)) {
-                                      echo '<br><span class="badge badge-danger">Closed</span>';
+                                      echo '<br><span class="badge badge-danger">Doctor\'s Not <br> Available</span>';
                                   }
 
                                   $current_date++;
@@ -274,7 +274,7 @@ $month_name = date('F', mktime(0, 0, 0, $current_month, 1, $current_year)); // F
                                       echo $current_date;
 
                                       if (isClosed($date, $selected_dates)) {
-                                          echo '<br><span class="badge badge-danger">Closed</span>';
+                                          echo '<br><span class="badge badge-danger">Doctor\'s Not <br> Available</span>';
                                       }
 
                                       $current_date++;

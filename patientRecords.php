@@ -44,7 +44,9 @@ function format_phone_number($phone_number) {
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $name = sanitize_input($con, $_POST['name']);
     $lastname = sanitize_input($con, $_POST['lastname']);
-    $address = sanitize_input($con, $_POST['address']);
+    $brgy = sanitize_input($con, $_POST['brgy']);
+    $municipality = sanitize_input($con, $_POST['municipality']);
+    $province = sanitize_input($con, $_POST['province']);
     $birthday = sanitize_input($con, $_POST['birthday']);
     $phone_number = sanitize_input($con, $_POST['phone_number']);
     $gender = sanitize_input($con, $_POST['gender']);
@@ -54,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $formatted_phone_number = format_phone_number($phone_number);
 
     if (!ctype_digit(substr($formatted_phone_number, 3)) || strlen($formatted_phone_number) != 13) {
-        echo "<script>alert('Phone number must contain exactly 11 digits after the country code!');</script>";
+        echo "<script>alert('Phone number must contain exactly 11 digits!');</script>";
         $validation_passed = false;
     }
 
@@ -74,14 +76,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $age = $today->diff($birthdate)->y;
 
         if (isset($_POST['add_patient'])) {
-            $query = "INSERT INTO patient_records (name, lastname, address, age, birthday, phone_number, gender, status) 
-                      VALUES ('$name', '$lastname', '$address', $age, '$birthday', '$formatted_phone_number', '$gender', 'Active')";
+            $query = "INSERT INTO patient_records (name, lastname, brgy,  municipality, province, age, birthday, phone_number, gender, status) 
+                      VALUES ('$name', '$lastname', '$brgy', '$municipality', '$province',  $age, '$birthday', '$formatted_phone_number', '$gender', 'Active')";
             if (mysqli_query($con, $query)) {
                 $pid = mysqli_insert_id($con);
                 $hashed_password = password_hash($pid, PASSWORD_BCRYPT);
                 $query_user = "INSERT INTO users (username, password, role) VALUES ('$pid', '$hashed_password', 'patient')";
                 mysqli_query($con, $query_user);
-
+        
                 header("Location: patientRecords.php");
                 exit();
             } else {
@@ -89,7 +91,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         } elseif (isset($_POST['update_patient'])) {
             $query = "UPDATE patient_records SET 
-                      name = '$name', lastname = '$lastname', address = '$address', 
+                      name = '$name', lastname = '$lastname', province = '$province', 
+                      municipality = '$municipality', brgy = '$brgy', 
                       age = $age, birthday = '$birthday', phone_number = '$formatted_phone_number', gender = '$gender' 
                       WHERE pid = $pid";
             if (mysqli_query($con, $query)) {
@@ -99,6 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 echo "Error: " . mysqli_error($con);
             }
         }
+        
 
         if (isset($_POST['update_status'])) {
             $status = sanitize_input($con, $_POST['status']);
@@ -181,7 +185,9 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
             text-align: center;          
             display: inline-flex;
         }
-
+        .col-size{
+            width: 22%;
+        }
     </style>
 
  <!-- jQuery UI (local) -->
@@ -350,10 +356,10 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
                     <thead>
                         <tr>
                             <th>PID</th>
-                            <th>First Name</th>
-                            <th>Last Name</th>
-                            <th>Address</th>
-                            <th>Birthdate</th>
+                            <th class="col-size">First Name</th>
+                            <th class="col-size">Last Name</th>
+                            <th class="col-size">Address</th>
+                            <th class="col-size">Birthdate</th>
                             <th>Age</th>
                             <th>Phone Number</th>
                             <th>Gender</th>
@@ -366,10 +372,10 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
                             <?php foreach ($patients as $patient): ?>
                                 <tr class="<?php echo ($patient['status'] === 'Not Active') ? 'table-secondary' : ''; ?>">
                                     <td><?php echo htmlspecialchars($patient['pid']); ?></td>
-                                    <td><?php echo htmlspecialchars($patient['name']); ?></td>
-                                    <td><?php echo htmlspecialchars($patient['lastname']); ?></td>
-                                    <td><?php echo htmlspecialchars($patient['address']); ?></td>
-                                    <td><?php echo htmlspecialchars($patient['birthday']); ?></td>
+                                    <td class="col-size"><?php echo htmlspecialchars($patient['name']); ?></td>
+                                    <td class="col-size"><?php echo htmlspecialchars($patient['lastname']); ?></td>
+                                    <td class="col-size-add"><?php echo htmlspecialchars($patient['brgy']) . ' ' .htmlspecialchars($patient['municipality']) . ', ' . htmlspecialchars($patient['province']); ?></td>
+                                    <td class="col-size"><?php echo htmlspecialchars($patient['birthday']); ?></td>
                                     <td><?php echo htmlspecialchars($patient['age']); ?></td>
                                     <td><?php echo htmlspecialchars($patient['phone_number']); ?></td>
                                     <td><?php echo htmlspecialchars($patient['gender']); ?></td>
@@ -394,22 +400,33 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                                 </div>
                                                 <div class="modal-body">
                                                     <input type="hidden" name="pid" value="<?php echo $patient['pid']; ?>">
+                                                    
                                                     <div class="form-group">
                                                         <label for="edit-name">First Name</label>
-                                                        <input type="text" class="form-control" id="edit-name" name="name" value="<?php echo $patient['name']; ?>" required>
+                                                        <input type="text" class="form-control" id="edit-name" name="name" value="<?php echo $patient['name']; ?>" required oninput="cleanInput(this)">
                                                     </div>
+                                                    
                                                     <div class="form-group">
                                                         <label for="edit-lastname">Last Name</label>
-                                                        <input type="text" class="form-control" id="edit-lastname" name="lastname" value="<?php echo $patient['lastname']; ?>" required>
+                                                        <input type="text" class="form-control" id="edit-lastname" name="lastname" value="<?php echo $patient['lastname']; ?>" required oninput="cleanInput(this)">
                                                     </div>
                                                     <div class="form-group">
-                                                        <label for="edit-address">Address</label>
-                                                        <input type="text" class="form-control" id="edit-address" name="address" value="<?php echo $patient['address']; ?>" required>
+                                                        <label for="edit-brgy">Barangay</label>
+                                                        <input type="text" class="form-control" id="edit-brgy" name="brgy" value="<?php echo $patient['brgy']; ?>" required>
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="edit-municipality">Municipality</label>
+                                                        <input type="text" class="form-control" id="edit-municipality" name="municipality" value="<?php echo $patient['municipality']; ?>" required oninput="cleanInput(this)">
+                                                    </div>
+                                                    <div class="form-group">
+                                                        <label for="edit-province">Province</label>
+                                                        <input type="text" class="form-control" id="edit-province" name="province" value="<?php echo $patient['province']; ?>" required oninput="cleanInput(this)">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="edit-birthday">Birthdate</label>
                                                         <input type="date" class="form-control birthday-input" id="edit-birthday" name="birthday" value="<?php echo $patient['birthday']; ?>" required>
                                                     </div>
+
                                                     <div class="form-group">
                                                         <label for="edit-age">Age</label>
                                                         <input type="number" class="form-control age-input" id="edit-age" name="age" value="<?php echo $patient['age']; ?>" required>
@@ -417,8 +434,9 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
                                                     <div class="form-group">
                                                         <label for="edit-phone-number">Phone Number</label>
-                                                        <input type="text" class="form-control" id="edit-phone-number" name="phone_number" value="<?php echo $patient['phone_number']; ?>" required>
+                                                        <input type="text" class="form-control" id="edit-phone-number" name="phone_number" value="<?php echo $patient['phone_number']; ?>" required oninput="onlyNumbers(this)">
                                                     </div>
+
                                                     <div class="form-group">
                                                         <label for="edit-gender">Gender</label>
                                                         <select class="form-control" id="edit-gender" name="gender" required>
@@ -436,6 +454,8 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                     </div>
                                 </div>
 
+                            
+                                <!-- Vital Sign Modal -->
                                 <div class="modal fade" id="vitalSignModal<?php echo $patient['pid']; ?>" tabindex="-1" role="dialog" aria-labelledby="vitalSignModalLabel" aria-hidden="true">
                                     <div class="modal-dialog" role="document">
                                         <div class="modal-content">
@@ -467,29 +487,29 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="vital-bp">Blood Pressure</label>
-                                                        <input type="text" class="form-control" id="vital-bp" name="bp" required>
+                                                        <input type="text" class="form-control" id="vital-bp" name="bp" required oninput="onlyNumbers(this)">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="vital-cr">Heart Rate</label>
-                                                        <input type="text" class="form-control" id="vital-cr" name="cr" required>
+                                                        <input type="text" class="form-control" id="vital-cr" name="cr" required oninput="onlyNumbers(this)">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="vital-rr">Respiratory Rate</label>
-                                                        <input type="text" class="form-control" id="vital-rr" name="rr" required>
+                                                        <input type="text" class="form-control" id="vital-rr" name="rr" required oninput="onlyNumbers(this)">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="vital-t">Temperature</label>
-                                                        <input type="text" class="form-control" id="vital-t" name="t" required>
+                                                        <input type="text" class="form-control" id="vital-t" name="t" required oninput="onlyNumbers(this)">
                                                     </div>
 
                                                     <!-- Weight and Height with previous values pre-filled -->
                                                     <div class="form-group">
                                                         <label for="vital-wt">Weight (kg)</label>
-                                                        <input type="text" class="form-control" id="vital-wt" name="wt" value="<?php echo htmlspecialchars($prev_wt); ?>" required>
+                                                        <input type="text" class="form-control" id="vital-wt" name="wt" value="<?php echo htmlspecialchars($prev_wt); ?>" required oninput="onlyNumbers(this)">
                                                     </div>
                                                     <div class="form-group">
                                                         <label for="vital-ht">Height (cm)</label>
-                                                        <input type="text" class="form-control" id="vital-ht" name="ht" value="<?php echo htmlspecialchars($prev_ht); ?>" required>
+                                                        <input type="text" class="form-control" id="vital-ht" name="ht" value="<?php echo htmlspecialchars($prev_ht); ?>" required oninput="onlyNumbers(this)">
                                                     </div>
 
                                                 </div>
@@ -529,16 +549,25 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
                     <div class="modal-body">
                         <div class="form-group">
                             <label for="name">First Name</label>
-                            <input type="text" class="form-control" id="name" name="name" required>
+                            <input type="text" class="form-control" id="name" name="name" required  oninput="cleanInput(this)">
                         </div>
                         <div class="form-group">
                             <label for="lastname">Last Name</label>
-                            <input type="text" class="form-control" id="lastname" name="lastname" required>
+                            <input type="text" class="form-control" id="lastname" name="lastname" required  oninput="cleanInput(this)">
                         </div>
                         <div class="form-group">
-                            <label for="address">Address</label>
-                            <input type="text" class="form-control" id="address" name="address" required>
+                            <label for="brgy">Barangay</label>
+                            <input type="text" class="form-control" id="brgy" name="brgy" required>
                         </div>
+                        <div class="form-group">
+                            <label for="municipality">Municipality</label>
+                            <input type="text" class="form-control" id="municipality" name="municipality" required oninput="cleanInput(this)">
+                        </div>
+                        <div class="form-group">
+                            <label for="province">Province</label>
+                            <input type="text" class="form-control" id="province" name="province" required oninput="cleanInput(this)">
+                        </div>
+       
                         <div class="form-group">
                             <label for="birthday">Birthdate</label>
                             <input type="date" class="form-control birthday-input" id="birthday" name="birthday" required>
@@ -550,7 +579,7 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
 
                         <div class="form-group">
                             <label for="phone_number">Phone Number</label>
-                            <input type="text" class="form-control" id="phone_number" name="phone_number" required>
+                            <input type="text" class="form-control" id="phone_number" name="phone_number" required oninput="onlyNumbers(this)">
                         </div>
                         <div class="form-group">
                             <label for="gender">Gender</label>
@@ -603,5 +632,55 @@ $patients = mysqli_fetch_all($result, MYSQLI_ASSOC);
 <script src="dist/js/adminlte.js"></script>
 <script src="../wbhr_ms/Bday_Validation.js"></script>
 <script src="../wbhr_ms/logout.js"></script>
+<script>
+    function onlyNumbers(input) {
+        input.value = input.value.replace(/[^0-9]/g, '');
+    }
+</script>
+
+<script>
+    function cleanInput(input) {
+        input.value = input.value.replace(/[^a-zA-Z\s']/g, '');
+    }
+</script>
+
+
+<script>
+    // Function to capitalize only the first letter of each word
+    function capitalizeFirstLetter(input) {
+        input.value = input.value
+            .toLowerCase()
+            .replace(/(?:^|\s)\S/g, function(a) { return a.toUpperCase(); });
+    }
+
+    // Attach the function to each input field outside the modal
+    document.getElementById("name").addEventListener("input", function() {
+        capitalizeFirstLetter(this);
+    });
+    document.getElementById("lastname").addEventListener("input", function() {
+        capitalizeFirstLetter(this);
+    });
+    document.getElementById("province").addEventListener("input", function() {
+        capitalizeFirstLetter(this);
+    });
+    document.getElementById("municipality").addEventListener("input", function() {
+        capitalizeFirstLetter(this);
+    });
+    document.getElementById("brgy").addEventListener("input", function() {
+        capitalizeFirstLetter(this);
+    });
+
+    // Use jQuery to ensure event listeners are reattached every time the modal is opened
+    $(document).on('shown.bs.modal', '.modal', function () {
+        $(this).find('#edit-name, #edit-lastname, #edit-brgy, #edit-municipality, #edit-province').each(function() {
+            $(this).on('input', function() {
+                capitalizeFirstLetter(this);
+            });
+        });
+    });
+
+
+</script>
+
 </body>
 </html>
