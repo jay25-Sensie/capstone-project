@@ -1,30 +1,30 @@
 <?php
 session_start();
-
 include("connection.php"); 
 include("function.php");
 
 if ($_SERVER['REQUEST_METHOD'] == "POST") {
-    $username = $_POST['username'];
+    $email = $_POST['email'];  // Changed to 'email'
     $password = $_POST['password'];
-    
-    if (!empty($username) && !empty($password)) {
-        $username = mysqli_real_escape_string($con, $username);
-        
-        // Check if the user already exists
-        $query = "SELECT * FROM users WHERE username = '$username' LIMIT 1";
+
+    // Check if both email and password are provided and the email is valid
+    if (!empty($email) && !empty($password) && filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $email = mysqli_real_escape_string($con, $email);  // Sanitize email input
+
+        // Check if the email already exists
+        $query = "SELECT * FROM users WHERE username = '$email' LIMIT 1";  // Changed to use 'email' instead of 'phone_number'
         $result = mysqli_query($con, $query);
-        
+
         if (mysqli_num_rows($result) > 0) {
-            echo '<script>alert("User already exists.");</script>';
+            echo '<script>alert("User with this email already exists.");</script>';
         } else {
             // Hash the password
             $hashed_password = password_hash($password, PASSWORD_BCRYPT);
-            
-            // Insert user with default role
-            $query = "INSERT INTO users (username, password, role) VALUES ('$username', '$hashed_password', 'admin')";
+
+            // Insert user with default role 'admin'
+            $query = "INSERT INTO users (username, password, role) VALUES ('$email', '$hashed_password', 'admin')";  // Changed to use 'email'
             $result = mysqli_query($con, $query);
-            
+
             if ($result) {
                 header("Location: Admin_Staff_login.php");
                 exit(); 
@@ -32,9 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
                 echo "Error: " . mysqli_error($con);
             }
         }
-        
     } else {
-        echo '<script>alert("Please fill in all fields.");</script>';
+        echo '<script>alert("Please enter a valid email and password.");</script>';
     }
 }
 ?>
@@ -43,25 +42,23 @@ if ($_SERVER['REQUEST_METHOD'] == "POST") {
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="..//WBHR_MS/css/Sign_in.css">
-    <title>Sign In</title>
+    <link rel="stylesheet" href="../WBHR_MS/css/Sign_in.css">  <!-- Fixed double slashes in the file path -->
+    <title>Sign Up</title>
 </head>
 <body>
 <div class="con_2">
-    <img src=".//img/logo.png" style="width:20%; height: 20%;" alt="">
+    <img src="./img/logo.png" style="width:20%; height: 20%;" alt="">  <!-- Fixed double slashes in the file path -->
     <h3>ADMIN STAFF SIGN UP</h3>
     <div class="form2">
         <form method="post">
-            <label for="username">Email:</label><br>
-            <input type="email" name="username" id="username" required><br>
+            <label for="email">Email:</label><br>  <!-- Changed 'phone_number' to 'email' -->
+            <input type="email" name="email" id="email" required><br>  <!-- Changed input name to 'email' -->
             <label for="password">Password:</label><br>
             <input type="password" name="password" id="password" required><br><br>
-            <input type="submit" name="login" value="Sign In" id="login_as">
+            <input type="submit" value="Sign Up" id="sign_up">
         </form><br><br><br>
     </div>
 </div>
-
 </body>
 </html>

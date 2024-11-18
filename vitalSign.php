@@ -13,7 +13,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Retrieve and sanitize form data
     $pid = isset($_POST['pid']) ? intval($_POST['pid']) : 0;
     $date = sanitize_input($_POST['date']);
-    $bp = isset($_POST['bp']) ? sanitize_input($_POST['bp']) : null; // Allow null for empty fields
+    $bp = isset($_POST['bp']) ? sanitize_input($_POST['bp']) : null;
     $cr = isset($_POST['cr']) ? sanitize_input($_POST['cr']) : null;
     $rr = isset($_POST['rr']) ? sanitize_input($_POST['rr']) : null;
     $t = isset($_POST['t']) ? sanitize_input($_POST['t']) : null;
@@ -36,7 +36,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt_display->bind_result($height, $weight);
             $stmt_display->fetch();
 
-            // Redirect back to viewPatient_Admin.php with updated values
             header("Location: viewPatient_Admin.php?pid=$pid&ht=$height&wt=$weight");
             exit();
         } else {
